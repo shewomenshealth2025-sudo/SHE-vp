@@ -289,7 +289,7 @@ export default function ChatPage({
               </p>
             </div>
 
-            <div className="mx-auto mt-9 w-full max-w-3xl">
+            <div className="mx-auto mt-9 w-full max-w-2xl">
               <ChatComposer
                 message={message}
                 setMessage={setMessage}
