@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+      width="1000" height="1000" viewBox="0 0 500 500">
+      <rect width="500" height="500" fill="#faf7f8"/>
+      <circle cx="420" cy="75" r="115"
+        fill="#8ac3d7" opacity=".08"/>
+      <circle cx="65" cy="430" r="125"
+        fill="#8ac3d7" opacity=".06"/>
+
+      
+        <path d="M165 145
+          Q250 115 335 145
+          L315 305
+          Q300 375 250 385
+          Q200 375 185 305Z"
+          fill="#8ac3d7" opacity=".72"/>
+        <path d="M170 150 Q250 185 330 150"
+          fill="none" stroke="white" stroke-width="10"/>
+        <path d="M250 385 V430"
+          stroke="#8ac3d7" stroke-width="18" stroke-linecap="round"/>
+        
+
+      <rect x="35" y="425" width="430" height="50"
+        rx="25" fill="white" opacity=".96"/>
+
+      <text x="250" y="447" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="14" font-weight="700" fill="#83777b">
+        MOONCUP
+      </text>
+
+      <text x="250" y="466" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="14" font-weight="700" fill="#2d2729">
+        Beginner Menstrual Cup
+      </text>
+    </svg>

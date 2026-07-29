@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+      width="1000" height="1000" viewBox="0 0 500 500">
+      <rect width="500" height="500" fill="#faf7f8"/>
+      <circle cx="420" cy="75" r="115"
+        fill="#7aaa62" opacity=".08"/>
+      <circle cx="65" cy="430" r="125"
+        fill="#7aaa62" opacity=".06"/>
+
+      
+        <rect x="213" y="115" width="74" height="225" rx="37"
+          fill="white" stroke="#7aaa62" stroke-width="12"/>
+        <path d="M250 340 C250 390 205 398 216 438"
+          fill="none" stroke="#7aaa62" stroke-width="8"
+          stroke-linecap="round"/>
+        <path d="M230 160 H270 M230 205 H270 M230 250 H270"
+          stroke="#7aaa62" stroke-width="7" opacity=".4"/>
+        
+
+      <rect x="35" y="425" width="430" height="50"
+        rx="25" fill="white" opacity=".96"/>
+
+      <text x="250" y="447" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="14" font-weight="700" fill="#83777b">
+        NATRACARE
+      </text>
+
+      <text x="250" y="466" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="14" font-weight="700" fill="#2d2729">
+        Organic Cotton Tampons
+      </text>
+    </svg>

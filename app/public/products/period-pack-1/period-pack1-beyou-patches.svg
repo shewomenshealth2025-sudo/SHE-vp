@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+      width="1000" height="1000" viewBox="0 0 500 500">
+      <rect width="500" height="500" fill="#faf7f8"/>
+      <circle cx="420" cy="75" r="115"
+        fill="#5c9fa3" opacity=".08"/>
+      <circle cx="65" cy="430" r="125"
+        fill="#5c9fa3" opacity=".06"/>
+
+      
+    <rect x="140" y="135" width="220" height="235" rx="32"
+      fill="white" stroke="#5c9fa3" stroke-width="12"/>
+    <rect x="175" y="185" width="150" height="95" rx="20"
+      fill="#5c9fa3" opacity=".25"/>
+    <path d="M205 232 H295" stroke="#5c9fa3" stroke-width="10"
+      stroke-linecap="round"/>
+    
+
+      <rect x="35" y="425" width="430" height="50"
+        rx="25" fill="white" opacity=".96"/>
+
+      <text x="250" y="447" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="14" font-weight="700" fill="#83777b">
+        BEYOU
+      </text>
+
+      <text x="250" y="466" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="14" font-weight="700" fill="#2d2729">
+        Monthly Patches
+      </text>
+    </svg>

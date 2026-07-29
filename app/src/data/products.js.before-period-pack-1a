@@ -1,5 +1,4 @@
 import { productInternetImages } from "./productInternetImages.js";
-import { periodCarePack1 } from "./packs/periodCarePack1.js";
 const categoryImages = {
   "Period care":
     "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80",
@@ -4797,15 +4796,6 @@ products.push(
     createProduct(product),
   ),
 );
-
-
-// Period & Menstrual Health — curated Pack 1A.
-// Existing IDs are skipped so the pack can be safely re-run.
-for (const product of periodCarePack1) {
-  if (!products.some((existing) => existing.id === product.id)) {
-    products.push(product);
-  }
-}
 
 export const productCategories = [
   {

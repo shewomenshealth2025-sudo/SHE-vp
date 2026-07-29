@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+      width="1000" height="1000" viewBox="0 0 500 500">
+      <rect width="500" height="500" fill="#faf7f8"/>
+      <circle cx="420" cy="75" r="115"
+        fill="#68a7df" opacity=".08"/>
+      <circle cx="65" cy="430" r="125"
+        fill="#68a7df" opacity=".06"/>
+
+      
+        <path d="M250 115
+          C305 115 326 160 317 213
+          L300 330
+          C295 365 275 386 250 386
+          C225 386 205 365 200 330
+          L183 213
+          C174 160 195 115 250 115Z"
+          fill="white" stroke="#68a7df" stroke-width="12"/>
+        <path d="M180 220 L125 190 L112 265 L190 285"
+          fill="#68a7df" opacity=".25"/>
+        <path d="M320 220 L375 190 L388 265 L310 285"
+          fill="#68a7df" opacity=".25"/>
+        <path d="M230 160 Q250 145 270 160 M225 205 Q250 185 275 205
+          M220 250 Q250 230 280 250 M225 300 Q250 280 275 300"
+          fill="none" stroke="#68a7df" stroke-width="8"
+          stroke-linecap="round" opacity=".45"/>
+        
+
+      <rect x="35" y="425" width="430" height="50"
+        rx="25" fill="white" opacity=".96"/>
+
+      <text x="250" y="447" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="14" font-weight="700" fill="#83777b">
+        ALWAYS
+      </text>
+
+      <text x="250" y="466" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="14" font-weight="700" fill="#2d2729">
+        Ultra Long Plus Pads with Wings
+      </text>
+    </svg>
