@@ -296,6 +296,37 @@ export default function ChatPage({
               disabled={isThinking}
             />
           </div>
+
+          <section className="mx-auto mt-12 w-full max-w-5xl">
+            <div className="mb-7 flex items-center justify-center gap-4">
+              <div className="h-px w-16 bg-pink-100 md:w-28" />
+              <h3 className="text-lg font-semibold md:text-xl">
+                Popular topics
+              </h3>
+              <div className="h-px w-16 bg-pink-100 md:w-28" />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              {topics.map(({ title, prompt, icon: Icon }) => (
+                <button
+                  key={title}
+                  type="button"
+                  onClick={() => chooseSuggestion(prompt)}
+                  className="group flex min-h-44 flex-col items-center justify-between rounded-3xl border border-pink-100 bg-white px-5 py-6 text-center shadow-sm transition hover:-translate-y-1 hover:border-pink-200 hover:shadow-lg"
+                >
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-pink-50 text-[#f43f72] transition group-hover:bg-pink-100">
+                    <Icon size={27} />
+                  </div>
+
+                  <p className="mt-5 text-base font-medium leading-snug">
+                    {title}
+                  </p>
+
+                  <span className="mt-5 text-sm text-[#f43f72]">Ask SHE →</span>
+                </button>
+              ))}
+            </div>
+          </section>
         </>
       )}
 

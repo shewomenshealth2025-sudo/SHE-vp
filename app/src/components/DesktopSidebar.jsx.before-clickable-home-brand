@@ -23,12 +23,7 @@ export default function DesktopSidebar({
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-pink-100 bg-[#fffafa] p-4 lg:flex lg:flex-col">
-      <button
-        type="button"
-        onClick={newChat}
-        className="flex w-full items-center gap-3 rounded-2xl px-2 py-3 text-left transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f43f72]/30"
-        aria-label="Return to SHE homepage"
-      >
+      <div className="flex items-center gap-3 px-2 py-3">
         <img
           src="/logo.png"
           alt="SHE logo"
@@ -39,7 +34,7 @@ export default function DesktopSidebar({
           <p className="text-xl font-semibold tracking-[0.18em]">SHE</p>
           <p className="text-xs text-[#f43f72]">Women’s Health, Made Easy</p>
         </div>
-      </button>
+      </div>
 
       <button
         type="button"
