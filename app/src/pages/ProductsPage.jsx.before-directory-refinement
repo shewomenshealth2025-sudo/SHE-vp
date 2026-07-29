@@ -3,7 +3,6 @@ import {
   ArrowRight,
   Check,
   ChevronDown,
-  ChevronRight,
   ExternalLink,
   Heart,
   Menu,
@@ -170,79 +169,6 @@ const categoryDirectory = [
       { label: "Home health devices", categories: ["Everyday health"] },
     ],
   },
-  {
-    group: "Hormonal health",
-    items: [
-      { label: "PCOS support", terms: ["pcos", "polycystic"] },
-      { label: "Endometriosis support", terms: ["endometriosis"] },
-      { label: "Adenomyosis support", terms: ["adenomyosis"] },
-      { label: "Hormone tracking", terms: ["hormone", "cycle tracker"] },
-      { label: "Hormonal acne", terms: ["hormonal acne"] },
-      { label: "Insulin-resistance support", terms: ["insulin resistance"] },
-      { label: "Thyroid monitoring", terms: ["thyroid"] },
-    ],
-  },
-  {
-    group: "Diagnostics & testing",
-    items: [
-      { label: "Pregnancy tests", terms: ["pregnancy test"] },
-      { label: "Ovulation tests", terms: ["ovulation test"] },
-      { label: "Fertility testing", terms: ["fertility test", "fertility monitor"] },
-      { label: "Menopause tests", terms: ["menopause test", "menopause stage"] },
-      { label: "STI tests", terms: ["sti test", "sexual health test"] },
-      { label: "UTI tests", terms: ["uti test", "urinary test"] },
-      { label: "Vaginal-health tests", terms: ["vaginal health", "bv test"] },
-      { label: "Home blood tests", terms: ["blood test", "home test"] },
-    ],
-  },
-  {
-    group: "Clothing, comfort & support",
-    items: [
-      { label: "Period clothing", terms: ["period underwear", "period swimwear"] },
-      { label: "Maternity clothing", terms: ["maternity"] },
-      { label: "Postpartum clothing", terms: ["postpartum clothing"] },
-      { label: "Compression clothing", terms: ["compression"] },
-      { label: "Abdominal support", terms: ["abdominal support", "support belt"] },
-      { label: "Cooling clothing", terms: ["cooling clothing", "menopause clothing"] },
-      { label: "Comfort footwear", terms: ["comfort footwear", "support shoes"] },
-    ],
-  },
-  {
-    group: "Mental health & wellbeing",
-    items: [
-      { label: "Stress support", terms: ["stress"] },
-      { label: "Anxiety support", terms: ["anxiety"] },
-      { label: "Sleep wellbeing", terms: ["sleep"] },
-      { label: "Mood tracking", terms: ["mood tracker"] },
-      { label: "Journals", terms: ["journal"] },
-      { label: "Meditation tools", terms: ["meditation"] },
-      { label: "Postnatal wellbeing", terms: ["postnatal mental health"] },
-    ],
-  },
-  {
-    group: "Books, apps & digital tools",
-    items: [
-      { label: "Women’s-health books", terms: ["book", "guide"] },
-      { label: "Cycle-tracking apps", terms: ["cycle app", "period tracker"] },
-      { label: "Fertility apps", terms: ["fertility app"] },
-      { label: "Pregnancy apps", terms: ["pregnancy app"] },
-      { label: "Pelvic-floor apps", terms: ["pelvic floor app", "squeezy"] },
-      { label: "Menopause apps", terms: ["menopause app"] },
-      { label: "Mental-health apps", terms: ["mental health app"] },
-    ],
-  },
-  {
-    group: "Fitness, recovery & lifestyle",
-    items: [
-      { label: "Women’s fitness", terms: ["fitness", "exercise"] },
-      { label: "Pelvic-health exercise", terms: ["pelvic exercise"] },
-      { label: "Pregnancy exercise", terms: ["pregnancy exercise"] },
-      { label: "Postpartum recovery", terms: ["postpartum recovery"] },
-      { label: "Yoga & mobility", terms: ["yoga", "mobility"] },
-      { label: "Recovery tools", terms: ["recovery", "massage"] },
-      { label: "Hydration", terms: ["hydration", "water bottle"] },
-    ],
-  },
 ];
 
 const featuredCategoryLinks = [
@@ -298,54 +224,6 @@ function matchesSelection(product, selection) {
   }
 
   return true;
-}
-
-function countForSelection(selection) {
-  return products.filter((product) =>
-    matchesSelection(product, selection),
-  ).length;
-}
-
-function selectionDescription(selection) {
-  if (!selection) {
-    return "Browse products covering periods, fertility, pregnancy, postpartum, menopause, intimate health, breast health and everyday wellbeing.";
-  }
-
-  const descriptions = {
-    "Pads & towels":
-      "Disposable and reusable products designed to absorb menstrual flow across different absorbency levels.",
-    Tampons:
-      "Internal menstrual products available in different absorbencies and applicator styles.",
-    "Period underwear":
-      "Reusable absorbent underwear for periods, spotting and light bladder leaks.",
-    "Menstrual cups":
-      "Reusable internal products designed to collect menstrual flow.",
-    "Menstrual discs":
-      "Flexible internal products positioned higher in the vaginal canal to collect menstrual flow.",
-    "Period pain relief":
-      "Heat, electrical stimulation and comfort products used to support period and pelvic-pain management.",
-    "Bra fitting & sizing":
-      "Guidance and products for finding supportive, comfortable and correctly fitted bras.",
-    "Vaginal dryness":
-      "Non-hormonal moisturisers, lubricants and comfort products for vaginal dryness.",
-    "Ovulation tests":
-      "Urine and digital products used to identify hormonal changes associated with ovulation.",
-    "Pregnancy tests":
-      "Home urine tests designed to detect the pregnancy hormone hCG.",
-    "Post-birth recovery":
-      "Products designed to support comfort, hygiene and recovery following childbirth.",
-    "Hot-flush relief":
-      "Cooling and comfort products for hot flushes and temperature changes during menopause.",
-    "Pelvic-floor trainers":
-      "Devices and tools designed to support structured pelvic-floor exercise.",
-    "Blood-pressure monitors":
-      "Home devices used to measure and record blood pressure.",
-  };
-
-  return (
-    descriptions[selection.label] ||
-    `Explore SHE-reviewed products related to ${selection.label.toLowerCase()}.`
-  );
 }
 
 function ProductCard({ product, saved, onSave, onOpen }) {
@@ -609,16 +487,13 @@ function CategoryDirectory({
                   onSelect(item);
                   onClose?.();
                 }}
-                className={`flex w-full items-start justify-between gap-3 py-1.5 text-left text-[13px] leading-5 transition ${
+                className={`block w-full py-1.5 text-left text-[13px] leading-5 transition ${
                   selected?.label === item.label
                     ? "font-semibold text-[#e93368]"
                     : "text-stone-600 hover:text-[#e93368]"
                 }`}
               >
-                <span>{item.label}</span>
-                <span className="shrink-0 text-[11px] font-normal text-stone-400">
-                  {countForSelection(item)}
-                </span>
+                {item.label}
               </button>
             ))}
           </div>
@@ -636,11 +511,6 @@ export default function ProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(16);
-  const [filtersOpen, setFiltersOpen] = useState(false);
-  const [selectedBrand, setSelectedBrand] = useState("All brands");
-  const [maximumPrice, setMaximumPrice] = useState(300);
-  const [minimumScore, setMinimumScore] = useState(0);
-  const [reusableOnly, setReusableOnly] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(
@@ -648,16 +518,6 @@ export default function ProductsPage() {
       JSON.stringify(savedIds),
     );
   }, [savedIds]);
-
-  const brandOptions = useMemo(
-    () => [
-      "All brands",
-      ...Array.from(
-        new Set(products.map((product) => product.brand)),
-      ).sort(),
-    ],
-    [],
-  );
 
   const filteredProducts = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -667,22 +527,7 @@ export default function ProductsPage() {
       const matchesSearch =
         !term || productText(product).includes(term);
 
-      const matchesBrand =
-        selectedBrand === "All brands" ||
-        product.brand === selectedBrand;
-
-      const matchesPrice = product.price <= maximumPrice;
-      const matchesScore = product.score >= minimumScore;
-      const matchesReusable = !reusableOnly || product.reusable;
-
-      return (
-        matchesCategory &&
-        matchesSearch &&
-        matchesBrand &&
-        matchesPrice &&
-        matchesScore &&
-        matchesReusable
-      );
+      return matchesCategory && matchesSearch;
     });
 
     return [...result].sort((a, b) => {
@@ -697,15 +542,7 @@ export default function ProductsPage() {
         b.score - a.score
       );
     });
-  }, [
-    maximumPrice,
-    minimumScore,
-    reusableOnly,
-    search,
-    selectedBrand,
-    selection,
-    sort,
-  ]);
+  }, [search, selection, sort]);
 
   const featuredProducts = useMemo(() => {
     const selected = products
@@ -726,11 +563,6 @@ export default function ProductsPage() {
   function chooseCategory(item) {
     setSelection(item);
     setVisibleCount(16);
-    setSelectedBrand("All brands");
-    setMaximumPrice(300);
-    setMinimumScore(0);
-    setReusableOnly(false);
-    setFiltersOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -859,160 +691,34 @@ export default function ProductsPage() {
             )}
 
             <section className={selection || search.trim() ? "" : "mt-14"}>
-              <div className="border-b border-stone-200 pb-6">
-                <div className="flex flex-wrap items-center gap-1.5 text-xs text-stone-400">
-                  <button
-                    type="button"
-                    onClick={() => chooseCategory(null)}
-                    className="transition hover:text-[#e93368]"
-                  >
-                    Women’s health
-                  </button>
+              <div className="flex flex-col justify-between gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-end">
+                <div>
+                  <p className="text-sm text-stone-500">
+                    Showing {Math.min(visibleCount, filteredProducts.length)} of{" "}
+                    {filteredProducts.length}
+                  </p>
 
-                  {selection && (
-                    <>
-                      <ChevronRight size={13} />
-                      <span className="text-stone-600">
-                        {selection.label}
-                      </span>
-                    </>
-                  )}
+                  <h2 className="mt-1 text-2xl font-semibold">
+                    {selection?.label || (search.trim() ? "Search results" : "All products")}
+                  </h2>
                 </div>
 
-                <div className="mt-4 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-                  <div className="max-w-2xl">
-                    <p className="text-sm text-stone-500">
-                      Showing {Math.min(visibleCount, filteredProducts.length)} of{" "}
-                      {filteredProducts.length}
-                    </p>
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal size={16} className="text-stone-400" />
 
-                    <h2 className="mt-1 text-2xl font-semibold">
-                      {selection?.label ||
-                        (search.trim()
-                          ? "Search results"
-                          : "All products")}
-                    </h2>
-
-                    <p className="mt-3 text-sm leading-6 text-stone-500">
-                      {search.trim()
-                        ? `Products matching “${search.trim()}”.`
-                        : selectionDescription(selection)}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setFiltersOpen((current) => !current)}
-                      className={`flex h-11 items-center gap-2 border px-4 text-sm font-medium transition ${
-                        filtersOpen
-                          ? "border-[#f43f72] bg-[#fff5f8] text-[#e93368]"
-                          : "border-stone-300 bg-white text-stone-600"
-                      }`}
-                    >
-                      <SlidersHorizontal size={16} />
-                      Filters
-                    </button>
-
-                    <select
-                      value={sort}
-                      onChange={(event) => setSort(event.target.value)}
-                      className="h-11 border border-stone-300 bg-white px-4 text-sm outline-none"
-                    >
-                      <option>Recommended</option>
-                      <option>Highest SHE Score</option>
-                      <option>Most reviewed</option>
-                      <option>Price: low to high</option>
-                      <option>Price: high to low</option>
-                    </select>
-                  </div>
+                  <select
+                    value={sort}
+                    onChange={(event) => setSort(event.target.value)}
+                    className="h-11 border border-stone-300 bg-white px-4 text-sm outline-none"
+                  >
+                    <option>Recommended</option>
+                    <option>Highest SHE Score</option>
+                    <option>Most reviewed</option>
+                    <option>Price: low to high</option>
+                    <option>Price: high to low</option>
+                  </select>
                 </div>
               </div>
-
-              {filtersOpen && (
-                <div className="grid gap-5 border-b border-stone-200 bg-[#fffafa] px-5 py-6 md:grid-cols-2 xl:grid-cols-4">
-                  <label>
-                    <span className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
-                      Brand
-                    </span>
-
-                    <select
-                      value={selectedBrand}
-                      onChange={(event) => {
-                        setSelectedBrand(event.target.value);
-                        setVisibleCount(16);
-                      }}
-                      className="mt-2 h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none"
-                    >
-                      {brandOptions.map((brand) => (
-                        <option key={brand}>{brand}</option>
-                      ))}
-                    </select>
-                  </label>
-
-                  <label>
-                    <span className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
-                      Maximum price
-                    </span>
-
-                    <div className="mt-2">
-                      <p className="text-sm font-medium">
-                        {money.format(maximumPrice)}
-                      </p>
-
-                      <input
-                        type="range"
-                        min="5"
-                        max="300"
-                        step="5"
-                        value={maximumPrice}
-                        onChange={(event) => {
-                          setMaximumPrice(Number(event.target.value));
-                          setVisibleCount(16);
-                        }}
-                        className="mt-3 w-full accent-[#f43f72]"
-                      />
-                    </div>
-                  </label>
-
-                  <label>
-                    <span className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
-                      Minimum SHE Score
-                    </span>
-
-                    <select
-                      value={minimumScore}
-                      onChange={(event) => {
-                        setMinimumScore(Number(event.target.value));
-                        setVisibleCount(16);
-                      }}
-                      className="mt-2 h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none"
-                    >
-                      <option value="0">Any score</option>
-                      <option value="7">7.0 and above</option>
-                      <option value="8">8.0 and above</option>
-                      <option value="8.5">8.5 and above</option>
-                      <option value="9">9.0 and above</option>
-                    </select>
-                  </label>
-
-                  <label className="flex cursor-pointer items-center gap-3 self-end border border-stone-300 bg-white px-4 py-3">
-                    <input
-                      type="checkbox"
-                      checked={reusableOnly}
-                      onChange={(event) => {
-                        setReusableOnly(event.target.checked);
-                        setVisibleCount(16);
-                      }}
-                      className="h-4 w-4 accent-[#f43f72]"
-                    />
-
-                    <span className="text-sm font-medium">
-                      Reusable products only
-                    </span>
-                  </label>
-                </div>
-              )}
 
               {filteredProducts.length ? (
                 <>
