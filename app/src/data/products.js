@@ -1,168 +1,2387 @@
-import {
-  Baby,
-  Droplets,
-  HeartPulse,
-  Pill,
-  Sparkles,
-} from "lucide-react";
+const categoryImages = {
+  "Period care":
+    "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80",
+  "Pelvic pain":
+    "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80",
+  Fertility:
+    "https://images.unsplash.com/photo-1531988042231-d39a9cc12a9a?auto=format&fit=crop&w=1000&q=80",
+  Pregnancy:
+    "https://images.unsplash.com/photo-1532330384785-f94c3dc79872?auto=format&fit=crop&w=1000&q=80",
+  Postpartum:
+    "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=1000&q=80",
+  Menopause:
+    "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80",
+  "Bladder health":
+    "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=1000&q=80",
+  "Intimate care":
+    "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=1000&q=80",
+  Supplements:
+    "https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=1000&q=80",
+  "Everyday health":
+    "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80",
+};
 
-export const productCategories = [
-  "All",
-  "Period care",
-  "Pain relief",
-  "Fertility",
-  "Everyday health",
-];
+const categoryIcons = {
+  "Period care": "◉",
+  "Pelvic pain": "♡",
+  Fertility: "✦",
+  Pregnancy: "◌",
+  Postpartum: "☼",
+  Menopause: "☾",
+  "Bladder health": "◇",
+  "Intimate care": "○",
+  Supplements: "+",
+  "Everyday health": "⌁",
+};
+
+function createProduct({
+  id,
+  brand,
+  name,
+  category,
+  price,
+  score,
+  rating = 4.4,
+  reviews = 120,
+  badge,
+  description,
+  suitableFor,
+  notFor,
+  howToUse,
+  evidence,
+  safety,
+  pros = [],
+  cons = [],
+  retailers = ["Boots", "Amazon"],
+  reusable = false,
+  featured = false,
+  popular = false,
+  newProduct = false,
+}) {
+  return {
+    id,
+    brand,
+    name,
+    category,
+    price,
+    score,
+    rating,
+    reviews,
+    badge,
+    description,
+    suitableFor,
+    notFor,
+    howToUse,
+    evidence,
+    safety,
+    pros,
+    cons,
+    retailers,
+    reusable,
+    featured,
+    popular,
+    newProduct,
+    image: categoryImages[category],
+    icon: categoryIcons[category],
+  };
+}
 
 export const products = [
-  {
-    id: 1,
-    name: "Portable Heat Pad",
-    category: "Pain relief",
-    description:
-      "A rechargeable heat pad designed to provide targeted warmth for cramps and lower abdominal discomfort.",
-    price: "£25–£40",
-    score: 94,
-    effectiveness: 4.7,
-    comfort: 4.8,
-    ease: 4.6,
-    accessibility: 4.5,
-    evidence: "Moderate evidence",
-    badge: "Highly rated",
-    icon: HeartPulse,
-    pros: [
-      "Portable and rechargeable",
-      "Provides targeted warmth",
-      "Can be worn under clothing",
-    ],
-    considerations: [
-      "Battery life varies",
-      "Avoid prolonged use at very high temperatures",
-    ],
-  },
-  {
-    id: 2,
-    name: "TENS Pain Relief Device",
-    category: "Pain relief",
-    description:
-      "A drug-free device that uses mild electrical stimulation and may help some people manage pelvic or period pain.",
-    price: "£35–£65",
-    score: 88,
-    effectiveness: 4.5,
-    comfort: 4.1,
-    ease: 4.2,
-    accessibility: 4.1,
-    evidence: "Moderate evidence",
+  createProduct({
+    id: "beyou-monthly-patches",
+    brand: "BeYou",
+    name: "Monthly Patches",
+    category: "Pelvic pain",
+    price: 6.99,
+    score: 8.3,
+    rating: 4.4,
+    reviews: 538,
     badge: "Popular choice",
-    icon: Sparkles,
-    pros: [
-      "Drug-free pain support",
-      "Adjustable intensity",
-      "Reusable",
-    ],
-    considerations: [
-      "Not suitable for everyone",
-      "Correct pad placement matters",
-    ],
-  },
-  {
-    id: 3,
-    name: "Period Underwear",
-    category: "Period care",
     description:
-      "Absorbent underwear designed for periods, spotting and light bladder leaks.",
-    price: "£18–£35",
-    score: 92,
-    effectiveness: 4.6,
-    comfort: 4.8,
-    ease: 4.7,
-    accessibility: 4.4,
-    evidence: "Practical support",
+      "Cooling adhesive patches designed for discreet use during periods and episodes of lower abdominal discomfort.",
+    suitableFor:
+      "People looking for a portable, non-medicated option that can be worn beneath clothing.",
+    notFor:
+      "Broken, irritated or highly sensitive skin. Stop use if irritation develops.",
+    howToUse:
+      "Apply to clean, dry skin near the area of discomfort and follow the pack instructions.",
+    evidence:
+      "Cooling and sensory products may provide temporary comfort, but they do not treat the underlying cause of pelvic pain.",
+    safety:
+      "Persistent or severe pelvic pain should be medically assessed rather than managed only with consumer products.",
+    pros: ["Discreet", "Portable", "No charging required"],
+    cons: ["Single use", "Effect varies"],
+    retailers: ["BeYou", "Boots", "Amazon"],
+    featured: true,
+    popular: true,
+  }),
+
+  createProduct({
+    id: "beyou-period-pain-relief",
+    brand: "BeYou",
+    name: "Period Pain Relief Roll-On",
+    category: "Pelvic pain",
+    price: 9.99,
+    score: 7.9,
+    badge: "Easy to carry",
+    description:
+      "A topical roll-on marketed for cooling comfort during periods.",
+    suitableFor:
+      "People who prefer a compact topical product rather than a heat device.",
+    notFor:
+      "Sensitive or broken skin, or anyone allergic to listed ingredients.",
+    howToUse:
+      "Apply only as directed on the packaging and wash hands after use.",
+    evidence:
+      "Topical cooling sensations may temporarily distract from pain. Evidence for specific cosmetic formulations varies.",
+    safety:
+      "Do not apply internally. Seek medical advice for severe, new or worsening pain.",
+    pros: ["Portable", "Simple application"],
+    cons: ["Temporary effect", "Fragrance may not suit everyone"],
+    retailers: ["BeYou", "Amazon"],
+  }),
+
+  createProduct({
+    id: "moon-cup",
+    brand: "Mooncup",
+    name: "Reusable Menstrual Cup",
+    category: "Period care",
+    price: 23.99,
+    score: 8.8,
+    rating: 4.6,
+    reviews: 1420,
+    badge: "Reusable pick",
+    description:
+      "A reusable silicone menstrual cup designed to collect menstrual fluid.",
+    suitableFor:
+      "People looking for a reusable period product and comfortable with internal insertion.",
+    notFor:
+      "Anyone advised not to use internal products or experiencing unexplained pelvic pain or infection symptoms.",
+    howToUse:
+      "Fold and insert according to the manufacturer’s instructions. Empty, wash and sterilise as directed.",
+    evidence:
+      "Menstrual cups are a recognised reusable period-product option. Fit, comfort and learning time vary.",
+    safety:
+      "Follow cleaning guidance carefully and do not exceed the recommended wear time.",
+    pros: ["Reusable", "High capacity", "Long-term value"],
+    cons: ["Learning curve", "Fit differs between users"],
+    retailers: ["Mooncup", "Boots", "Amazon"],
+    reusable: true,
+    featured: true,
+  }),
+
+  createProduct({
+    id: "saalt-soft-cup",
+    brand: "Saalt",
+    name: "Soft Menstrual Cup",
+    category: "Period care",
+    price: 29.99,
+    score: 8.7,
+    rating: 4.5,
+    reviews: 891,
     badge: "Comfort pick",
-    icon: Droplets,
-    pros: [
-      "Reusable",
-      "Comfortable overnight",
-      "Useful as backup protection",
-    ],
-    considerations: [
-      "Absorbency varies by brand",
-      "Requires washing and drying",
-    ],
-  },
-  {
-    id: 4,
-    name: "Menstrual Cup",
+    description:
+      "A softer reusable menstrual cup available in different sizes.",
+    suitableFor:
+      "People who find firmer cups uncomfortable or experience bladder sensitivity.",
+    notFor:
+      "People who have been advised to avoid internal menstrual products.",
+    howToUse:
+      "Insert, remove, clean and sterilise according to the full manufacturer instructions.",
+    evidence:
+      "Reusable menstrual cups can be effective when correctly fitted and maintained.",
+    safety:
+      "Stop use and seek advice for persistent pain, unusual discharge, fever or difficulty removing the cup.",
+    pros: ["Soft material", "Reusable", "Multiple sizes"],
+    cons: ["May be harder to open", "Higher initial cost"],
+    retailers: ["Saalt", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "saalt-disc",
+    brand: "Saalt",
+    name: "Menstrual Disc",
     category: "Period care",
+    price: 31.99,
+    score: 8.5,
+    badge: "High capacity",
     description:
-      "A reusable internal period product available in different sizes, shapes and firmness levels.",
-    price: "£15–£25",
-    score: 84,
-    effectiveness: 4.5,
-    comfort: 4.0,
-    ease: 3.7,
-    accessibility: 4.3,
-    evidence: "Established product",
-    badge: "Reusable",
-    icon: Droplets,
-    pros: [
-      "Can be worn for several hours",
-      "Low ongoing cost",
-      "Less disposable waste",
-    ],
-    considerations: [
-      "May require practice",
-      "Sizing and fit are important",
-    ],
-  },
-  {
-    id: 5,
-    name: "Ovulation Test Kit",
+      "A reusable menstrual disc positioned at the vaginal fornix rather than within the vaginal canal.",
+    suitableFor:
+      "Experienced internal-product users seeking higher capacity.",
+    notFor:
+      "Anyone uncomfortable with insertion or advised to avoid internal products.",
+    howToUse:
+      "Pinch, insert and position according to manufacturer instructions before carefully removing and cleaning.",
+    evidence:
+      "Menstrual discs are an alternative collection method. Individual fit and ease of removal vary.",
+    safety:
+      "Follow cleaning and maximum-wear guidance.",
+    pros: ["Reusable", "High capacity"],
+    cons: ["Removal can be messy", "Fit is individual"],
+    retailers: ["Saalt", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "nixit-disc",
+    brand: "Nixit",
+    name: "Reusable Menstrual Disc",
+    category: "Period care",
+    price: 37.99,
+    score: 8.4,
+    badge: "Premium reusable",
+    description:
+      "A one-size reusable menstrual disc made from soft silicone.",
+    suitableFor:
+      "People who prefer a disc design without a stem.",
+    notFor:
+      "Anyone who finds internal products painful or difficult to remove.",
+    howToUse:
+      "Insert and clean according to manufacturer guidance.",
+    evidence:
+      "Discs collect rather than absorb menstrual fluid and can be reused when correctly maintained.",
+    safety:
+      "Seek help if the product cannot be removed or causes significant pain.",
+    pros: ["Soft", "Reusable", "No stem"],
+    cons: ["Premium price", "One size may not suit everyone"],
+    retailers: ["Nixit", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "wuka-medium-flow",
+    brand: "WUKA",
+    name: "Ultimate Medium Flow Brief",
+    category: "Period care",
+    price: 24.99,
+    score: 8.9,
+    rating: 4.7,
+    reviews: 2150,
+    badge: "SHE recommends",
+    description:
+      "Reusable absorbent period underwear intended for medium-flow days.",
+    suitableFor:
+      "People wanting an external reusable option or additional protection.",
+    notFor:
+      "Anyone who needs a higher absorbency than the selected style provides.",
+    howToUse:
+      "Wear like standard underwear and wash according to care instructions.",
+    evidence:
+      "Absorbent period underwear can be a practical reusable option when absorbency matches the user’s flow.",
+    safety:
+      "Change as needed and follow washing instructions.",
+    pros: ["Comfortable", "Reusable", "Easy to use"],
+    cons: ["Requires washing", "Initial cost"],
+    retailers: ["WUKA", "Boots"],
+    reusable: true,
+    featured: true,
+    popular: true,
+  }),
+
+  createProduct({
+    id: "modibodi-classic",
+    brand: "Modibodi",
+    name: "Classic Full Brief",
+    category: "Period care",
+    price: 25.5,
+    score: 8.7,
+    badge: "Everyday comfort",
+    description:
+      "Reusable absorbent underwear available in several flow levels.",
+    suitableFor:
+      "Periods, spotting or light bladder leaks depending on the selected absorbency.",
+    notFor:
+      "Flows exceeding the stated product capacity without additional protection.",
+    howToUse:
+      "Select the appropriate absorbency and follow the brand’s wash instructions.",
+    evidence:
+      "Reusable absorbent underwear offers an alternative to disposable pads and tampons.",
+    safety:
+      "Change promptly if saturated or uncomfortable.",
+    pros: ["Multiple absorbencies", "Reusable"],
+    cons: ["Drying time", "Sizing may vary"],
+    retailers: ["Modibodi"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "bodyform-ultra",
+    brand: "Bodyform",
+    name: "Ultra Towels",
+    category: "Period care",
+    price: 2.75,
+    score: 7.8,
+    badge: "Budget pick",
+    description:
+      "Disposable menstrual pads available in multiple absorbency levels.",
+    suitableFor:
+      "People seeking an accessible external period product.",
+    notFor:
+      "Anyone sensitive to the materials or fragrance in a particular version.",
+    howToUse:
+      "Change regularly and choose absorbency based on flow.",
+    evidence:
+      "Disposable pads are a standard external menstrual product.",
+    safety:
+      "Very heavy bleeding that repeatedly soaks products quickly should be medically assessed.",
+    pros: ["Widely available", "No insertion"],
+    cons: ["Disposable", "May feel bulky"],
+    retailers: ["Boots", "Tesco", "Superdrug"],
+  }),
+
+  createProduct({
+    id: "always-infinity",
+    brand: "Always",
+    name: "Infinity Pads",
+    category: "Period care",
+    price: 4.25,
+    score: 8.1,
+    badge: "Lightweight feel",
+    description:
+      "Disposable pads made with a lightweight absorbent foam core.",
+    suitableFor:
+      "People who prefer an external disposable product with a thinner feel.",
+    notFor:
+      "Users with sensitivity to the product materials.",
+    howToUse:
+      "Apply to underwear and change according to flow and comfort.",
+    evidence:
+      "Disposable pads provide external menstrual protection.",
+    safety:
+      "Seek advice for bleeding that is unusually heavy, prolonged or associated with dizziness.",
+    pros: ["Thin", "Accessible"],
+    cons: ["Disposable", "Ongoing cost"],
+    retailers: ["Boots", "Tesco", "Amazon"],
+  }),
+
+  createProduct({
+    id: "totm-organic-tampons",
+    brand: "TOTM",
+    name: "Organic Cotton Tampons",
+    category: "Period care",
+    price: 3.99,
+    score: 8.2,
+    badge: "Organic cotton",
+    description:
+      "Applicator tampons made with organic cotton.",
+    suitableFor:
+      "People comfortable with internal disposable menstrual products.",
+    notFor:
+      "Anyone advised not to use tampons or experiencing pain during insertion.",
+    howToUse:
+      "Use the lowest suitable absorbency and change within the time stated on the packaging.",
+    evidence:
+      "Tampons are an established internal menstrual product.",
+    safety:
+      "Follow toxic shock syndrome warnings and never exceed recommended wear time.",
+    pros: ["Compact", "Organic cotton"],
+    cons: ["Disposable", "Requires insertion"],
+    retailers: ["TOTM", "Tesco", "Amazon"],
+  }),
+
+  createProduct({
+    id: "daye-organic-tampons",
+    brand: "Daye",
+    name: "Organic Tampons",
+    category: "Period care",
+    price: 8.99,
+    score: 8.1,
+    badge: "Subscription option",
+    description:
+      "Organic cotton tampons offered in personalised absorbency combinations.",
+    suitableFor:
+      "People who use tampons and value delivery or subscription options.",
+    notFor:
+      "Anyone who experiences painful insertion or cannot follow safe tampon-use guidance.",
+    howToUse:
+      "Use the appropriate absorbency and follow all pack instructions.",
+    evidence:
+      "Tampons provide effective internal menstrual absorption when used correctly.",
+    safety:
+      "Be aware of toxic shock syndrome symptoms and maximum wear times.",
+    pros: ["Customisable", "Delivered"],
+    cons: ["Higher price", "Disposable"],
+    retailers: ["Daye"],
+  }),
+
+  createProduct({
+    id: "lil-lets-non-applicator",
+    brand: "Lil-Lets",
+    name: "Non-Applicator Tampons",
+    category: "Period care",
+    price: 2.65,
+    score: 7.9,
+    badge: "Compact pick",
+    description:
+      "Compact non-applicator tampons in several absorbencies.",
+    suitableFor:
+      "People comfortable inserting tampons without an applicator.",
+    notFor:
+      "Anyone who experiences insertion pain or prefers external products.",
+    howToUse:
+      "Use the lowest suitable absorbency and follow safe-use instructions.",
+    evidence:
+      "Tampons are a recognised menstrual-product option.",
+    safety:
+      "Never exceed the maximum recommended wear time.",
+    pros: ["Compact", "Widely available"],
+    cons: ["Disposable", "Internal product"],
+    retailers: ["Boots", "Superdrug", "Tesco"],
+  }),
+
+  createProduct({
+    id: "beurer-em50",
+    brand: "Beurer",
+    name: "EM 50 Menstrual Relax",
+    category: "Pelvic pain",
+    price: 59.99,
+    score: 8.5,
+    rating: 4.3,
+    reviews: 341,
+    badge: "Device pick",
+    description:
+      "A rechargeable device combining heat and electrical nerve stimulation.",
+    suitableFor:
+      "Adults seeking a reusable, drug-free device for temporary period-pain support.",
+    notFor:
+      "People with implanted electronic devices or contraindications listed by the manufacturer.",
+    howToUse:
+      "Place externally on the lower abdomen and select settings as directed.",
+    evidence:
+      "Heat and TENS may help some people manage pain, although individual response varies.",
+    safety:
+      "Read contraindications carefully. Do not use during pregnancy unless specifically medically approved.",
+    pros: ["Reusable", "Heat and TENS", "Portable"],
+    cons: ["Higher price", "Not suitable for everyone"],
+    retailers: ["Beurer", "Amazon"],
+    reusable: true,
+    featured: true,
+  }),
+
+  createProduct({
+    id: "omron-e3-intense",
+    brand: "OMRON",
+    name: "E3 Intense TENS Device",
+    category: "Pelvic pain",
+    price: 49.99,
+    score: 8.2,
+    badge: "Multi-use device",
+    description:
+      "A portable TENS unit with reusable electrode pads and multiple programmes.",
+    suitableFor:
+      "Adults looking for external electrical nerve stimulation for temporary pain management.",
+    notFor:
+      "People with pacemakers, certain heart conditions or other listed contraindications.",
+    howToUse:
+      "Place pads externally and follow the device instructions.",
+    evidence:
+      "TENS may provide temporary relief for some types of pain.",
+    safety:
+      "Do not place electrodes across the chest, head, broken skin or internally.",
+    pros: ["Reusable", "Multiple settings"],
+    cons: ["Pads require replacement", "Response varies"],
+    retailers: ["Boots", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "portable-heat-belt",
+    brand: "SHE Edit",
+    name: "Rechargeable Heat Belt",
+    category: "Pelvic pain",
+    price: 29.99,
+    score: 8.4,
+    badge: "Best for travel",
+    description:
+      "A rechargeable wearable heat belt for lower abdominal or back comfort.",
+    suitableFor:
+      "People who benefit from heat and want a portable alternative to a hot-water bottle.",
+    notFor:
+      "Reduced skin sensation, damaged skin or conditions where heat is medically discouraged.",
+    howToUse:
+      "Wear over clothing or according to the manufacturer’s instructions and avoid excessive temperatures.",
+    evidence:
+      "Local heat may temporarily reduce period discomfort for some people.",
+    safety:
+      "Avoid sleeping with active heat and stop use if skin becomes painful or irritated.",
+    pros: ["Portable", "Reusable", "Adjustable"],
+    cons: ["Requires charging", "Heat only"],
+    retailers: ["Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "clearblue-advanced-ovulation",
+    brand: "Clearblue",
+    name: "Advanced Digital Ovulation Test",
     category: "Fertility",
+    price: 27.99,
+    score: 8.4,
+    badge: "Digital tracking",
     description:
-      "At-home urine tests designed to identify a rise in luteinising hormone before ovulation.",
-    price: "£15–£30",
-    score: 86,
-    effectiveness: 4.3,
-    comfort: 4.7,
-    ease: 4.5,
-    accessibility: 4.6,
-    evidence: "Established product",
-    badge: "Fertility",
-    icon: Baby,
-    pros: [
-      "Easy to use at home",
-      "Can help identify a fertile window",
-      "Widely available",
-    ],
-    considerations: [
-      "Does not confirm that ovulation occurred",
-      "Results may be difficult to interpret with irregular cycles",
-    ],
+      "A urine-based ovulation test that tracks changes in fertility hormones.",
+    suitableFor:
+      "People trying to identify fertile days while attempting conception.",
+    notFor:
+      "A substitute for medical fertility assessment or contraception.",
+    howToUse:
+      "Test urine according to the timing and instructions included.",
+    evidence:
+      "Urinary hormone testing can identify hormonal changes associated with the fertile window.",
+    safety:
+      "Results may be affected by irregular cycles, some conditions or fertility medicines.",
+    pros: ["Clear digital result", "Tracks more than one hormone"],
+    cons: ["Ongoing strip cost", "May be less useful with irregular cycles"],
+    retailers: ["Boots", "Superdrug", "Amazon"],
+    popular: true,
+  }),
+
+  createProduct({
+    id: "easy-home-ovulation",
+    brand: "Easy@Home",
+    name: "Ovulation Test Strips",
+    category: "Fertility",
+    price: 14.99,
+    score: 8.1,
+    badge: "Value pack",
+    description:
+      "Urine luteinising-hormone test strips often used alongside a tracking app.",
+    suitableFor:
+      "People who want frequent testing at a lower cost per test.",
+    notFor:
+      "Use as contraception or as a replacement for fertility assessment.",
+    howToUse:
+      "Dip each strip as directed and interpret within the stated time window.",
+    evidence:
+      "Luteinising-hormone tests can help identify a hormone surge before ovulation.",
+    safety:
+      "PCOS and some medicines can make results harder to interpret.",
+    pros: ["Low cost per test", "Large pack"],
+    cons: ["Line interpretation", "More manual"],
+    retailers: ["Amazon"],
+  }),
+
+  createProduct({
+    id: "mira-fertility-plus",
+    brand: "Mira",
+    name: "Fertility Plus Starter Kit",
+    category: "Fertility",
+    price: 189,
+    score: 8.3,
+    badge: "Advanced tracking",
+    description:
+      "A connected fertility monitor that measures urinary hormone concentrations using test wands.",
+    suitableFor:
+      "People who want more detailed cycle information and are comfortable with repeated testing.",
+    notFor:
+      "Anyone seeking a diagnostic medical device or guaranteed prediction of conception.",
+    howToUse:
+      "Use compatible test wands with the analyser and app according to instructions.",
+    evidence:
+      "Urinary hormone monitoring can provide information about cycle patterns, but consumer monitoring does not diagnose infertility.",
+    safety:
+      "Discuss persistently irregular or absent ovulation patterns with a clinician.",
+    pros: ["Detailed data", "App integration"],
+    cons: ["Expensive", "Ongoing wand cost"],
+    retailers: ["Mira"],
+    newProduct: true,
+  }),
+
+  createProduct({
+    id: "tempdrop-sensor",
+    brand: "Tempdrop",
+    name: "Wearable Basal Temperature Sensor",
+    category: "Fertility",
+    price: 169,
+    score: 8.0,
+    badge: "Wearable tracker",
+    description:
+      "An overnight wearable sensor intended to support basal-temperature tracking.",
+    suitableFor:
+      "People who find manual morning temperature measurement difficult.",
+    notFor:
+      "Use as a sole contraceptive method without appropriate fertility-awareness education.",
+    howToUse:
+      "Wear overnight and sync readings according to the device instructions.",
+    evidence:
+      "Basal-temperature changes can help retrospectively confirm an ovulatory pattern.",
+    safety:
+      "Temperature alone cannot reliably predict every fertile day.",
+    pros: ["Automatic measurement", "Useful for irregular sleep"],
+    cons: ["High cost", "Retrospective information"],
+    retailers: ["Tempdrop"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "clearblue-pregnancy-test",
+    brand: "Clearblue",
+    name: "Digital Pregnancy Test",
+    category: "Pregnancy",
+    price: 12.99,
+    score: 8.6,
+    badge: "Clear result",
+    description:
+      "A urine pregnancy test displaying a digital pregnant or not-pregnant result.",
+    suitableFor:
+      "People checking whether pregnancy may explain a missed period or symptoms.",
+    notFor:
+      "Replacing professional assessment where pain, bleeding or concerning symptoms are present.",
+    howToUse:
+      "Use urine according to the test instructions and read within the stated timeframe.",
+    evidence:
+      "Home pregnancy tests detect human chorionic gonadotrophin in urine.",
+    safety:
+      "Seek urgent assessment for severe one-sided pain, fainting or heavy bleeding even if the result is uncertain.",
+    pros: ["Easy to read", "Widely available"],
+    cons: ["More expensive than strip tests", "Timing affects accuracy"],
+    retailers: ["Boots", "Superdrug", "Tesco"],
+    popular: true,
+  }),
+
+  createProduct({
+    id: "first-response-test",
+    brand: "First Response",
+    name: "Early Result Pregnancy Test",
+    category: "Pregnancy",
+    price: 9.99,
+    score: 8.4,
+    badge: "Early testing",
+    description:
+      "A line-based home pregnancy test designed for use before or after a missed period.",
+    suitableFor:
+      "People who understand that testing too early can produce a false-negative result.",
+    notFor:
+      "Ruling out ectopic pregnancy or pregnancy complications.",
+    howToUse:
+      "Follow the pack instructions and repeat after the missed period if an early result is negative.",
+    evidence:
+      "Urine hCG tests are more reliable after a missed period.",
+    safety:
+      "Pain or bleeding in possible pregnancy requires medical assessment regardless of the result.",
+    pros: ["Sensitive", "Simple"],
+    cons: ["Line interpretation", "Early negatives may be unreliable"],
+    retailers: ["Boots", "Amazon"],
+  }),
+
+  createProduct({
+    id: "seven-seas-pregnancy",
+    brand: "Seven Seas",
+    name: "Pregnancy Multivitamin",
+    category: "Pregnancy",
+    price: 13.5,
+    score: 7.9,
+    badge: "Daily supplement",
+    description:
+      "A pregnancy multivitamin containing folic acid and other nutrients.",
+    suitableFor:
+      "People seeking a pregnancy supplement that fits their clinical and dietary needs.",
+    notFor:
+      "Taking alongside overlapping supplements without checking total doses.",
+    howToUse:
+      "Take only as directed and follow national pregnancy-supplement guidance.",
+    evidence:
+      "Folic acid and vitamin D are recommended around pregnancy, although individual requirements can differ.",
+    safety:
+      "Avoid vitamin A in the retinol form during pregnancy unless specifically prescribed.",
+    pros: ["Convenient combination", "Widely available"],
+    cons: ["May duplicate other supplements", "Not all ingredients are needed by everyone"],
+    retailers: ["Boots", "Tesco", "Amazon"],
+  }),
+
+  createProduct({
+    id: "pregnacare-original",
+    brand: "Vitabiotics",
+    name: "Pregnacare Original",
+    category: "Pregnancy",
+    price: 6.95,
+    score: 8.0,
+    badge: "Under £10",
+    description:
+      "A prenatal multivitamin formulated for use before and during pregnancy.",
+    suitableFor:
+      "People looking for a combined prenatal supplement.",
+    notFor:
+      "Anyone with medical reasons to avoid or alter specific nutrients.",
+    howToUse:
+      "Take as directed with food and avoid doubling up with other prenatal products.",
+    evidence:
+      "Pregnancy supplementation should prioritise nationally recommended nutrients.",
+    safety:
+      "Check with a pharmacist or clinician when taking medicines or managing a health condition.",
+    pros: ["Accessible", "Combined formula"],
+    cons: ["Tablet size", "May cause nausea for some people"],
+    retailers: ["Boots", "Superdrug", "Tesco"],
+  }),
+
+  createProduct({
+    id: "serola-pregnancy-belt",
+    brand: "Serola",
+    name: "Sacroiliac Support Belt",
+    category: "Pregnancy",
+    price: 42.99,
+    score: 8.1,
+    badge: "Support pick",
+    description:
+      "A low-profile support belt used around the pelvis.",
+    suitableFor:
+      "People advised that external pelvic support may help pregnancy-related pelvic discomfort.",
+    notFor:
+      "Unexplained severe pain or use without correct fitting where symptoms are significant.",
+    howToUse:
+      "Position according to the fitting instructions or advice from a physiotherapist.",
+    evidence:
+      "Some people with pelvic-girdle pain find external support helpful as part of wider management.",
+    safety:
+      "A belt should not replace assessment, physiotherapy or urgent care when symptoms are concerning.",
+    pros: ["Low profile", "Adjustable"],
+    cons: ["Fit matters", "Not a complete treatment"],
+    retailers: ["Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "frida-mom-peri-bottle",
+    brand: "Frida Mom",
+    name: "Upside Down Peri Bottle",
+    category: "Postpartum",
+    price: 14.99,
+    score: 8.9,
+    rating: 4.8,
+    reviews: 3200,
+    badge: "Postpartum essential",
+    description:
+      "An angled bottle designed for gentle external rinsing after birth.",
+    suitableFor:
+      "People recovering from vaginal birth, tears or stitches.",
+    notFor:
+      "Internal washing or replacing medical assessment of infection or wound problems.",
+    howToUse:
+      "Fill with clean lukewarm water and rinse externally while using the toilet.",
+    evidence:
+      "Gentle external rinsing may support comfort and hygiene after birth.",
+    safety:
+      "Use clean water and keep the bottle clean. Seek advice for worsening pain, fever or offensive discharge.",
+    pros: ["Easy angle", "Reusable", "Simple"],
+    cons: ["Needs cleaning", "Short-term use"],
+    retailers: ["Boots", "Amazon"],
+    reusable: true,
+    featured: true,
+  }),
+
+  createProduct({
+    id: "lansinoh-nipple-cream",
+    brand: "Lansinoh",
+    name: "HPA Lanolin Nipple Cream",
+    category: "Postpartum",
+    price: 10.99,
+    score: 8.5,
+    badge: "Breastfeeding support",
+    description:
+      "A purified lanolin cream intended for dry or sore nipples during breastfeeding.",
+    suitableFor:
+      "People experiencing mild nipple dryness or surface soreness.",
+    notFor:
+      "Suspected infection, severe trauma or persistent pain without feeding assessment.",
+    howToUse:
+      "Apply a small amount externally as directed.",
+    evidence:
+      "Topical emollients may support skin comfort, but positioning and attachment should also be assessed when pain persists.",
+    safety:
+      "Seek breastfeeding support for cracked, bleeding or persistently painful nipples.",
+    pros: ["Widely available", "Simple formula"],
+    cons: ["Texture may feel sticky", "Does not correct latch problems"],
+    retailers: ["Boots", "Amazon", "Tesco"],
+  }),
+
+  createProduct({
+    id: "medela-harmony",
+    brand: "Medela",
+    name: "Harmony Manual Breast Pump",
+    category: "Postpartum",
+    price: 29.99,
+    score: 8.4,
+    badge: "Manual pump pick",
+    description:
+      "A compact manual breast pump intended for occasional expressing.",
+    suitableFor:
+      "People wanting a quiet, portable pump without charging.",
+    notFor:
+      "Anyone who needs frequent high-volume pumping and finds manual pumping tiring.",
+    howToUse:
+      "Assemble, sterilise and use according to the manufacturer instructions.",
+    evidence:
+      "Manual pumps can support occasional milk expression when flange fit and technique are appropriate.",
+    safety:
+      "Pain, damaged nipples or low milk transfer may require feeding or lactation support.",
+    pros: ["Portable", "Quiet", "No power required"],
+    cons: ["Manual effort", "Slower for frequent pumping"],
+    retailers: ["Boots", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "elvie-pump",
+    brand: "Elvie",
+    name: "Wearable Breast Pump",
+    category: "Postpartum",
+    price: 269,
+    score: 8.2,
+    badge: "Premium wearable",
+    description:
+      "A rechargeable wearable electric breast pump designed to sit inside a bra.",
+    suitableFor:
+      "People prioritising mobility and discreet pumping.",
+    notFor:
+      "Anyone needing a lower-cost option or whose flange fit is not compatible.",
+    howToUse:
+      "Charge, assemble, fit and clean according to the instructions.",
+    evidence:
+      "Wearable pumps can improve convenience, though output and fit vary between individuals.",
+    safety:
+      "Milk-contact components require careful cleaning and drying.",
+    pros: ["Hands-free", "Portable", "App connected"],
+    cons: ["High cost", "Fit and output vary"],
+    retailers: ["Elvie", "Boots", "John Lewis"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "yes-vm-moisturiser",
+    brand: "YES",
+    name: "VM Vaginal Moisturiser",
+    category: "Menopause",
+    price: 12.99,
+    score: 8.7,
+    badge: "Non-hormonal pick",
+    description:
+      "A non-hormonal vaginal moisturiser designed for ongoing dryness support.",
+    suitableFor:
+      "People experiencing vaginal dryness who prefer or require a non-hormonal product.",
+    notFor:
+      "Unexplained bleeding, persistent pain or suspected infection without medical assessment.",
+    howToUse:
+      "Use at the frequency directed by the manufacturer.",
+    evidence:
+      "Vaginal moisturisers can support ongoing dryness, while lubricants are primarily used around sexual activity.",
+    safety:
+      "Postmenopausal bleeding should always be medically assessed.",
+    pros: ["Non-hormonal", "Designed for regular use"],
+    cons: ["Requires repeat use", "Individual preference varies"],
+    retailers: ["YES", "Boots", "Amazon"],
+    featured: true,
+  }),
+
+  createProduct({
+    id: "replens-md",
+    brand: "Replens",
+    name: "Long-Lasting Vaginal Moisturiser",
+    category: "Menopause",
+    price: 13.99,
+    score: 8.1,
+    badge: "Widely available",
+    description:
+      "A non-hormonal vaginal moisturiser used on a regular schedule.",
+    suitableFor:
+      "People managing vaginal dryness or discomfort.",
+    notFor:
+      "Treating unexplained bleeding, infection or severe pelvic pain.",
+    howToUse:
+      "Apply only according to the product instructions.",
+    evidence:
+      "Regular vaginal moisturisers may improve dryness-related comfort.",
+    safety:
+      "Seek clinical advice if symptoms persist or are associated with bleeding.",
+    pros: ["Accessible", "Non-hormonal"],
+    cons: ["May cause discharge", "Not everyone likes the applicator"],
+    retailers: ["Boots", "Superdrug", "Amazon"],
+  }),
+
+  createProduct({
+    id: "chillow-cooling-pillow",
+    brand: "Chillow",
+    name: "Cooling Pillow Insert",
+    category: "Menopause",
+    price: 29.99,
+    score: 7.8,
+    badge: "Night-time comfort",
+    description:
+      "A cooling pillow insert intended to provide a cooler sleeping surface.",
+    suitableFor:
+      "People experiencing night-time heat or hot flushes.",
+    notFor:
+      "Replacing medical review of severe sleep disruption or other symptoms.",
+    howToUse:
+      "Prepare and position according to the manufacturer instructions.",
+    evidence:
+      "Cooling strategies may improve comfort but do not treat the hormonal cause of hot flushes.",
+    safety:
+      "Keep the product clean and inspect for damage.",
+    pros: ["Non-medicated", "Reusable"],
+    cons: ["Comfort effect only", "Temperature may not last all night"],
+    retailers: ["Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "jml-chillmax",
+    brand: "JML",
+    name: "ChillMax Neck Fan",
+    category: "Menopause",
+    price: 19.99,
+    score: 7.9,
+    badge: "Portable cooling",
+    description:
+      "A rechargeable wearable fan for personal cooling.",
+    suitableFor:
+      "People seeking discreet cooling during hot flushes.",
+    notFor:
+      "Anyone who finds neck-worn devices uncomfortable.",
+    howToUse:
+      "Charge and wear according to instructions, keeping hair clear of vents.",
+    evidence:
+      "Personal cooling may improve comfort during hot flushes but is not a clinical treatment.",
+    safety:
+      "Stop use if the device overheats or becomes damaged.",
+    pros: ["Portable", "Rechargeable"],
+    cons: ["Audible fan", "Comfort only"],
+    retailers: ["JML", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "tena-lady-discreet",
+    brand: "TENA",
+    name: "Lady Discreet Pads",
+    category: "Bladder health",
+    price: 4.5,
+    score: 8.3,
+    badge: "Bladder-care staple",
+    description:
+      "Disposable absorbent pads designed specifically for light bladder leakage.",
+    suitableFor:
+      "People managing occasional urine leaks while seeking assessment or treatment.",
+    notFor:
+      "Using as the only response to new or worsening incontinence.",
+    howToUse:
+      "Select absorbency according to leakage and change regularly.",
+    evidence:
+      "Containment products can support daily confidence but do not treat the cause of incontinence.",
+    safety:
+      "New leakage, pain, blood in urine or recurrent infection symptoms should be assessed.",
+    pros: ["Widely available", "Multiple absorbencies"],
+    cons: ["Disposable", "Does not treat the cause"],
+    retailers: ["Boots", "Tesco", "Amazon"],
+  }),
+
+  createProduct({
+    id: "always-discreet",
+    brand: "Always Discreet",
+    name: "Incontinence Pads",
+    category: "Bladder health",
+    price: 4.25,
+    score: 8.0,
+    badge: "Everyday option",
+    description:
+      "Disposable pads designed for bladder leaks.",
+    suitableFor:
+      "People wanting an accessible containment product.",
+    notFor:
+      "Ignoring sudden or unexplained changes in bladder control.",
+    howToUse:
+      "Choose the correct absorbency and change when needed.",
+    evidence:
+      "Absorbent pads manage leakage but pelvic-floor rehabilitation or medical treatment may also be appropriate.",
+    safety:
+      "Seek advice for sudden incontinence, numbness, weakness or inability to pass urine.",
+    pros: ["Accessible", "Range of sizes"],
+    cons: ["Disposable", "Ongoing cost"],
+    retailers: ["Boots", "Superdrug", "Tesco"],
+  }),
+
+  createProduct({
+    id: "elvie-trainer",
+    brand: "Elvie",
+    name: "Pelvic Floor Trainer",
+    category: "Bladder health",
+    price: 169,
+    score: 8.1,
+    badge: "Connected trainer",
+    description:
+      "An app-connected internal device that provides feedback during pelvic-floor exercises.",
+    suitableFor:
+      "Adults advised that pelvic-floor strengthening is appropriate.",
+    notFor:
+      "Pelvic pain, infection, recent surgery or postpartum use before receiving appropriate advice.",
+    howToUse:
+      "Use only as instructed and stop if insertion or exercise causes pain.",
+    evidence:
+      "Pelvic-floor muscle training is recommended for some forms of incontinence. A device is not essential for effective training.",
+    safety:
+      "Assessment by a pelvic-health physiotherapist may be preferable where symptoms are complex.",
+    pros: ["Biofeedback", "App guidance"],
+    cons: ["Expensive", "Internal device"],
+    retailers: ["Elvie", "Boots", "John Lewis"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "squeezy-app",
+    brand: "Living With",
+    name: "Squeezy Pelvic Floor App",
+    category: "Bladder health",
+    price: 2.99,
+    score: 8.8,
+    badge: "Clinical app pick",
+    description:
+      "An exercise reminder app designed to support pelvic-floor training programmes.",
+    suitableFor:
+      "People who have been advised to perform pelvic-floor exercises.",
+    notFor:
+      "Using without assessment where exercises worsen pain or pressure.",
+    howToUse:
+      "Follow the programme recommended by a healthcare professional.",
+    evidence:
+      "Regular pelvic-floor muscle training can improve some types of urinary incontinence.",
+    safety:
+      "Pelvic-floor exercises are not simply about squeezing harder; relaxation and correct technique matter.",
+    pros: ["Low cost", "Reminders", "No equipment"],
+    cons: ["Requires consistency", "No physical technique assessment"],
+    retailers: ["App Store", "Google Play"],
+  }),
+
+  createProduct({
+    id: "yes-wb-lubricant",
+    brand: "YES",
+    name: "WB Water-Based Lubricant",
+    category: "Intimate care",
+    price: 9.99,
+    score: 8.8,
+    badge: "Sensitive-skin pick",
+    description:
+      "A water-based personal lubricant designed for intimate use.",
+    suitableFor:
+      "People experiencing friction or dryness during sexual activity.",
+    notFor:
+      "Treating persistent pain, bleeding, infection or unexplained discharge.",
+    howToUse:
+      "Apply externally as needed and check compatibility with condoms or devices.",
+    evidence:
+      "Lubricants can reduce friction-related discomfort during sexual activity.",
+    safety:
+      "Pain during sex deserves assessment if persistent or significant.",
+    pros: ["Water based", "Easy to wash"],
+    cons: ["May require reapplication"],
+    retailers: ["YES", "Boots", "Amazon"],
+    featured: true,
+  }),
+
+  createProduct({
+    id: "sylk-lubricant",
+    brand: "Sylk",
+    name: "Natural Personal Lubricant",
+    category: "Intimate care",
+    price: 10.99,
+    score: 8.4,
+    badge: "Gentle formula",
+    description:
+      "A water-based personal lubricant marketed for vaginal dryness and intimate comfort.",
+    suitableFor:
+      "People looking for a simple lubricant for friction-related discomfort.",
+    notFor:
+      "Diagnosing or treating an underlying cause of pain.",
+    howToUse:
+      "Apply as needed and follow compatibility guidance.",
+    evidence:
+      "Lubricants can support comfort during sexual activity.",
+    safety:
+      "Seek advice for recurrent irritation, bleeding or pain.",
+    pros: ["Simple use", "Portable"],
+    cons: ["Temporary effect", "May require repeat application"],
+    retailers: ["Boots", "Amazon"],
+  }),
+
+  createProduct({
+    id: "balance-activ-gel",
+    brand: "Balance Activ",
+    name: "Bacterial Vaginosis Treatment Gel",
+    category: "Intimate care",
+    price: 12.49,
+    score: 7.8,
+    badge: "Pharmacy option",
+    description:
+      "A vaginal gel marketed for symptoms associated with bacterial vaginosis.",
+    suitableFor:
+      "People with previously recognised symptoms who have checked that self-care is appropriate.",
+    notFor:
+      "Pregnancy, recurrent symptoms, pelvic pain, fever, bleeding or uncertainty about the diagnosis without professional advice.",
+    howToUse:
+      "Follow the complete pack instructions and pharmacist advice.",
+    evidence:
+      "Vaginal pH products may support symptom management in selected cases, but symptoms can overlap with infections requiring testing.",
+    safety:
+      "Seek clinical advice for first-time, recurrent or persistent symptoms.",
+    pros: ["Available without prescription", "Pre-measured applicators"],
+    cons: ["Diagnosis may be uncertain", "Can cause leakage"],
+    retailers: ["Boots", "Superdrug", "Amazon"],
+  }),
+
+  createProduct({
+    id: "boots-vitamin-d",
+    brand: "Boots",
+    name: "Vitamin D 10 μg",
+    category: "Supplements",
+    price: 4.5,
+    score: 8.3,
+    badge: "Everyday essential",
+    description:
+      "A standard-dose vitamin D supplement.",
+    suitableFor:
+      "Adults following national guidance or advised to supplement vitamin D.",
+    notFor:
+      "Taking high combined doses without checking other supplements or medical advice.",
+    howToUse:
+      "Take according to the pack instructions and relevant clinical guidance.",
+    evidence:
+      "Vitamin D supports bone and muscle health. National advice varies by season and individual risk.",
+    safety:
+      "Very high doses can be harmful. Check other products for duplicate vitamin D.",
+    pros: ["Low cost", "Simple dose"],
+    cons: ["Not personalised", "Duplicate dosing possible"],
+    retailers: ["Boots"],
+    popular: true,
+  }),
+
+  createProduct({
+    id: "feroglobin",
+    brand: "Vitabiotics",
+    name: "Feroglobin Capsules",
+    category: "Supplements",
+    price: 8.75,
+    score: 7.6,
+    badge: "Iron support",
+    description:
+      "A supplement containing iron and additional vitamins.",
+    suitableFor:
+      "People advised to increase iron intake or seeking a lower-dose supplement.",
+    notFor:
+      "Self-treating suspected iron-deficiency anaemia without testing or taking alongside prescribed iron without advice.",
+    howToUse:
+      "Take as directed and check whether other supplements contain iron.",
+    evidence:
+      "Iron treats deficiency when the dose and cause are appropriately addressed. Consumer supplements may not contain enough to treat anaemia.",
+    safety:
+      "Iron can cause side effects and is dangerous in overdose. Keep away from children.",
+    pros: ["Accessible", "Lower-dose option"],
+    cons: ["May not treat anaemia", "Can upset digestion"],
+    retailers: ["Boots", "Holland & Barrett", "Amazon"],
+  }),
+
+  createProduct({
+    id: "spatone-iron",
+    brand: "Spatone",
+    name: "Liquid Iron Sachets",
+    category: "Supplements",
+    price: 14.99,
+    score: 7.7,
+    badge: "Liquid option",
+    description:
+      "Single-serve water sachets containing naturally occurring iron.",
+    suitableFor:
+      "People who prefer a liquid or sachet format.",
+    notFor:
+      "Replacing prescribed treatment for confirmed anaemia without professional advice.",
+    howToUse:
+      "Take according to the pack instructions.",
+    evidence:
+      "Iron supplementation is useful where intake or stores are low, but treatment requirements depend on blood results.",
+    safety:
+      "Seek testing where heavy periods, fatigue, breathlessness or other symptoms suggest deficiency.",
+    pros: ["Portable", "Liquid format"],
+    cons: ["Lower iron amount", "Ongoing cost"],
+    retailers: ["Boots", "Holland & Barrett", "Amazon"],
+  }),
+
+  createProduct({
+    id: "betteryou-magnesium-spray",
+    brand: "BetterYou",
+    name: "Magnesium Body Spray",
+    category: "Supplements",
+    price: 11.95,
+    score: 6.8,
+    badge: "Evidence check",
+    description:
+      "A topical magnesium spray marketed for muscles, sleep and relaxation.",
+    suitableFor:
+      "People who enjoy the sensory or massage element and understand the evidence limitations.",
+    notFor:
+      "Treating magnesium deficiency or a medical condition without assessment.",
+    howToUse:
+      "Apply externally as directed and avoid broken skin.",
+    evidence:
+      "Evidence that meaningful amounts of magnesium are absorbed through intact skin is limited.",
+    safety:
+      "Can sting or irritate skin. Oral or prescribed supplementation may be more appropriate for confirmed deficiency.",
+    pros: ["Simple topical use", "Useful with massage"],
+    cons: ["Limited absorption evidence", "Can irritate"],
+    retailers: ["Boots", "Holland & Barrett", "Amazon"],
+  }),
+
+  createProduct({
+    id: "solgar-b12",
+    brand: "Solgar",
+    name: "Vitamin B12 Tablets",
+    category: "Supplements",
+    price: 12.99,
+    score: 7.8,
+    badge: "Dietary support",
+    description:
+      "A vitamin B12 supplement in tablet form.",
+    suitableFor:
+      "People with dietary risk or confirmed need who have selected an appropriate dose.",
+    notFor:
+      "Delaying medical assessment of neurological symptoms or suspected pernicious anaemia.",
+    howToUse:
+      "Take only according to the label or clinician advice.",
+    evidence:
+      "B12 supplementation can correct some forms of deficiency, but injections may be required in certain conditions.",
+    safety:
+      "Pins and needles, weakness or balance problems should be assessed promptly.",
+    pros: ["Widely available", "Suitable for some dietary needs"],
+    cons: ["Dose may be unnecessary", "Does not identify the cause"],
+    retailers: ["Holland & Barrett", "Amazon"],
+  }),
+
+  createProduct({
+    id: "omron-m3",
+    brand: "OMRON",
+    name: "M3 Comfort Blood Pressure Monitor",
+    category: "Everyday health",
+    price: 69.99,
+    score: 8.8,
+    badge: "Home-monitoring pick",
+    description:
+      "An upper-arm automatic blood-pressure monitor with a structured cuff.",
+    suitableFor:
+      "Adults advised to monitor blood pressure at home.",
+    notFor:
+      "Using readings without professional interpretation during pregnancy or concerning symptoms.",
+    howToUse:
+      "Rest, position the cuff correctly and take readings according to validated home-monitoring guidance.",
+    evidence:
+      "Validated upper-arm monitors can support home blood-pressure assessment.",
+    safety:
+      "Very high readings with severe headache, chest pain, neurological symptoms or pregnancy require urgent advice.",
+    pros: ["Upper-arm cuff", "Stores readings"],
+    cons: ["Correct cuff size required", "More expensive"],
+    retailers: ["Boots", "Amazon"],
+    reusable: true,
+    featured: true,
+  }),
+
+  createProduct({
+    id: "beurer-ft85",
+    brand: "Beurer",
+    name: "Non-Contact Thermometer",
+    category: "Everyday health",
+    price: 34.99,
+    score: 8.0,
+    badge: "Home-health tool",
+    description:
+      "A non-contact infrared thermometer for forehead temperature measurement.",
+    suitableFor:
+      "Households wanting a quick temperature-screening device.",
+    notFor:
+      "Using a single reading to rule out significant illness.",
+    howToUse:
+      "Follow distance, positioning and room-temperature instructions.",
+    evidence:
+      "Infrared thermometers can be convenient, although technique affects accuracy.",
+    safety:
+      "Seek medical advice based on symptoms and clinical risk, not temperature alone.",
+    pros: ["Quick", "Non-contact"],
+    cons: ["Technique sensitive", "Less consistent than some contact methods"],
+    retailers: ["Boots", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "manta-sleep-mask",
+    brand: "Manta",
+    name: "Sleep Mask",
+    category: "Everyday health",
+    price: 29.99,
+    score: 8.4,
+    badge: "Sleep support",
+    description:
+      "An adjustable blackout sleep mask with contoured eye cups.",
+    suitableFor:
+      "People whose sleep is disturbed by light.",
+    notFor:
+      "Treating persistent insomnia, sleep apnoea or severe daytime sleepiness.",
+    howToUse:
+      "Adjust for a comfortable fit without pressure on the eyes.",
+    evidence:
+      "Reducing environmental light can support sleep timing and comfort.",
+    safety:
+      "Ongoing sleep problems may need broader assessment.",
+    pros: ["Full blackout", "Adjustable"],
+    cons: ["Premium price", "Fit preference varies"],
+    retailers: ["Manta", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "theraice-migraine-cap",
+    brand: "TheraICE",
+    name: "Migraine Relief Cap",
+    category: "Everyday health",
+    price: 24.99,
+    score: 8.1,
+    badge: "Cooling comfort",
+    description:
+      "A reusable cold or warm compression cap intended for headache comfort.",
+    suitableFor:
+      "People who find cold, darkness or gentle pressure helpful during headaches.",
+    notFor:
+      "Sudden severe headache, neurological symptoms or headache after injury without assessment.",
+    howToUse:
+      "Cool or warm only according to the instructions and avoid extreme temperatures.",
+    evidence:
+      "Cold therapy may provide temporary comfort for some people with migraine.",
+    safety:
+      "A first, sudden or unusually severe headache requires urgent medical advice.",
+    pros: ["Reusable", "Light blocking"],
+    cons: ["Temporary effect", "May feel tight"],
+    retailers: ["Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "hot-water-bottle",
+    brand: "SHE Edit",
+    name: "Long Hot-Water Bottle",
+    category: "Pelvic pain",
+    price: 14.99,
+    score: 8.6,
+    badge: "Classic comfort",
+    description:
+      "A long flexible hot-water bottle designed to wrap around the abdomen or lower back.",
+    suitableFor:
+      "People who find controlled warmth helpful for cramps or back discomfort.",
+    notFor:
+      "Reduced sensation, fragile skin or circumstances where heat is contraindicated.",
+    howToUse:
+      "Fill safely according to the product instructions and use a cover.",
+    evidence:
+      "Heat can provide temporary relief from menstrual pain for some people.",
+    safety:
+      "Do not use boiling water or sleep on an active heat source.",
+    pros: ["Affordable", "Broad coverage"],
+    cons: ["Burn risk if misused", "Not portable"],
+    retailers: ["Boots", "Amazon", "Dunelm"],
+    reusable: true,
+    popular: true,
+  }),
+
+  createProduct({
+    id: "boots-heat-patches",
+    brand: "Boots",
+    name: "Heat Patches",
+    category: "Pelvic pain",
+    price: 4.99,
+    score: 7.9,
+    badge: "Under £5",
+    description:
+      "Disposable air-activated heat patches designed for external use.",
+    suitableFor:
+      "People wanting portable heat without charging.",
+    notFor:
+      "Direct use on damaged skin or during sleep.",
+    howToUse:
+      "Apply over clothing or exactly as the packaging directs.",
+    evidence:
+      "External heat may temporarily ease muscular or menstrual discomfort.",
+    safety:
+      "Check skin regularly and remove immediately if excessively hot.",
+    pros: ["Portable", "Affordable"],
+    cons: ["Disposable", "Limited duration"],
+    retailers: ["Boots"],
+  }),
+
+  createProduct({
+    id: "neom-perfect-night",
+    brand: "NEOM",
+    name: "Perfect Night's Sleep Pillow Mist",
+    category: "Everyday health",
+    price: 22,
+    score: 6.9,
+    badge: "Wellbeing pick",
+    description:
+      "A fragranced pillow mist marketed as part of a bedtime routine.",
+    suitableFor:
+      "People who enjoy fragrance as a relaxing cue before sleep.",
+    notFor:
+      "People sensitive to fragrance or seeking treatment for a sleep disorder.",
+    howToUse:
+      "Mist lightly according to instructions and avoid direct skin or eye contact.",
+    evidence:
+      "A consistent bedtime routine may support sleep, but fragrance products do not treat insomnia.",
+    safety:
+      "Stop use if the fragrance triggers asthma, migraine or irritation.",
+    pros: ["Pleasant ritual", "Easy to use"],
+    cons: ["Limited clinical evidence", "Fragrance sensitivity"],
+    retailers: ["NEOM", "Boots", "John Lewis"],
+  }),
+
+  createProduct({
+    id: "myoovi-kit",
+    brand: "MyOovi",
+    name: "Period Pain Relief Kit",
+    category: "Pelvic pain",
+    price: 89,
+    score: 8.1,
+    badge: "Wearable TENS",
+    description:
+      "A wearable electrical-stimulation device marketed for menstrual discomfort.",
+    suitableFor:
+      "Adults seeking a reusable, non-drug option and able to use TENS safely.",
+    notFor:
+      "People with contraindications to electrical stimulation.",
+    howToUse:
+      "Position externally and use only as directed.",
+    evidence:
+      "TENS may reduce pain for some users, although results vary.",
+    safety:
+      "Check the full contraindication list before use.",
+    pros: ["Wearable", "Reusable"],
+    cons: ["Premium price", "Adhesive-pad replacement"],
+    retailers: ["MyOovi"],
+    reusable: true,
+    newProduct: true,
+  }),
+
+  createProduct({
+    id: "flo-period-underwear",
+    brand: "FLUX",
+    name: "Classic Period Brief",
+    category: "Period care",
+    price: 22.99,
+    score: 8.5,
+    badge: "Reusable",
+    description:
+      "Absorbent reusable underwear designed for periods and light leaks.",
+    suitableFor:
+      "People wanting a washable external product.",
+    notFor:
+      "Using an absorbency below the level needed for the user’s flow.",
+    howToUse:
+      "Wear, rinse if directed and machine wash according to care guidance.",
+    evidence:
+      "Period underwear can provide effective protection when used within its stated capacity.",
+    safety:
+      "Change when saturated or uncomfortable.",
+    pros: ["Reusable", "Simple"],
+    cons: ["Requires washing", "Capacity varies"],
+    retailers: ["FLUX"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "bambody-period-underwear",
+    brand: "Bambody",
+    name: "Absorbent Period Underwear",
+    category: "Period care",
+    price: 18.99,
+    score: 8.0,
+    badge: "Value reusable",
+    description:
+      "Washable absorbent underwear available in multipacks.",
+    suitableFor:
+      "People seeking a lower-cost reusable period-underwear option.",
+    notFor:
+      "Relying on a style whose absorbency is insufficient for heavy flow.",
+    howToUse:
+      "Follow washing and absorbency instructions.",
+    evidence:
+      "Reusable absorbent underwear is a practical menstrual-product option for many users.",
+    safety:
+      "Heavy bleeding with dizziness, fatigue or rapid saturation needs medical review.",
+    pros: ["Lower cost", "Reusable"],
+    cons: ["Sizing varies", "May need backup on heavy days"],
+    retailers: ["Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "clearblue-menopause-stage",
+    brand: "Clearblue",
+    name: "Menopause Stage Indicator",
+    category: "Menopause",
+    price: 29.99,
+    score: 7.2,
+    badge: "At-home test",
+    description:
+      "A consumer urine-testing product intended to estimate menopause stage alongside age and cycle information.",
+    suitableFor:
+      "People who understand that menopause is usually assessed clinically rather than confirmed by a consumer test alone.",
+    notFor:
+      "Replacing medical assessment of symptoms, early menopause or abnormal bleeding.",
+    howToUse:
+      "Use the tests and companion app exactly as instructed.",
+    evidence:
+      "Hormone levels fluctuate significantly during perimenopause, limiting what individual home tests can confirm.",
+    safety:
+      "Seek medical advice for symptoms before age 45, bleeding after menopause or significant symptom impact.",
+    pros: ["Private home use", "Structured tracking"],
+    cons: ["Limited diagnostic value", "Hormones fluctuate"],
+    retailers: ["Boots", "Amazon"],
+    newProduct: true,
+  }),
+
+  createProduct({
+    id: "aveeno-calm-restore",
+    brand: "Aveeno",
+    name: "Calm + Restore Oat Gel Moisturiser",
+    category: "Everyday health",
+    price: 13.99,
+    score: 8.2,
+    badge: "Sensitive-skin pick",
+    description:
+      "A fragrance-free facial moisturiser formulated for sensitive skin.",
+    suitableFor:
+      "People experiencing dryness or sensitivity associated with hormonal or environmental changes.",
+    notFor:
+      "Treating persistent rash, infection or severe inflammatory skin disease without assessment.",
+    howToUse:
+      "Apply externally to clean skin as directed.",
+    evidence:
+      "Emollients can support the skin barrier and reduce dryness.",
+    safety:
+      "Patch test if highly sensitive and stop if irritation occurs.",
+    pros: ["Fragrance free", "Light texture"],
+    cons: ["Not condition-specific", "Small container"],
+    retailers: ["Boots", "Superdrug", "Amazon"],
+  }),
+
+  createProduct({
+    id: "cerave-smoothing-cream",
+    brand: "CeraVe",
+    name: "SA Smoothing Cream",
+    category: "Everyday health",
+    price: 18.5,
+    score: 8.3,
+    badge: "Body-care pick",
+    description:
+      "A body moisturiser containing ceramides and salicylic acid for rough or dry skin.",
+    suitableFor:
+      "Adults with rough, bumpy or dry body skin.",
+    notFor:
+      "Broken, highly irritated skin or use where salicylic acid is medically unsuitable.",
+    howToUse:
+      "Apply externally according to the label and use sun protection on exposed treated skin.",
+    evidence:
+      "Emollients support the skin barrier, while salicylic acid can help reduce surface scaling.",
+    safety:
+      "Check pregnancy suitability and avoid combining with multiple irritating exfoliants.",
+    pros: ["Fragrance free", "Barrier-support ingredients"],
+    cons: ["Can sting", "Not suitable for every skin type"],
+    retailers: ["Boots", "Superdrug", "Amazon"],
+  }),
+
+  createProduct({
+    id: "femfresh-zero",
+    brand: "Femfresh",
+    name: "0% Sensitive Wash",
+    category: "Intimate care",
+    price: 3.5,
+    score: 6.7,
+    badge: "Use externally only",
+    description:
+      "A fragrance-free wash marketed for external intimate skin.",
+    suitableFor:
+      "People who choose a dedicated external wash and tolerate the formulation.",
+    notFor:
+      "Internal vaginal washing or treating odour, discharge, pain or infection.",
+    howToUse:
+      "Use externally only and rinse thoroughly.",
+    evidence:
+      "The vagina is self-cleaning and does not need internal cleansing. Plain water is sufficient for many people.",
+    safety:
+      "Stop use if irritation develops. Avoid douching.",
+    pros: ["Fragrance free", "Affordable"],
+    cons: ["Not medically necessary", "Can still irritate"],
+    retailers: ["Boots", "Superdrug", "Tesco"],
+  }),
+
+  createProduct({
+    id: "canesten-thrush",
+    brand: "Canesten",
+    name: "Thrush Internal Cream",
+    category: "Intimate care",
+    price: 11.99,
+    score: 7.9,
+    badge: "Pharmacy treatment",
+    description:
+      "An antifungal vaginal treatment containing clotrimazole.",
+    suitableFor:
+      "People with recognised uncomplicated thrush symptoms after checking suitability.",
+    notFor:
+      "First-time, recurrent, atypical or pregnancy-related symptoms without pharmacist or clinician advice.",
+    howToUse:
+      "Use only according to the medicine leaflet and professional advice.",
+    evidence:
+      "Clotrimazole is an established antifungal treatment for vaginal candidiasis.",
+    safety:
+      "Symptoms can overlap with sexually transmitted infections and bacterial vaginosis.",
+    pros: ["Evidence-based medicine", "Pharmacy access"],
+    cons: ["Diagnosis may be wrong", "Can cause local irritation"],
+    retailers: ["Boots", "Superdrug", "Pharmacy"],
+  }),
+
+  createProduct({
+    id: "myvitamins-omega3",
+    brand: "Myvitamins",
+    name: "Omega-3 Softgels",
+    category: "Supplements",
+    price: 9.99,
+    score: 7.3,
+    badge: "Nutrition support",
+    description:
+      "Fish-oil softgels containing omega-3 fatty acids.",
+    suitableFor:
+      "Adults whose diet or clinical advice supports supplementation.",
+    notFor:
+      "People with fish allergy, swallowing difficulty or medicine interactions without advice.",
+    howToUse:
+      "Take the stated dose and check EPA and DHA amounts rather than capsule count alone.",
+    evidence:
+      "Omega-3 fats have established nutritional roles, but benefits depend on the health outcome and dose.",
+    safety:
+      "Discuss higher doses with a clinician when using anticoagulants or before surgery.",
+    pros: ["Accessible", "Convenient"],
+    cons: ["Fishy aftertaste", "Benefits are often overclaimed"],
+    retailers: ["Myvitamins", "Amazon"],
+  }),
+
+  createProduct({
+    id: "symprove",
+    brand: "Symprove",
+    name: "Daily Water-Based Probiotic",
+    category: "Supplements",
+    price: 79.99,
+    score: 6.9,
+    badge: "Premium supplement",
+    description:
+      "A liquid probiotic supplement containing several bacterial strains.",
+    suitableFor:
+      "Adults who understand that probiotic effects are product- and condition-specific.",
+    notFor:
+      "Replacing medical assessment of persistent bloating, bleeding, weight loss or bowel changes.",
+    howToUse:
+      "Take according to the label and storage instructions.",
+    evidence:
+      "Evidence for probiotics varies significantly by strain, dose and condition.",
+    safety:
+      "Immunocompromised people should seek professional advice before using probiotics.",
+    pros: ["Specific formulation", "Structured daily use"],
+    cons: ["Very expensive", "Benefits are condition-specific"],
+    retailers: ["Symprove", "Boots"],
+  }),
+
+  createProduct({
+    id: "optibac-women",
+    brand: "Optibac",
+    name: "For Women Probiotic",
+    category: "Supplements",
+    price: 22.99,
+    score: 7.0,
+    badge: "Evidence varies",
+    description:
+      "A probiotic supplement marketed for vaginal and urinary wellbeing.",
+    suitableFor:
+      "Adults who understand the limits of supplement evidence.",
+    notFor:
+      "Treating urinary infection, bacterial vaginosis or thrush without appropriate diagnosis.",
+    howToUse:
+      "Use according to the label.",
+    evidence:
+      "Research into probiotics for vaginal and urinary health is ongoing and strain-specific.",
+    safety:
+      "Urinary pain, fever, pelvic pain or unusual discharge requires medical advice.",
+    pros: ["Simple capsule", "Named strains"],
+    cons: ["Not a treatment", "Ongoing cost"],
+    retailers: ["Boots", "Holland & Barrett", "Amazon"],
+  }),
+
+  createProduct({
+    id: "compression-socks",
+    brand: "SHE Edit",
+    name: "Graduated Compression Socks",
+    category: "Everyday health",
+    price: 16.99,
+    score: 8.0,
+    badge: "Circulation support",
+    description:
+      "Graduated compression socks intended to support lower-leg circulation.",
+    suitableFor:
+      "People advised that compression is appropriate for travel, swelling or orthostatic symptoms.",
+    notFor:
+      "Some arterial, skin or circulation conditions without professional advice.",
+    howToUse:
+      "Select the correct size and compression level and apply according to instructions.",
+    evidence:
+      "Compression garments can support venous return and are used in several clinical contexts.",
+    safety:
+      "New one-sided swelling, redness, pain or breathlessness needs urgent assessment.",
+    pros: ["Reusable", "Useful for travel"],
+    cons: ["Can be difficult to put on", "Correct sizing matters"],
+    retailers: ["Boots", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "acupressure-bands",
+    brand: "Sea-Band",
+    name: "Nausea Relief Wristbands",
+    category: "Pregnancy",
+    price: 8.49,
+    score: 7.4,
+    badge: "Non-medicated",
+    description:
+      "Elastic wristbands applying pressure to the P6 acupressure point.",
+    suitableFor:
+      "People seeking a low-risk non-drug option for mild nausea.",
+    notFor:
+      "Severe vomiting, dehydration or inability to keep fluids down.",
+    howToUse:
+      "Position on both wrists according to the included instructions.",
+    evidence:
+      "Evidence for acupressure in nausea is mixed, but some people report benefit.",
+    safety:
+      "Seek urgent pregnancy care for persistent vomiting, dehydration or significant weight loss.",
+    pros: ["Reusable", "Drug free"],
+    cons: ["Mixed evidence", "Pressure may feel uncomfortable"],
+    retailers: ["Boots", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "bbhugme-pillow",
+    brand: "bbhugme",
+    name: "Pregnancy Pillow",
+    category: "Pregnancy",
+    price: 149,
+    score: 8.4,
+    badge: "Premium comfort",
+    description:
+      "An adjustable body-support pillow designed for pregnancy and postpartum use.",
+    suitableFor:
+      "People seeking flexible support for side sleeping, sitting or feeding.",
+    notFor:
+      "Treating severe pelvic or back pain without assessment.",
+    howToUse:
+      "Adjust the firmness and shape according to comfort and safety guidance.",
+    evidence:
+      "Support pillows may improve comfort and positioning, although they do not treat underlying pain conditions.",
+    safety:
+      "Use in a way that does not obstruct breathing or create an unsafe infant-sleep environment.",
+    pros: ["Adjustable", "Multiple uses"],
+    cons: ["Very expensive", "Large"],
+    retailers: ["bbhugme", "John Lewis"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "haakaa-silicone-pump",
+    brand: "Haakaa",
+    name: "Silicone Breast Pump",
+    category: "Postpartum",
+    price: 17.99,
+    score: 8.3,
+    badge: "Simple expressing",
+    description:
+      "A manual silicone suction pump often used to collect or express milk.",
+    suitableFor:
+      "People looking for a simple, compact milk-collection option.",
+    notFor:
+      "Anyone experiencing pain, oversupply problems or difficulty feeding without support.",
+    howToUse:
+      "Clean, sterilise and attach according to instructions.",
+    evidence:
+      "Silicone pumps can collect milk through suction but may not replace a full pumping session.",
+    safety:
+      "Excessive suction can cause discomfort or contribute to oversupply.",
+    pros: ["Affordable", "No power", "Easy to clean"],
+    cons: ["Can be knocked off", "Suction is not adjustable"],
+    retailers: ["Boots", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "silverette-cups",
+    brand: "Silverette",
+    name: "Nursing Cups",
+    category: "Postpartum",
+    price: 49.99,
+    score: 7.4,
+    badge: "Specialist product",
+    description:
+      "Reusable silver cups worn over nipples between feeds.",
+    suitableFor:
+      "People seeking a protective barrier for sore nipples after checking feeding technique.",
+    notFor:
+      "Treating infection, severe damage or persistent feeding pain without support.",
+    howToUse:
+      "Clean and wear according to the manufacturer instructions.",
+    evidence:
+      "Evidence for silver nursing cups is limited compared with established breastfeeding-support measures.",
+    safety:
+      "Persistent nipple pain requires assessment of attachment, infection and other causes.",
+    pros: ["Reusable", "Protective barrier"],
+    cons: ["Expensive", "Limited evidence"],
+    retailers: ["Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "vagisil-prohydrate",
+    brand: "Vagisil",
+    name: "ProHydrate External Gel",
+    category: "Menopause",
+    price: 8.99,
+    score: 7.2,
+    badge: "External comfort",
+    description:
+      "An external gel marketed for vulval dryness and comfort.",
+    suitableFor:
+      "People experiencing mild external dryness.",
+    notFor:
+      "Internal use or unexplained bleeding, sores or persistent pain.",
+    howToUse:
+      "Apply externally only according to the product directions.",
+    evidence:
+      "External emollient products may support dry vulval skin, but ingredient tolerance varies.",
+    safety:
+      "Avoid fragranced or irritating products if symptoms worsen.",
+    pros: ["Affordable", "External use"],
+    cons: ["Temporary effect", "May irritate"],
+    retailers: ["Boots", "Superdrug"],
+  }),
+
+  createProduct({
+    id: "hydromol-ointment",
+    brand: "Hydromol",
+    name: "Ointment",
+    category: "Intimate care",
+    price: 8.5,
+    score: 8.2,
+    badge: "Simple emollient",
+    description:
+      "A fragrance-free emollient ointment used for dry or sensitive external skin.",
+    suitableFor:
+      "External vulval skin where a clinician or pharmacist has advised a bland emollient.",
+    notFor:
+      "Internal vaginal use or unexplained lesions, pain or discharge.",
+    howToUse:
+      "Apply a thin external layer as advised.",
+    evidence:
+      "Bland emollients can support the skin barrier and reduce irritation from dryness.",
+    safety:
+      "Ointments can affect latex condom integrity; check product advice.",
+    pros: ["Fragrance free", "Low ingredient count"],
+    cons: ["Greasy texture", "May affect latex"],
+    retailers: ["Boots", "Pharmacy", "Amazon"],
+  }),
+
+  createProduct({
+    id: "braun-pulse-oximeter",
+    brand: "Braun",
+    name: "Pulse Oximeter",
+    category: "Everyday health",
+    price: 39.99,
+    score: 7.8,
+    badge: "Home measurement",
+    description:
+      "A fingertip device measuring pulse rate and estimated blood-oxygen saturation.",
+    suitableFor:
+      "People advised to monitor oxygen saturation or pulse at home.",
+    notFor:
+      "Using a normal reading to dismiss severe symptoms.",
+    howToUse:
+      "Warm the hand, remain still and follow the full device instructions.",
+    evidence:
+      "Pulse oximeters can support monitoring, but readings are affected by movement, circulation, nail products and skin pigmentation.",
+    safety:
+      "Breathing difficulty, chest pain, confusion or blue lips require urgent assessment regardless of the device reading.",
+    pros: ["Quick", "Portable"],
+    cons: ["Reading limitations", "Can cause false reassurance"],
+    retailers: ["Boots", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "natural-cycles-thermometer",
+    brand: "Natural Cycles",
+    name: "Basal Thermometer",
+    category: "Fertility",
+    price: 39.99,
+    score: 7.8,
+    badge: "Cycle tracking",
+    description:
+      "A high-precision thermometer used with a cycle-tracking system.",
+    suitableFor:
+      "People prepared to take consistent morning measurements and understand fertility-awareness limitations.",
+    notFor:
+      "Anyone who cannot follow the method consistently or needs protection from sexually transmitted infections.",
+    howToUse:
+      "Measure at the instructed time and record within the companion system.",
+    evidence:
+      "Temperature patterns can help identify cycle phases, but illness, sleep and alcohol may affect readings.",
+    safety:
+      "No fertility-awareness method protects against sexually transmitted infections.",
+    pros: ["Reusable", "Detailed readings"],
+    cons: ["Requires consistency", "Affected by sleep and illness"],
+    retailers: ["Natural Cycles"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "conceive-plus",
+    brand: "Conceive Plus",
+    name: "Fertility-Friendly Lubricant",
+    category: "Fertility",
+    price: 14.99,
+    score: 7.8,
+    badge: "Trying-to-conceive",
+    description:
+      "A lubricant formulated to be compatible with sperm motility in laboratory testing.",
+    suitableFor:
+      "People trying to conceive who need lubricant.",
+    notFor:
+      "Treating infertility or replacing assessment after an appropriate period of trying.",
+    howToUse:
+      "Use according to instructions during the fertile window if needed.",
+    evidence:
+      "Some standard lubricants may affect sperm movement in laboratory settings. Fertility-friendly lubricants aim to reduce this effect.",
+    safety:
+      "Seek fertility advice according to age, cycle pattern and duration of trying.",
+    pros: ["Designed for conception", "Easy to use"],
+    cons: ["Does not increase fertility itself", "Higher cost"],
+    retailers: ["Boots", "Amazon"],
+  }),
+
+  createProduct({
+    id: "boots-folic-acid",
+    brand: "Boots",
+    name: "Folic Acid 400 μg",
+    category: "Pregnancy",
+    price: 2.99,
+    score: 9.1,
+    badge: "Evidence-based essential",
+    description:
+      "A standard-dose folic-acid supplement for use before conception and in early pregnancy.",
+    suitableFor:
+      "Most people planning pregnancy, according to national guidance.",
+    notFor:
+      "People advised to take a higher prescription dose without following that advice.",
+    howToUse:
+      "Take daily before conception and through early pregnancy according to national recommendations.",
+    evidence:
+      "Folic acid reduces the risk of neural-tube defects when taken before conception and during early pregnancy.",
+    safety:
+      "Some people need a higher prescribed dose due to medical history, medicine use or other risk factors.",
+    pros: ["Strong evidence", "Low cost"],
+    cons: ["Higher dose needed for some people"],
+    retailers: ["Boots"],
+    featured: true,
+  }),
+
+  createProduct({
+    id: "natracare-pads",
+    brand: "Natracare",
+    name: "Organic Cotton Pads",
+    category: "Period care",
+    price: 3.49,
+    score: 8.0,
+    badge: "Plastic-conscious pick",
+    description:
+      "Disposable pads made with organic cotton and reduced plastic materials.",
+    suitableFor:
+      "People preferring an external disposable product with different material choices.",
+    notFor:
+      "Anyone whose flow exceeds the selected absorbency.",
+    howToUse:
+      "Use and change according to flow and pack guidance.",
+    evidence:
+      "Pads are an established external menstrual product. Material preference is personal.",
+    safety:
+      "Rapid saturation or prolonged heavy bleeding should be medically assessed.",
+    pros: ["Organic cotton", "External"],
+    cons: ["Disposable", "May cost more"],
+    retailers: ["Boots", "Holland & Barrett", "Amazon"],
+  }),
+
+  createProduct({
+    id: "dame-reusable-applicator",
+    brand: "DAME",
+    name: "Reusable Tampon Applicator",
+    category: "Period care",
+    price: 24.99,
+    score: 8.2,
+    badge: "Reusable innovation",
+    description:
+      "A reusable applicator designed for use with compatible non-applicator tampons.",
+    suitableFor:
+      "Tampon users wanting to reduce disposable applicator waste.",
+    notFor:
+      "Anyone experiencing pain with insertion or unable to clean the applicator correctly.",
+    howToUse:
+      "Load, insert, clean and store exactly as directed.",
+    evidence:
+      "Reusable applicators may reduce plastic waste but require appropriate cleaning.",
+    safety:
+      "Safe tampon wear times still apply.",
+    pros: ["Reusable", "Reduces applicator waste"],
+    cons: ["Requires cleaning", "Not compatible with every tampon"],
+    retailers: ["DAME", "Boots"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "period-swimwear",
+    brand: "Modibodi",
+    name: "Period Swimwear Brief",
+    category: "Period care",
+    price: 32.5,
+    score: 8.4,
+    badge: "Swim pick",
+    description:
+      "Reusable swimwear with an absorbent and water-resistant gusset.",
+    suitableFor:
+      "Light to moderate period days within the stated absorbency.",
+    notFor:
+      "Flows exceeding the product capacity without backup.",
+    howToUse:
+      "Wear and wash according to the swimwear instructions.",
+    evidence:
+      "Absorbent period swimwear can provide protection for suitable flow levels.",
+    safety:
+      "Change after swimming and follow hygiene guidance.",
+    pros: ["Reusable", "No insertion"],
+    cons: ["Capacity limits", "Higher initial price"],
+    retailers: ["Modibodi"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "biofreeze-gel",
+    brand: "Biofreeze",
+    name: "Pain Relief Gel",
+    category: "Pelvic pain",
+    price: 8.99,
+    score: 6.9,
+    badge: "External cooling",
+    description:
+      "A topical menthol gel producing a cooling sensation.",
+    suitableFor:
+      "External muscular discomfort where topical menthol is suitable.",
+    notFor:
+      "Internal use, broken skin, pregnancy use without advice or unexplained pelvic pain.",
+    howToUse:
+      "Apply only to external skin as directed.",
+    evidence:
+      "Menthol creates a cooling sensation that may temporarily alter pain perception.",
+    safety:
+      "Keep away from genitals, eyes and heat sources.",
+    pros: ["Portable", "Fast cooling sensation"],
+    cons: ["Not condition-specific", "Can irritate"],
+    retailers: ["Boots", "Amazon"],
+  }),
+
+  createProduct({
+    id: "thermacare-menstrual",
+    brand: "ThermaCare",
+    name: "Menstrual HeatWraps",
+    category: "Pelvic pain",
+    price: 7.99,
+    score: 8.2,
+    badge: "Long-lasting heat",
+    description:
+      "Single-use heat wraps designed for the lower abdomen.",
+    suitableFor:
+      "People wanting several hours of portable external warmth.",
+    notFor:
+      "Sleep use, damaged skin or reduced skin sensation.",
+    howToUse:
+      "Wear over clothing or exactly as instructed.",
+    evidence:
+      "Continuous low-level heat may help reduce menstrual discomfort for some people.",
+    safety:
+      "Remove immediately if heat becomes painful.",
+    pros: ["Portable", "Long duration"],
+    cons: ["Disposable", "Can become too hot"],
+    retailers: ["Amazon"],
+  }),
+
+  createProduct({
+    id: "theraline-pillow",
+    brand: "Theraline",
+    name: "Maternity and Nursing Pillow",
+    category: "Pregnancy",
+    price: 49.99,
+    score: 8.2,
+    badge: "Multi-stage support",
+    description:
+      "A long support pillow for pregnancy positioning and feeding support.",
+    suitableFor:
+      "People seeking a flexible pillow for side sleeping or feeding.",
+    notFor:
+      "Use as an infant sleep surface.",
+    howToUse:
+      "Position around the body according to comfort and safe-use guidance.",
+    evidence:
+      "Supportive positioning may improve comfort during pregnancy and feeding.",
+    safety:
+      "Keep pillows away from an unsupervised sleeping infant.",
+    pros: ["Versatile", "Reusable"],
+    cons: ["Large", "Requires storage"],
+    retailers: ["Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "frida-mom-cooling-pads",
+    brand: "Frida Mom",
+    name: "Instant Ice Maxi Pads",
+    category: "Postpartum",
+    price: 19.99,
+    score: 8.4,
+    badge: "Cooling recovery",
+    description:
+      "Single-use absorbent pads that provide instant cold therapy after vaginal birth.",
+    suitableFor:
+      "Short-term external comfort after birth.",
+    notFor:
+      "Direct use for longer than instructed or treating wound complications.",
+    howToUse:
+      "Activate and place externally according to instructions.",
+    evidence:
+      "Cold therapy may help reduce short-term swelling and discomfort after perineal trauma.",
+    safety:
+      "Seek care for worsening pain, heavy bleeding, fever or wound concerns.",
+    pros: ["Cooling and absorbent", "No freezer needed"],
+    cons: ["Single use", "Expensive per pad"],
+    retailers: ["Boots", "Amazon"],
+  }),
+
+  createProduct({
+    id: "my-expert-midwife-spritz",
+    brand: "My Expert Midwife",
+    name: "Spritz for Bits",
+    category: "Postpartum",
+    price: 19.5,
+    score: 7.6,
+    badge: "Post-birth comfort",
+    description:
+      "A topical spray marketed for external perineal comfort after birth.",
+    suitableFor:
+      "People wanting a cooling external product after checking ingredient suitability.",
+    notFor:
+      "Internal use or treating infection, wound breakdown or severe pain.",
+    howToUse:
+      "Apply externally as directed.",
+    evidence:
+      "Cooling topical products may provide comfort, though evidence for specific formulations is limited.",
+    safety:
+      "Stop use if irritation occurs and seek care for infection symptoms.",
+    pros: ["Easy application", "Portable"],
+    cons: ["Fragranced ingredients", "Limited product-specific evidence"],
+    retailers: ["Boots", "Amazon"],
+  }),
+
+  createProduct({
+    id: "cooling-blanket",
+    brand: "SHE Edit",
+    name: "Breathable Cooling Blanket",
+    category: "Menopause",
+    price: 34.99,
+    score: 7.8,
+    badge: "Sleep comfort",
+    description:
+      "A lightweight blanket designed to feel cooler than conventional bedding.",
+    suitableFor:
+      "People whose sleep is disrupted by heat or night sweats.",
+    notFor:
+      "Replacing clinical treatment when menopausal symptoms significantly affect life.",
+    howToUse:
+      "Use as part of a cooler sleep environment.",
+    evidence:
+      "Environmental cooling can support comfort but does not treat the cause of vasomotor symptoms.",
+    safety:
+      "Wash according to instructions and maintain a safe sleeping environment.",
+    pros: ["Reusable", "Non-medicated"],
+    cons: ["Comfort only", "Cooling effect varies"],
+    retailers: ["Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "vagifem-organiser",
+    brand: "SHE Edit",
+    name: "Weekly Medication Organiser",
+    category: "Menopause",
+    price: 6.99,
+    score: 8.0,
+    badge: "Routine support",
+    description:
+      "A simple weekly organiser for tablets or other appropriately stored medicines.",
+    suitableFor:
+      "People managing a regular medication routine.",
+    notFor:
+      "Medicines that must remain in original packaging or require special storage.",
+    howToUse:
+      "Confirm with a pharmacist that each medicine can be stored outside its original packaging.",
+    evidence:
+      "Medication organisers may support adherence but are not suitable for every medicine.",
+    safety:
+      "Keep medicines away from children and preserve labels and instructions.",
+    pros: ["Affordable", "Simple"],
+    cons: ["Not suitable for all medicines", "Requires weekly setup"],
+    retailers: ["Boots", "Amazon"],
+    reusable: true,
+  }),
+
+  createProduct({
+    id: "cystitis-test-strips",
+    brand: "Boots",
+    name: "Urinary Tract Infection Test",
+    category: "Bladder health",
+    price: 9.99,
+    score: 6.8,
+    badge: "Screening only",
+    description:
+      "Home urine test strips measuring markers sometimes associated with urinary infection.",
+    suitableFor:
+      "People who understand that home results cannot reliably confirm or exclude a UTI.",
+    notFor:
+      "Delaying care during pregnancy, fever, back pain, vomiting or severe symptoms.",
+    howToUse:
+      "Collect and test urine exactly as directed.",
+    evidence:
+      "Urine dipsticks have limitations and results must be interpreted alongside symptoms and clinical risk.",
+    safety:
+      "Pregnancy, kidney pain, fever or feeling very unwell requires prompt medical assessment.",
+    pros: ["Private", "Quick"],
+    cons: ["False positives and negatives", "May delay treatment"],
+    retailers: ["Boots"],
+  }),
+
+  createProduct({
+    id: "hydralyte",
+    brand: "Dioralyte",
+    name: "Oral Rehydration Sachets",
+    category: "Everyday health",
+    price: 5.99,
+    score: 8.1,
+    badge: "Rehydration support",
+    description:
+      "Oral rehydration salts for replacing water and electrolytes during some illnesses.",
+    suitableFor:
+      "People with mild fluid loss who can drink and for whom the product is suitable.",
+    notFor:
+      "Severe dehydration, persistent vomiting or conditions requiring fluid restriction without advice.",
+    howToUse:
+      "Mix with the exact volume of water stated on the sachet.",
+    evidence:
+      "Oral rehydration solutions use a defined glucose-electrolyte balance to support absorption.",
+    safety:
+      "Seek urgent care for confusion, collapse, very low urine output or inability to keep fluids down.",
+    pros: ["Evidence-based formula", "Portable"],
+    cons: ["Taste", "Not suitable for every medical condition"],
+    retailers: ["Boots", "Superdrug", "Pharmacy"],
+  }),
+
+  createProduct({
+    id: "fitbit-charge",
+    brand: "Fitbit",
+    name: "Charge Fitness Tracker",
+    category: "Everyday health",
+    price: 139.99,
+    score: 7.5,
+    badge: "Activity tracking",
+    description:
+      "A wearable tracker measuring activity, sleep estimates and heart rate.",
+    suitableFor:
+      "People who find broad lifestyle trends motivating.",
+    notFor:
+      "Diagnosing arrhythmia, sleep disorders or medical causes of fatigue.",
+    howToUse:
+      "Wear and configure according to the device instructions.",
+    evidence:
+      "Consumer wearables can support behaviour tracking, but measurements are not equivalent to clinical testing.",
+    safety:
+      "Do not rely on a wearable to dismiss concerning symptoms.",
+    pros: ["Multiple metrics", "App integration"],
+    cons: ["Measurement limitations", "Can encourage over-monitoring"],
+    retailers: ["Fitbit", "Amazon", "Currys"],
+    reusable: true,
+  }),
+];
+
+export const productCategories = [
+  {
+    name: "Period care",
+    description: "Cups, discs, underwear, pads and tampons",
+    icon: "◉",
   },
   {
-    id: 6,
-    name: "Weekly Pill Organiser",
-    category: "Everyday health",
-    description:
-      "A practical weekly organiser for medication and supplement routines.",
-    price: "£5–£12",
-    score: 82,
-    effectiveness: 4.0,
-    comfort: 4.4,
-    ease: 4.9,
-    accessibility: 4.9,
-    evidence: "Routine support",
-    badge: "Practical",
-    icon: Pill,
-    pros: [
-      "Simple weekly layout",
-      "Portable",
-      "Supports routine consistency",
-    ],
-    considerations: [
-      "Not child-resistant",
-      "Medication should remain correctly labelled where needed",
-    ],
+    name: "Pelvic pain",
+    description: "Heat, TENS and non-drug comfort options",
+    icon: "♡",
+  },
+  {
+    name: "Fertility",
+    description: "Ovulation, cycle and conception products",
+    icon: "✦",
+  },
+  {
+    name: "Pregnancy",
+    description: "Tests, supplements and pregnancy support",
+    icon: "◌",
+  },
+  {
+    name: "Postpartum",
+    description: "Recovery, feeding and post-birth care",
+    icon: "☼",
+  },
+  {
+    name: "Menopause",
+    description: "Dryness, cooling and symptom support",
+    icon: "☾",
+  },
+  {
+    name: "Bladder health",
+    description: "Leak protection and pelvic-floor support",
+    icon: "◇",
+  },
+  {
+    name: "Intimate care",
+    description: "Lubricants, moisturisers and external care",
+    icon: "○",
+  },
+  {
+    name: "Supplements",
+    description: "Evidence-aware vitamins and supplements",
+    icon: "+",
+  },
+  {
+    name: "Everyday health",
+    description: "Monitoring, sleep, migraine and wellbeing",
+    icon: "⌁",
   },
 ];
+
+export const productCount = products.length;
