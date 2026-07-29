@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"
+      viewBox="0 0 500 500">
+      <rect width="500" height="500" fill="#fff3e8"/>
+      <circle cx="420" cy="75" r="95" fill="#d07a56" opacity=".08"/>
+      <circle cx="65" cy="430" r="115" fill="#d07a56" opacity=".06"/>
+      
+          <path d="M120 170 C165 135 220 140 250 190 C280 140 335 135 380 170
+                   L355 330 C320 345 285 320 250 280
+                   C215 320 180 345 145 330 Z"
+                fill="#d07a56" opacity=".88"/>
+          <path d="M145 175 C125 120 135 80 165 52" fill="none"
+                stroke="#d07a56" stroke-width="15" stroke-linecap="round"/>
+          <path d="M355 175 C375 120 365 80 335 52" fill="none"
+                stroke="#d07a56" stroke-width="15" stroke-linecap="round"/>
+        
+      <rect x="35" y="420" width="430" height="50" rx="25"
+            fill="white" opacity=".92"/>
+      <text x="250" y="451" text-anchor="middle"
+            font-family="Arial, Helvetica, sans-serif"
+            font-size="18" font-weight="700" fill="#30272a">
+        Seamless Maternity Bra
+      </text>
+    </svg>

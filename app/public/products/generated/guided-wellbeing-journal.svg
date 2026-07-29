@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"
+      viewBox="0 0 500 500">
+      <rect width="500" height="500" fill="#f7f0ff"/>
+      <circle cx="420" cy="75" r="95" fill="#8061a8" opacity=".08"/>
+      <circle cx="65" cy="430" r="115" fill="#8061a8" opacity=".06"/>
+      
+          <path d="M95 90 Q170 65 245 105 V380 Q170 340 95 365 Z"
+                fill="white" stroke="#8061a8" stroke-width="10"/>
+          <path d="M405 90 Q330 65 255 105 V380 Q330 340 405 365 Z"
+                fill="white" stroke="#8061a8" stroke-width="10"/>
+          <path d="M250 105 V380" stroke="#8061a8" stroke-width="8"/>
+          <path d="M130 145 H215 M130 185 H215 M285 145 H370 M285 185 H370"
+                stroke="#8061a8" stroke-width="8" stroke-linecap="round" opacity=".55"/>
+        
+      <rect x="35" y="420" width="430" height="50" rx="25"
+            fill="white" opacity=".92"/>
+      <text x="250" y="451" text-anchor="middle"
+            font-family="Arial, Helvetica, sans-serif"
+            font-size="18" font-weight="700" fill="#30272a">
+        Women’s Wellbeing Journal
+      </text>
+    </svg>

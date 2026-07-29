@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"
+      viewBox="0 0 500 500">
+      <rect width="500" height="500" fill="#fff1ec"/>
+      <circle cx="420" cy="75" r="95" fill="#c97858" opacity=".08"/>
+      <circle cx="65" cy="430" r="115" fill="#c97858" opacity=".06"/>
+      
+          <rect x="105" y="175" width="290" height="80" rx="40"
+                fill="white" stroke="#c97858" stroke-width="10"/>
+          <rect x="245" y="195" width="80" height="40" rx="8"
+                fill="#c97858" opacity=".2"/>
+          <path d="M270 215 H300" stroke="#c97858" stroke-width="8"
+                stroke-linecap="round"/>
+          <rect x="150" y="295" width="200" height="95" rx="16"
+                fill="#c97858" opacity=".18"/>
+          <path d="M185 330 H315 M185 355 H280" stroke="#c97858"
+                stroke-width="8" stroke-linecap="round"/>
+        
+      <rect x="35" y="420" width="430" height="50" rx="25"
+            fill="white" opacity=".92"/>
+      <text x="250" y="451" text-anchor="middle"
+            font-family="Arial, Helvetica, sans-serif"
+            font-size="18" font-weight="700" fill="#30272a">
+        Menopause Stage Indicator
+      </text>
+    </svg>

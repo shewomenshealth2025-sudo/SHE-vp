@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"
+      viewBox="0 0 500 500">
+      <rect width="500" height="500" fill="#eef7ef"/>
+      <circle cx="420" cy="75" r="95" fill="#5e9365" opacity=".08"/>
+      <circle cx="65" cy="430" r="115" fill="#5e9365" opacity=".06"/>
+      
+          <rect x="155" y="105" width="190" height="270" rx="38"
+                fill="white" stroke="#5e9365" stroke-width="11"/>
+          <rect x="180" y="65" width="140" height="65" rx="15" fill="#5e9365"/>
+          <rect x="185" y="190" width="130" height="90" rx="15"
+                fill="#5e9365" opacity=".18"/>
+          <path d="M215 235 H285" stroke="#5e9365" stroke-width="12"
+                stroke-linecap="round"/>
+        
+      <rect x="35" y="420" width="430" height="50" rx="25"
+            fill="white" opacity=".92"/>
+      <text x="250" y="451" text-anchor="middle"
+            font-family="Arial, Helvetica, sans-serif"
+            font-size="18" font-weight="700" fill="#30272a">
+        Perfectil Hair Supplement
+      </text>
+    </svg>

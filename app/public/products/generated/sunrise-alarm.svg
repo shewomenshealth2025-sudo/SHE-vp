@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"
+      viewBox="0 0 500 500">
+      <rect width="500" height="500" fill="#fff6e8"/>
+      <circle cx="420" cy="75" r="95" fill="#c38a34" opacity=".08"/>
+      <circle cx="65" cy="430" r="115" fill="#c38a34" opacity=".06"/>
+      
+          <rect x="130" y="90" width="240" height="300" rx="42"
+                fill="white" stroke="#c38a34" stroke-width="12"/>
+          <rect x="165" y="135" width="170" height="105" rx="18"
+                fill="#c38a34" opacity=".18"/>
+          <path d="M195 190 C225 150 275 230 305 180" fill="none"
+                stroke="#c38a34" stroke-width="11" stroke-linecap="round"/>
+          <circle cx="250" cy="315" r="38" fill="#c38a34"/>
+        
+      <rect x="35" y="420" width="430" height="50" rx="25"
+            fill="white" opacity=".92"/>
+      <text x="250" y="451" text-anchor="middle"
+            font-family="Arial, Helvetica, sans-serif"
+            font-size="18" font-weight="700" fill="#30272a">
+        Bodyclock Sunrise Alarm
+      </text>
+    </svg>

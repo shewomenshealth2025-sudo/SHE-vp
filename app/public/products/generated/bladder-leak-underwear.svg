@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"
+      viewBox="0 0 500 500">
+      <rect width="500" height="500" fill="#fff1f5"/>
+      <circle cx="420" cy="75" r="95" fill="#c45b7d" opacity=".08"/>
+      <circle cx="65" cy="430" r="115" fill="#c45b7d" opacity=".06"/>
+      
+      <rect x="135" y="85" width="230" height="310" rx="45"
+            fill="white" stroke="#c45b7d" stroke-width="12"/>
+      <rect x="170" y="155" width="160" height="130" rx="24"
+            fill="#c45b7d" opacity=".18"/>
+      <circle cx="250" cy="220" r="48" fill="#c45b7d"/>
+    
+      <rect x="35" y="420" width="430" height="50" rx="25"
+            fill="white" opacity=".92"/>
+      <text x="250" y="451" text-anchor="middle"
+            font-family="Arial, Helvetica, sans-serif"
+            font-size="18" font-weight="700" fill="#30272a">
+        Reusable Bladder Leak Brief
+      </text>
+    </svg>

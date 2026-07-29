@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"
+      viewBox="0 0 500 500">
+      <rect width="500" height="500" fill="#eef8ff"/>
+      <circle cx="420" cy="75" r="95" fill="#4e8da8" opacity=".08"/>
+      <circle cx="65" cy="430" r="115" fill="#4e8da8" opacity=".06"/>
+      
+          <path d="M175 80 H325 L350 350 Q350 385 315 385 H185
+                   Q150 385 150 350 Z"
+                fill="white" stroke="#4e8da8" stroke-width="11"/>
+          <rect x="175" y="55" width="150" height="55" rx="12" fill="#4e8da8"/>
+          <rect x="185" y="180" width="130" height="95" rx="15"
+                fill="#4e8da8" opacity=".18"/>
+          <path d="M215 225 H285" stroke="#4e8da8" stroke-width="10"
+                stroke-linecap="round"/>
+        
+      <rect x="35" y="420" width="430" height="50" rx="25"
+            fill="white" opacity=".92"/>
+      <text x="250" y="451" text-anchor="middle"
+            font-family="Arial, Helvetica, sans-serif"
+            font-size="18" font-weight="700" fill="#30272a">
+        WB Water-Based Lubricant
+      </text>
+    </svg>
