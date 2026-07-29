@@ -1,0 +1,168 @@
+import {
+  Baby,
+  Droplets,
+  HeartPulse,
+  Pill,
+  Sparkles,
+} from "lucide-react";
+
+export const productCategories = [
+  "All",
+  "Period care",
+  "Pain relief",
+  "Fertility",
+  "Everyday health",
+];
+
+export const products = [
+  {
+    id: 1,
+    name: "Portable Heat Pad",
+    category: "Pain relief",
+    description:
+      "A rechargeable heat pad designed to provide targeted warmth for cramps and lower abdominal discomfort.",
+    price: "£25–£40",
+    score: 94,
+    effectiveness: 4.7,
+    comfort: 4.8,
+    ease: 4.6,
+    accessibility: 4.5,
+    evidence: "Moderate evidence",
+    badge: "Highly rated",
+    icon: HeartPulse,
+    pros: [
+      "Portable and rechargeable",
+      "Provides targeted warmth",
+      "Can be worn under clothing",
+    ],
+    considerations: [
+      "Battery life varies",
+      "Avoid prolonged use at very high temperatures",
+    ],
+  },
+  {
+    id: 2,
+    name: "TENS Pain Relief Device",
+    category: "Pain relief",
+    description:
+      "A drug-free device that uses mild electrical stimulation and may help some people manage pelvic or period pain.",
+    price: "£35–£65",
+    score: 88,
+    effectiveness: 4.5,
+    comfort: 4.1,
+    ease: 4.2,
+    accessibility: 4.1,
+    evidence: "Moderate evidence",
+    badge: "Popular choice",
+    icon: Sparkles,
+    pros: [
+      "Drug-free pain support",
+      "Adjustable intensity",
+      "Reusable",
+    ],
+    considerations: [
+      "Not suitable for everyone",
+      "Correct pad placement matters",
+    ],
+  },
+  {
+    id: 3,
+    name: "Period Underwear",
+    category: "Period care",
+    description:
+      "Absorbent underwear designed for periods, spotting and light bladder leaks.",
+    price: "£18–£35",
+    score: 92,
+    effectiveness: 4.6,
+    comfort: 4.8,
+    ease: 4.7,
+    accessibility: 4.4,
+    evidence: "Practical support",
+    badge: "Comfort pick",
+    icon: Droplets,
+    pros: [
+      "Reusable",
+      "Comfortable overnight",
+      "Useful as backup protection",
+    ],
+    considerations: [
+      "Absorbency varies by brand",
+      "Requires washing and drying",
+    ],
+  },
+  {
+    id: 4,
+    name: "Menstrual Cup",
+    category: "Period care",
+    description:
+      "A reusable internal period product available in different sizes, shapes and firmness levels.",
+    price: "£15–£25",
+    score: 84,
+    effectiveness: 4.5,
+    comfort: 4.0,
+    ease: 3.7,
+    accessibility: 4.3,
+    evidence: "Established product",
+    badge: "Reusable",
+    icon: Droplets,
+    pros: [
+      "Can be worn for several hours",
+      "Low ongoing cost",
+      "Less disposable waste",
+    ],
+    considerations: [
+      "May require practice",
+      "Sizing and fit are important",
+    ],
+  },
+  {
+    id: 5,
+    name: "Ovulation Test Kit",
+    category: "Fertility",
+    description:
+      "At-home urine tests designed to identify a rise in luteinising hormone before ovulation.",
+    price: "£15–£30",
+    score: 86,
+    effectiveness: 4.3,
+    comfort: 4.7,
+    ease: 4.5,
+    accessibility: 4.6,
+    evidence: "Established product",
+    badge: "Fertility",
+    icon: Baby,
+    pros: [
+      "Easy to use at home",
+      "Can help identify a fertile window",
+      "Widely available",
+    ],
+    considerations: [
+      "Does not confirm that ovulation occurred",
+      "Results may be difficult to interpret with irregular cycles",
+    ],
+  },
+  {
+    id: 6,
+    name: "Weekly Pill Organiser",
+    category: "Everyday health",
+    description:
+      "A practical weekly organiser for medication and supplement routines.",
+    price: "£5–£12",
+    score: 82,
+    effectiveness: 4.0,
+    comfort: 4.4,
+    ease: 4.9,
+    accessibility: 4.9,
+    evidence: "Routine support",
+    badge: "Practical",
+    icon: Pill,
+    pros: [
+      "Simple weekly layout",
+      "Portable",
+      "Supports routine consistency",
+    ],
+    considerations: [
+      "Not child-resistant",
+      "Medication should remain correctly labelled where needed",
+    ],
+  },
+];

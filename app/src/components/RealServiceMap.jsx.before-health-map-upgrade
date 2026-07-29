@@ -1,0 +1,199 @@
+import { useEffect } from "react";
+import {
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMap,
+} from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+const markerIcon = L.divIcon({
+  className: "she-service-marker-wrapper",
+  html: `
+    <div style="
+      width:38px;
+      height:38px;
+      border-radius:50% 50% 50% 12px;
+      transform:rotate(-45deg);
+      background:#f43f72;
+      border:4px solid white;
+      box-shadow:0 8px 24px rgba(36,31,32,.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    ">
+      <div style="
+        width:10px;
+        height:10px;
+        border-radius:999px;
+        background:white;
+      "></div>
+    </div>
+  `,
+  iconSize: [42, 42],
+  iconAnchor: [21, 40],
+  popupAnchor: [0, -38],
+});
+
+function getCoordinates(service) {
+  const coordinateArray =
+    Array.isArray(service.coordinates)
+      ? service.coordinates
+      : Array.isArray(service.location?.coordinates)
+        ? service.location.coordinates
+        : null;
+
+  const lat =
+    service.latitude ??
+    service.lat ??
+    coordinateArray?.[0] ??
+    service.coordinates?.lat ??
+    service.coordinates?.latitude ??
+    service.location?.lat ??
+    service.location?.latitude;
+
+  const lng =
+    service.longitude ??
+    service.lng ??
+    service.lon ??
+    coordinateArray?.[1] ??
+    service.coordinates?.lng ??
+    service.coordinates?.lon ??
+    service.coordinates?.longitude ??
+    service.location?.lng ??
+    service.location?.lon ??
+    service.location?.longitude;
+
+  return {
+    lat: Number.parseFloat(lat),
+    lng: Number.parseFloat(lng),
+  };
+}
+
+function FitMapToServices({ services }) {
+  const map = useMap();
+
+  useEffect(() => {
+    const validPoints = services
+      .map(getCoordinates)
+      .filter(
+        ({ lat, lng }) =>
+          Number.isFinite(lat) && Number.isFinite(lng),
+      )
+      .map(({ lat, lng }) => [lat, lng]);
+
+    if (!validPoints.length) return;
+
+    if (validPoints.length === 1) {
+      map.flyTo(validPoints[0], 13, {
+        duration: 0.7,
+      });
+
+      return;
+    }
+
+    map.fitBounds(validPoints, {
+      padding: [55, 55],
+      maxZoom: 13,
+    });
+  }, [map, services]);
+
+  return null;
+}
+
+function FocusSelectedService({ service }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!service) return;
+
+    const { lat, lng } = getCoordinates(service);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    map.flyTo([lat, lng], Math.max(map.getZoom(), 13), {
+      duration: 0.65,
+    });
+  }, [map, service]);
+
+  return null;
+}
+
+export default function RealServiceMap({
+  services = [],
+  selectedService = null,
+  onSelectService,
+}) {
+  const validServices = services.filter((service) => {
+    const { lat, lng } = getCoordinates(service);
+
+    return Number.isFinite(lat) && Number.isFinite(lng);
+  });
+
+  const initialCentre =
+    validServices.length > 0
+      ? Object.values(getCoordinates(validServices[0]))
+      : [54.5973, -5.9301];
+
+  return (
+    <MapContainer
+      center={initialCentre}
+      zoom={11}
+      scrollWheelZoom
+      className="h-full w-full"
+      zoomControl
+    >
+      <TileLayer
+        attribution="&copy; OpenStreetMap contributors"
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+
+      <FitMapToServices services={validServices} />
+
+      <FocusSelectedService service={selectedService} />
+
+      {validServices.map((service) => {
+        const { lat, lng } = getCoordinates(service);
+
+        return (
+          <Marker
+            key={service.id ?? service.name}
+            position={[lat, lng]}
+            icon={markerIcon}
+            eventHandlers={{
+              click: () => onSelectService?.(service),
+            }}
+          >
+            <Popup>
+              <button
+                type="button"
+                onClick={() => onSelectService?.(service)}
+                style={{
+                  minWidth: "190px",
+                  textAlign: "left",
+                }}
+              >
+                <strong>{service.name}</strong>
+
+                <div
+                  style={{
+                    marginTop: "5px",
+                    fontSize: "12px",
+                    color: "#78716c",
+                  }}
+                >
+                  {service.locationName ??
+                    service.city ??
+                    service.address ??
+                    "View service details"}
+                </div>
+              </button>
+            </Popup>
+          </Marker>
+        );
+      })}
+    </MapContainer>
+  );
+}

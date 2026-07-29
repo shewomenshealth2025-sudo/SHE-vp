@@ -1,0 +1,752 @@
+export const learnCategories = [
+  {
+    id: "menstrual-health",
+    name: "Menstrual Health",
+    description: "Periods, bleeding, pain and cycle changes.",
+    icon: "Droplets",
+  },
+  {
+    id: "pelvic-health",
+    name: "Endometriosis & Pelvic Pain",
+    description: "Conditions involving pelvic pain and reproductive organs.",
+    icon: "Flower2",
+  },
+  {
+    id: "fertility",
+    name: "Fertility & Reproductive Health",
+    description: "Ovulation, fertility, contraception and reproductive care.",
+    icon: "Heart",
+  },
+  {
+    id: "pregnancy-postpartum",
+    name: "Pregnancy & Postpartum",
+    description: "Pregnancy, birth and recovery after pregnancy.",
+    icon: "Baby",
+  },
+  {
+    id: "menopause",
+    name: "Menopause",
+    description: "Perimenopause, menopause and healthy ageing.",
+    icon: "MoonStar",
+  },
+  {
+    id: "autoimmune",
+    name: "Autoimmune & Immune Health",
+    description: "Immune-mediated conditions that commonly affect women.",
+    icon: "ShieldPlus",
+  },
+  {
+    id: "autonomic",
+    name: "Cardiovascular & Autonomic Health",
+    description: "POTS, dizziness, fainting and heart health.",
+    icon: "Activity",
+  },
+  {
+    id: "neurological",
+    name: "Neurological Health",
+    description: "Migraine, chronic fatigue and neurological symptoms.",
+    icon: "Brain",
+  },
+  {
+    id: "hormonal",
+    name: "Hormonal & Endocrine Health",
+    description: "PCOS, thyroid health and hormonal conditions.",
+    icon: "Sparkles",
+  },
+  {
+    id: "whole-body",
+    name: "Whole-Body Health",
+    description: "Iron, bones, sleep, nutrition and overall wellbeing.",
+    icon: "HeartPulse",
+  },
+];
+
+export const learnGuides = [
+  {
+    id: "endometriosis",
+    title: "Endometriosis",
+    category: "pelvic-health",
+    categoryLabel: "Endometriosis & Pelvic Pain",
+    summary:
+      "Understand possible symptoms, diagnosis pathways, treatment options and how to prepare for a clinical appointment.",
+    readTime: 8,
+    level: "Beginner",
+    featured: true,
+    popular: true,
+    tags: [
+      "pelvic pain",
+      "painful periods",
+      "pain during sex",
+      "fertility",
+      "fatigue",
+    ],
+    overview:
+      "Endometriosis is a long-term condition in which tissue similar to the lining of the womb is found elsewhere in the body. Symptoms and their severity vary widely between individuals.",
+    keyPoints: [
+      "Severe period pain should not automatically be considered normal.",
+      "Symptoms may include pelvic pain, painful sex, bowel or bladder symptoms and fatigue.",
+      "A normal scan does not necessarily rule out endometriosis.",
+      "Treatment may involve pain management, hormonal treatment, surgery or multidisciplinary care.",
+    ],
+    seekHelp: [
+      "Pain is interfering with work, education, sleep or everyday activities.",
+      "You regularly need strong pain relief to manage your periods.",
+      "You experience persistent pelvic pain or pain during sex.",
+      "You have cyclical bowel or bladder symptoms.",
+    ],
+    questions: [
+      "Could my symptoms be consistent with endometriosis?",
+      "What investigations or referrals may be appropriate?",
+      "What options are available if the first treatment does not help?",
+    ],
+  },
+  {
+    id: "adenomyosis",
+    title: "Adenomyosis",
+    category: "pelvic-health",
+    categoryLabel: "Endometriosis & Pelvic Pain",
+    summary:
+      "Learn about heavy bleeding, pelvic pain, diagnosis and treatment options associated with adenomyosis.",
+    readTime: 6,
+    level: "Beginner",
+    featured: false,
+    popular: true,
+    tags: ["heavy periods", "pelvic pain", "cramping", "bleeding"],
+    overview:
+      "Adenomyosis occurs when tissue from the lining of the womb grows into the muscular wall of the womb. It can cause painful or heavy periods, although some people have few symptoms.",
+    keyPoints: [
+      "Symptoms can overlap with fibroids and endometriosis.",
+      "Ultrasound or MRI may support assessment.",
+      "Treatment depends on symptoms, health history and reproductive goals.",
+    ],
+    seekHelp: [
+      "Bleeding is very heavy or prolonged.",
+      "Pain regularly prevents normal activities.",
+      "You feel faint, breathless or unusually exhausted.",
+    ],
+    questions: [
+      "Could adenomyosis explain my bleeding and pain?",
+      "Should I be checked for iron deficiency?",
+      "Which treatment options fit my circumstances?",
+    ],
+  },
+  {
+    id: "pcos",
+    title: "Polycystic Ovary Syndrome",
+    category: "hormonal",
+    categoryLabel: "Hormonal & Endocrine Health",
+    summary:
+      "A practical introduction to PCOS symptoms, assessment, metabolic health and treatment choices.",
+    readTime: 8,
+    level: "Beginner",
+    featured: true,
+    popular: true,
+    tags: [
+      "PCOS",
+      "irregular periods",
+      "acne",
+      "hair growth",
+      "fertility",
+      "insulin",
+    ],
+    overview:
+      "Polycystic ovary syndrome, commonly called PCOS, is a hormonal condition that can affect periods, ovulation, skin, hair and metabolic health.",
+    keyPoints: [
+      "Not everyone with PCOS has ovarian cysts.",
+      "Symptoms and treatment needs differ between individuals.",
+      "Assessment can include symptom history, blood tests and sometimes ultrasound.",
+      "Care may address periods, fertility, skin symptoms and long-term metabolic health.",
+    ],
+    seekHelp: [
+      "Your periods are consistently very irregular or absent.",
+      "You are concerned about new hair growth, acne or hair thinning.",
+      "You are trying to conceive and your cycles are irregular.",
+    ],
+    questions: [
+      "What criteria are being used to assess me for PCOS?",
+      "Should my metabolic health be checked?",
+      "What are my options for managing my main symptoms?",
+    ],
+  },
+  {
+    id: "heavy-periods",
+    title: "Heavy Menstrual Bleeding",
+    category: "menstrual-health",
+    categoryLabel: "Menstrual Health",
+    summary:
+      "Recognise heavy menstrual bleeding, understand common causes and learn when to seek help.",
+    readTime: 5,
+    level: "Beginner",
+    featured: false,
+    popular: true,
+    tags: ["heavy periods", "bleeding", "anaemia", "iron", "fibroids"],
+    overview:
+      "Heavy menstrual bleeding is bleeding that negatively affects physical, social or emotional wellbeing. The impact matters as much as the exact volume of blood lost.",
+    keyPoints: [
+      "Frequently changing protection or bleeding through clothing can indicate heavy bleeding.",
+      "Heavy periods can contribute to iron deficiency.",
+      "Possible causes include fibroids, adenomyosis, hormonal changes and bleeding disorders.",
+    ],
+    seekHelp: [
+      "You are bleeding through clothes or bedding.",
+      "You feel dizzy, breathless, weak or unusually tired.",
+      "Bleeding lasts longer than usual or suddenly becomes much heavier.",
+    ],
+    questions: [
+      "Could I have iron deficiency or anaemia?",
+      "What might be causing this change?",
+      "Which treatments could reduce the bleeding?",
+    ],
+  },
+  {
+    id: "fibroids",
+    title: "Fibroids",
+    category: "pelvic-health",
+    categoryLabel: "Endometriosis & Pelvic Pain",
+    summary:
+      "Explore fibroid symptoms, investigations and treatment decisions in an accessible format.",
+    readTime: 6,
+    level: "Beginner",
+    featured: false,
+    popular: false,
+    tags: ["fibroids", "heavy periods", "pelvic pressure", "fertility"],
+    overview:
+      "Fibroids are non-cancerous growths that develop in or around the womb. Many cause no symptoms, while others can affect bleeding, pain, pressure or fertility.",
+    keyPoints: [
+      "Fibroids vary greatly in size, number and location.",
+      "Ultrasound is commonly used during assessment.",
+      "Treatment depends on symptoms, fibroid characteristics and personal priorities.",
+    ],
+    seekHelp: [
+      "Heavy bleeding is affecting daily life.",
+      "You have persistent pelvic pressure or pain.",
+      "You notice abdominal enlargement or urinary pressure.",
+    ],
+    questions: [
+      "Where are my fibroids located?",
+      "Could they be causing my symptoms?",
+      "What are the benefits and drawbacks of each treatment option?",
+    ],
+  },
+  {
+    id: "perimenopause",
+    title: "Perimenopause",
+    category: "menopause",
+    categoryLabel: "Menopause",
+    summary:
+      "Understand cycle changes, sleep, mood, temperature symptoms and available support during perimenopause.",
+    readTime: 7,
+    level: "Beginner",
+    featured: true,
+    popular: true,
+    tags: [
+      "perimenopause",
+      "menopause",
+      "hot flushes",
+      "sleep",
+      "period changes",
+    ],
+    overview:
+      "Perimenopause is the time leading up to menopause when hormone levels fluctuate. It may cause changes in periods alongside physical, cognitive and emotional symptoms.",
+    keyPoints: [
+      "Symptoms can begin before periods stop.",
+      "Changes may affect sleep, mood, temperature regulation and concentration.",
+      "Other health conditions can produce similar symptoms.",
+      "Hormonal and non-hormonal treatment options may be considered.",
+    ],
+    seekHelp: [
+      "Symptoms are affecting sleep, work, relationships or mental wellbeing.",
+      "Bleeding becomes unusually heavy or occurs after sex.",
+      "You are concerned that another condition may be contributing.",
+    ],
+    questions: [
+      "Could these symptoms be related to perimenopause?",
+      "What treatment options are appropriate for me?",
+      "Are there any reasons a particular treatment may not suit me?",
+    ],
+  },
+  {
+    id: "lupus",
+    title: "Lupus",
+    category: "autoimmune",
+    categoryLabel: "Autoimmune & Immune Health",
+    summary:
+      "An introduction to lupus symptoms, clinical assessment, flare management and multidisciplinary care.",
+    readTime: 8,
+    level: "Intermediate",
+    featured: true,
+    popular: true,
+    tags: [
+      "lupus",
+      "autoimmune",
+      "joint pain",
+      "rash",
+      "fatigue",
+      "mouth ulcers",
+    ],
+    overview:
+      "Lupus is an autoimmune condition that can affect multiple parts of the body. Symptoms may fluctuate and can differ significantly between individuals.",
+    keyPoints: [
+      "Common features may include fatigue, joint pain, rashes and mouth ulcers.",
+      "No single symptom or blood test confirms every case.",
+      "Assessment may involve rheumatology and other specialties.",
+      "Treatment aims to manage symptoms and reduce inflammation or organ damage.",
+    ],
+    seekHelp: [
+      "You have persistent unexplained symptoms affecting several body systems.",
+      "You develop chest pain, breathing difficulty or neurological symptoms.",
+      "Existing symptoms rapidly worsen.",
+    ],
+    questions: [
+      "Could an autoimmune condition explain this combination of symptoms?",
+      "What tests are appropriate and what can they tell us?",
+      "Which symptoms require urgent medical attention?",
+    ],
+  },
+  {
+    id: "rheumatoid-arthritis",
+    title: "Rheumatoid Arthritis",
+    category: "autoimmune",
+    categoryLabel: "Autoimmune & Immune Health",
+    summary:
+      "Learn how inflammatory joint symptoms differ from everyday aches and how rheumatoid arthritis is assessed.",
+    readTime: 7,
+    level: "Beginner",
+    featured: false,
+    popular: false,
+    tags: [
+      "rheumatoid arthritis",
+      "joint pain",
+      "swelling",
+      "morning stiffness",
+      "autoimmune",
+    ],
+    overview:
+      "Rheumatoid arthritis is an autoimmune condition that causes inflammation in joints and can sometimes affect other organs.",
+    keyPoints: [
+      "Persistent swelling and prolonged morning stiffness can be important signs.",
+      "Early assessment and treatment can protect joints.",
+      "Blood tests can support assessment but are not interpreted in isolation.",
+    ],
+    seekHelp: [
+      "Several joints are swollen, warm or painful.",
+      "Morning stiffness lasts for a prolonged period.",
+      "Symptoms persist or progressively worsen.",
+    ],
+    questions: [
+      "Do my symptoms suggest inflammatory arthritis?",
+      "Would a rheumatology referral be appropriate?",
+      "What can I do while waiting for assessment?",
+    ],
+  },
+  {
+    id: "hashimotos",
+    title: "Hashimoto’s Thyroiditis",
+    category: "autoimmune",
+    categoryLabel: "Autoimmune & Immune Health",
+    summary:
+      "Understand autoimmune thyroid disease, hypothyroid symptoms, testing and ongoing monitoring.",
+    readTime: 6,
+    level: "Beginner",
+    featured: false,
+    popular: true,
+    tags: [
+      "Hashimoto",
+      "thyroid",
+      "fatigue",
+      "weight changes",
+      "cold",
+      "autoimmune",
+    ],
+    overview:
+      "Hashimoto’s thyroiditis is an autoimmune condition that can gradually reduce thyroid hormone production.",
+    keyPoints: [
+      "Symptoms may include fatigue, feeling cold, constipation and skin or hair changes.",
+      "Thyroid blood tests are central to assessment.",
+      "Treatment may involve replacement thyroid hormone when the thyroid becomes underactive.",
+    ],
+    seekHelp: [
+      "You have persistent symptoms consistent with an underactive thyroid.",
+      "You are pregnant or planning pregnancy and have thyroid concerns.",
+      "Previously controlled symptoms return or worsen.",
+    ],
+    questions: [
+      "Which thyroid tests are being checked?",
+      "How often should levels be monitored?",
+      "Could pregnancy or medication change my treatment needs?",
+    ],
+  },
+  {
+    id: "sjogrens",
+    title: "Sjögren’s Disease",
+    category: "autoimmune",
+    categoryLabel: "Autoimmune & Immune Health",
+    summary:
+      "Learn about persistent dryness, fatigue, joint symptoms and assessment for Sjögren’s disease.",
+    readTime: 7,
+    level: "Intermediate",
+    featured: false,
+    popular: false,
+    tags: [
+      "Sjögren",
+      "dry eyes",
+      "dry mouth",
+      "fatigue",
+      "joint pain",
+      "autoimmune",
+    ],
+    overview:
+      "Sjögren’s is an autoimmune condition commonly associated with dry eyes and dry mouth, although it may also affect joints, nerves and other organs.",
+    keyPoints: [
+      "Persistent dryness is different from occasional dryness.",
+      "Dental and eye health can require additional attention.",
+      "Assessment may involve blood tests, eye tests or salivary-gland assessment.",
+    ],
+    seekHelp: [
+      "Dryness is persistent or causing eye, dental or swallowing problems.",
+      "You have dryness alongside fatigue, joint pain or neurological symptoms.",
+      "You experience significant eye pain or visual changes.",
+    ],
+    questions: [
+      "Could an autoimmune condition explain my dryness?",
+      "How can I protect my eyes and dental health?",
+      "Do I need specialist assessment?",
+    ],
+  },
+  {
+    id: "coeliac-disease",
+    title: "Coeliac Disease",
+    category: "autoimmune",
+    categoryLabel: "Autoimmune & Immune Health",
+    summary:
+      "Understand how coeliac disease can affect digestion, nutrition, energy levels and reproductive health.",
+    readTime: 7,
+    level: "Beginner",
+    featured: false,
+    popular: false,
+    tags: [
+      "coeliac",
+      "gluten",
+      "bloating",
+      "iron deficiency",
+      "fatigue",
+      "autoimmune",
+    ],
+    overview:
+      "Coeliac disease is an autoimmune condition in which gluten triggers damage to the lining of the small intestine.",
+    keyPoints: [
+      "Symptoms can be digestive or occur elsewhere in the body.",
+      "Testing should usually happen while gluten is still being eaten.",
+      "Treatment requires a strict gluten-free diet after diagnosis.",
+    ],
+    seekHelp: [
+      "You have persistent digestive symptoms or unexplained nutrient deficiencies.",
+      "A close family member has coeliac disease.",
+      "You are considering removing gluten because of ongoing symptoms.",
+    ],
+    questions: [
+      "Should I be tested before changing my diet?",
+      "Could coeliac disease explain my iron deficiency?",
+      "What follow-up is needed after diagnosis?",
+    ],
+  },
+  {
+    id: "multiple-sclerosis",
+    title: "Multiple Sclerosis",
+    category: "neurological",
+    categoryLabel: "Neurological Health",
+    summary:
+      "A clear introduction to multiple sclerosis symptoms, neurological assessment and long-term care.",
+    readTime: 8,
+    level: "Intermediate",
+    featured: false,
+    popular: false,
+    tags: [
+      "multiple sclerosis",
+      "MS",
+      "vision",
+      "numbness",
+      "weakness",
+      "fatigue",
+    ],
+    overview:
+      "Multiple sclerosis is a condition affecting the brain and spinal cord. Symptoms depend on which parts of the nervous system are involved.",
+    keyPoints: [
+      "Symptoms may include visual changes, altered sensation, weakness or balance problems.",
+      "Many common symptoms have causes other than multiple sclerosis.",
+      "Diagnosis involves neurological assessment and often MRI.",
+    ],
+    seekHelp: [
+      "You develop sudden visual loss, weakness or significant coordination changes.",
+      "Neurological symptoms persist or recur.",
+      "Symptoms are rapidly worsening.",
+    ],
+    questions: [
+      "Do these symptoms require neurological assessment?",
+      "What other causes need to be considered?",
+      "Which symptoms should prompt urgent care?",
+    ],
+  },
+  {
+    id: "pots",
+    title: "POTS",
+    subtitle: "Postural Orthostatic Tachycardia Syndrome",
+    category: "autonomic",
+    categoryLabel: "Cardiovascular & Autonomic Health",
+    summary:
+      "Understand POTS symptoms, heart-rate changes, assessment pathways and practical symptom management.",
+    readTime: 9,
+    level: "Beginner",
+    featured: true,
+    popular: true,
+    tags: [
+      "POTS",
+      "dizziness",
+      "fainting",
+      "heart racing",
+      "standing",
+      "fatigue",
+      "brain fog",
+    ],
+    overview:
+      "Postural Orthostatic Tachycardia Syndrome, or POTS, is a form of autonomic dysfunction in which standing is associated with an excessive increase in heart rate and symptoms of orthostatic intolerance.",
+    keyPoints: [
+      "Symptoms may include dizziness, palpitations, weakness, fatigue and brain fog.",
+      "Symptoms commonly worsen when standing and may improve when lying down.",
+      "Assessment considers heart rate, blood pressure, symptoms and alternative explanations.",
+      "Management is individual and may include lifestyle measures, rehabilitation and medication.",
+    ],
+    seekHelp: [
+      "You repeatedly feel faint, unwell or experience a racing heart when standing.",
+      "Symptoms substantially restrict normal activity.",
+      "You faint, develop chest pain or have significant breathing difficulty.",
+    ],
+    questions: [
+      "Could orthostatic intolerance explain my symptoms?",
+      "Can my lying and standing heart rate and blood pressure be assessed?",
+      "What other conditions should be ruled out?",
+    ],
+  },
+  {
+    id: "migraine",
+    title: "Migraine",
+    category: "neurological",
+    categoryLabel: "Neurological Health",
+    summary:
+      "Learn about migraine symptoms, hormonal patterns, triggers, treatment and warning signs.",
+    readTime: 7,
+    level: "Beginner",
+    featured: false,
+    popular: true,
+    tags: [
+      "migraine",
+      "headache",
+      "aura",
+      "periods",
+      "hormones",
+      "nausea",
+    ],
+    overview:
+      "Migraine is a neurological condition that may cause headache, nausea, sensory sensitivity and neurological symptoms. Hormonal changes can influence migraine patterns.",
+    keyPoints: [
+      "Migraine is more than an ordinary headache.",
+      "Some people experience aura and others do not.",
+      "Tracking timing, symptoms and treatment response can support assessment.",
+    ],
+    seekHelp: [
+      "You experience a sudden, severe or unfamiliar headache.",
+      "Headache occurs with weakness, confusion, fever or loss of consciousness.",
+      "Migraine is frequent or current treatment is not effective.",
+    ],
+    questions: [
+      "Does my pattern fit migraine?",
+      "Could my menstrual cycle be influencing attacks?",
+      "What preventive treatments might be suitable?",
+    ],
+  },
+  {
+    id: "mecfs",
+    title: "ME/CFS",
+    category: "neurological",
+    categoryLabel: "Neurological Health",
+    summary:
+      "Explore post-exertional symptom worsening, fatigue, sleep disturbance and clinical assessment.",
+    readTime: 8,
+    level: "Intermediate",
+    featured: false,
+    popular: false,
+    tags: [
+      "ME",
+      "CFS",
+      "fatigue",
+      "post-exertional malaise",
+      "brain fog",
+      "sleep",
+    ],
+    overview:
+      "ME/CFS is a complex long-term condition characterised by substantial functional impairment and worsening of symptoms after activity.",
+    keyPoints: [
+      "Post-exertional symptom exacerbation is a central feature.",
+      "Rest may not fully relieve fatigue.",
+      "Assessment should consider and investigate alternative explanations.",
+    ],
+    seekHelp: [
+      "Fatigue and activity intolerance persist and substantially affect daily life.",
+      "Symptoms worsen after relatively minor physical or mental activity.",
+      "You develop new neurological or cardiovascular warning signs.",
+    ],
+    questions: [
+      "What possible causes of persistent fatigue have been assessed?",
+      "Does my symptom pattern include post-exertional worsening?",
+      "How can I manage activity safely while being assessed?",
+    ],
+  },
+  {
+    id: "iron-deficiency",
+    title: "Iron Deficiency",
+    category: "whole-body",
+    categoryLabel: "Whole-Body Health",
+    summary:
+      "Understand fatigue, blood tests, heavy periods and the difference between iron deficiency and anaemia.",
+    readTime: 6,
+    level: "Beginner",
+    featured: true,
+    popular: true,
+    tags: [
+      "iron deficiency",
+      "anaemia",
+      "fatigue",
+      "heavy periods",
+      "ferritin",
+      "breathlessness",
+    ],
+    overview:
+      "Iron deficiency occurs when the body’s iron stores are low. It may exist with or without anaemia and can be associated with blood loss, diet, absorption problems or increased needs.",
+    keyPoints: [
+      "Heavy menstrual bleeding is one possible cause.",
+      "Symptoms can include fatigue, weakness, breathlessness and palpitations.",
+      "Blood tests help assess iron status and possible anaemia.",
+      "The underlying cause should also be considered.",
+    ],
+    seekHelp: [
+      "You feel faint, breathless, weak or experience a racing heart.",
+      "You have heavy or prolonged bleeding.",
+      "Symptoms persist despite taking iron.",
+    ],
+    questions: [
+      "Have my haemoglobin and iron stores been checked?",
+      "What could be causing the deficiency?",
+      "When should blood tests be repeated?",
+    ],
+  },
+  {
+    id: "fertility-assessment",
+    title: "Preparing for a Fertility Assessment",
+    category: "fertility",
+    categoryLabel: "Fertility & Reproductive Health",
+    summary:
+      "Understand what information, tests and questions may be involved in an initial fertility assessment.",
+    readTime: 6,
+    level: "Beginner",
+    featured: false,
+    popular: false,
+    tags: ["fertility", "ovulation", "trying to conceive", "tests"],
+    overview:
+      "A fertility assessment considers medical history, cycle patterns, previous pregnancies and factors relevant to each person involved.",
+    keyPoints: [
+      "Fertility assessment is not limited to one partner.",
+      "Cycle history and previous test information can be useful.",
+      "The pathway and eligibility criteria depend on local services.",
+    ],
+    seekHelp: [
+      "You are concerned about your fertility or menstrual cycles.",
+      "You have a known condition that may affect fertility.",
+      "You need advice on when referral may be appropriate.",
+    ],
+    questions: [
+      "Which initial tests may be appropriate?",
+      "What are the local referral criteria?",
+      "What can we do while waiting for assessment?",
+    ],
+  },
+  {
+    id: "postpartum-recovery",
+    title: "Postpartum Recovery",
+    category: "pregnancy-postpartum",
+    categoryLabel: "Pregnancy & Postpartum",
+    summary:
+      "A guide to physical recovery, pelvic health, emotional wellbeing and when to seek support after birth.",
+    readTime: 8,
+    level: "Beginner",
+    featured: false,
+    popular: false,
+    tags: [
+      "postpartum",
+      "postnatal",
+      "birth recovery",
+      "pelvic floor",
+      "mental health",
+    ],
+    overview:
+      "Recovery after pregnancy and birth is individual. Physical healing, feeding, sleep, pelvic health and emotional wellbeing may all require support.",
+    keyPoints: [
+      "Pain, bleeding and recovery should gradually improve.",
+      "Pelvic-floor symptoms deserve assessment and support.",
+      "Postnatal mental health symptoms are common and treatable.",
+    ],
+    seekHelp: [
+      "You experience heavy bleeding, chest pain, breathing difficulty or severe headache.",
+      "Pain, fever or wound concerns are worsening.",
+      "You feel unsafe, persistently low or unable to cope.",
+    ],
+    questions: [
+      "Is my recovery progressing as expected?",
+      "Would pelvic-health physiotherapy help?",
+      "What mental-health support is available?",
+    ],
+  },
+  {
+    id: "bone-health",
+    title: "Bone Health for Women",
+    category: "whole-body",
+    categoryLabel: "Whole-Body Health",
+    summary:
+      "Learn how hormones, nutrition, movement and health conditions influence bone strength across life.",
+    readTime: 6,
+    level: "Beginner",
+    featured: false,
+    popular: false,
+    tags: [
+      "bones",
+      "osteoporosis",
+      "menopause",
+      "calcium",
+      "vitamin D",
+    ],
+    overview:
+      "Bone health is influenced by age, hormones, activity, nutrition, medication and underlying health conditions.",
+    keyPoints: [
+      "Bone density naturally changes across life.",
+      "Menopause can accelerate bone loss.",
+      "Weight-bearing activity and adequate nutrition support bone health.",
+    ],
+    seekHelp: [
+      "You experience a fracture after a minor fall.",
+      "You have risk factors for osteoporosis.",
+      "You are concerned about long-term medication effects on bone health.",
+    ],
+    questions: [
+      "Do I have risk factors for low bone density?",
+      "Would a bone-density scan be appropriate?",
+      "How can I protect my bone health?",
+    ],
+  },
+];
+
+export function getGuideById(id) {
+  return learnGuides.find((guide) => guide.id === id);
+}
+
+export function getCategoryById(id) {
+  return learnCategories.find((category) => category.id === id);
+}

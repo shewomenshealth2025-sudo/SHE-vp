@@ -1,0 +1,565 @@
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  AlertTriangle,
+  ArrowRight,
+  BookOpen,
+  Bot,
+  Check,
+  ChevronRight,
+  Clock3,
+  Copy,
+  HeartPulse,
+  MessageCircle,
+  Plus,
+  Search,
+  Send,
+  ShieldCheck,
+  Sparkles,
+  ThumbsDown,
+  ThumbsUp,
+  User,
+} from "lucide-react";
+import {
+  buildGroundedResponse,
+  getSuggestedChatPrompts,
+} from "../utils/chatKnowledge";
+
+const STORAGE_KEY = "she-intelligence-chat";
+
+function loadMessages() {
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+
+    return stored
+      ? JSON.parse(stored)
+      : [
+          {
+            id: "welcome",
+            role: "assistant",
+            type: "welcome",
+            title: "Hello, I’m SHE",
+            introduction:
+              "Ask me about a symptom, condition or appointment. I’ll search the current SHE Learn library and show you the most relevant educational information.",
+          },
+        ];
+  } catch {
+    return [];
+  }
+}
+
+export default function ChatPage({
+  onOpenLearn,
+}) {
+  const [messages, setMessages] = useState(loadMessages);
+  const [input, setInput] = useState("");
+  const [isThinking, setIsThinking] = useState(false);
+  const [feedback, setFeedback] = useState({});
+  const endRef = useRef(null);
+
+  const prompts = getSuggestedChatPrompts();
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(messages),
+    );
+
+    endRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages, isThinking]);
+
+  useEffect(() => {
+    const pendingPrompt = window.localStorage.getItem(
+      "she-pending-chat-prompt",
+    );
+
+    if (pendingPrompt) {
+      window.localStorage.removeItem("she-pending-chat-prompt");
+      sendMessage(pendingPrompt);
+    }
+  }, []);
+
+  function startNewChat() {
+    setMessages([
+      {
+        id: `welcome-${Date.now()}`,
+        role: "assistant",
+        type: "welcome",
+        title: "New conversation",
+        introduction:
+          "Describe what you would like to understand. I’ll search SHE Learn before responding.",
+      },
+    ]);
+
+    setInput("");
+    setFeedback({});
+  }
+
+  function sendMessage(forcedText = null) {
+    const text = (forcedText ?? input).trim();
+
+    if (!text || isThinking) return;
+
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      text,
+    };
+
+    setMessages((current) => [...current, userMessage]);
+    setInput("");
+    setIsThinking(true);
+
+    window.setTimeout(() => {
+      const response = buildGroundedResponse(text);
+
+      setMessages((current) => [...current, response]);
+      setIsThinking(false);
+    }, 650);
+  }
+
+  function handleKeyDown(event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
+    }
+  }
+
+  async function copyResponse(message) {
+    const text = [
+      message.title,
+      message.introduction,
+      ...(message.sections || []).flatMap((section) => [
+        section.title,
+        section.text || "",
+        ...(section.items || []),
+      ]),
+      message.disclaimer,
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setFeedback((current) => ({
+        ...current,
+        [`copy-${message.id}`]: true,
+      }));
+
+      window.setTimeout(() => {
+        setFeedback((current) => ({
+          ...current,
+          [`copy-${message.id}`]: false,
+        }));
+      }, 1500);
+    } catch {
+      // Clipboard access may be unavailable in some previews.
+    }
+  }
+
+  function openGuide(guide) {
+    window.localStorage.setItem(
+      "she-intelligence-guide-target",
+      JSON.stringify({
+        id: guide.id,
+        title: guide.title,
+      }),
+    );
+
+    onOpenLearn?.();
+  }
+
+  return (
+    <main className="mx-auto flex min-h-[calc(100vh-80px)] w-full max-w-6xl flex-col px-4 pb-32 pt-5 md:px-8 lg:px-10">
+      <section className="flex items-center justify-between gap-4 border-b border-stone-100 pb-5">
+        <div>
+          <p className="flex items-center gap-2 text-sm font-medium text-[#f43f72]">
+            <Sparkles size={15} />
+            SHE Intelligence
+          </p>
+
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+            Health Chat
+          </h1>
+        </div>
+
+        <button
+          type="button"
+          onClick={startNewChat}
+          className="flex items-center gap-2 rounded-full border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-600 shadow-sm"
+        >
+          <Plus size={16} />
+          New chat
+        </button>
+      </section>
+
+      <section className="flex-1 py-7">
+        {messages.length <= 1 && (
+          <div className="mb-8">
+            <div className="mx-auto max-w-2xl text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[24px] bg-pink-50 text-[#f43f72]">
+                <HeartPulse size={29} />
+              </div>
+
+              <h2 className="mt-5 text-3xl font-semibold tracking-tight md:text-4xl">
+                What would you like to understand?
+              </h2>
+
+              <p className="mt-3 text-sm leading-6 text-stone-500">
+                SHE searches the education library before answering.
+                Responses are educational and non-diagnostic.
+              </p>
+            </div>
+
+            <div className="mx-auto mt-7 grid max-w-3xl gap-3 sm:grid-cols-2">
+              {prompts.slice(0, 6).map((prompt) => (
+                <button
+                  key={prompt}
+                  type="button"
+                  onClick={() => sendMessage(prompt)}
+                  className="flex items-start justify-between gap-4 rounded-2xl border border-stone-100 bg-white p-4 text-left text-sm leading-6 shadow-sm transition hover:border-pink-200 hover:bg-pink-50"
+                >
+                  {prompt}
+                  <ArrowRight
+                    size={16}
+                    className="mt-1 shrink-0 text-[#f43f72]"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="space-y-6">
+          <AnimatePresence initial={false}>
+            {messages.map((message) =>
+              message.role === "user" ? (
+                <UserMessage
+                  key={message.id}
+                  message={message}
+                />
+              ) : (
+                <AssistantMessage
+                  key={message.id}
+                  message={message}
+                  feedback={feedback}
+                  setFeedback={setFeedback}
+                  copyResponse={copyResponse}
+                  openGuide={openGuide}
+                />
+              ),
+            )}
+          </AnimatePresence>
+
+          {isThinking && <ThinkingMessage />}
+        </div>
+
+        <div ref={endRef} />
+      </section>
+
+      <section className="sticky bottom-20 z-20 mt-auto md:bottom-5">
+        <div className="rounded-[28px] border border-stone-200 bg-white p-3 shadow-2xl shadow-stone-300/40">
+          <textarea
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            onKeyDown={handleKeyDown}
+            rows={1}
+            placeholder="Ask about symptoms, conditions or appointments..."
+            className="max-h-36 min-h-[54px] w-full resize-none bg-transparent px-3 py-3 text-sm leading-6 outline-none placeholder:text-stone-400"
+          />
+
+          <div className="flex items-center justify-between gap-4 border-t border-stone-100 px-2 pt-3">
+            <p className="flex items-center gap-1.5 text-[11px] text-stone-400">
+              <ShieldCheck size={13} />
+              Grounded in SHE Learn
+            </p>
+
+            <button
+              type="button"
+              onClick={() => sendMessage()}
+              disabled={!input.trim() || isThinking}
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#241f20] text-white transition disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              <Send size={17} />
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function UserMessage({ message }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex justify-end"
+    >
+      <div className="max-w-[82%] rounded-[24px] rounded-br-md bg-[#241f20] px-5 py-4 text-sm leading-6 text-white md:max-w-[70%]">
+        {message.text}
+      </div>
+    </motion.div>
+  );
+}
+
+function AssistantMessage({
+  message,
+  feedback,
+  setFeedback,
+  copyResponse,
+  openGuide,
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex items-start gap-3"
+    >
+      <div className="mt-1 hidden h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-pink-50 text-[#f43f72] sm:flex">
+        <Bot size={18} />
+      </div>
+
+      <article className="w-full max-w-4xl rounded-[28px] border border-stone-100 bg-white p-5 shadow-sm md:p-7">
+        {message.urgentWarning && (
+          <div className="mb-5 flex items-start gap-3 rounded-2xl border border-red-100 bg-red-50 p-4">
+            <AlertTriangle
+              size={20}
+              className="mt-0.5 shrink-0 text-red-600"
+            />
+
+            <div>
+              <p className="text-sm font-semibold text-red-800">
+                Urgent safety information
+              </p>
+
+              <p className="mt-1 text-sm leading-6 text-red-700">
+                {message.urgentWarning} Contact emergency services or
+                urgent medical care when symptoms are severe or
+                life-threatening.
+              </p>
+            </div>
+          </div>
+        )}
+
+        <h2 className="text-xl font-semibold leading-snug">
+          {message.title}
+        </h2>
+
+        <p className="mt-3 text-sm leading-7 text-stone-600">
+          {message.introduction}
+        </p>
+
+        {(message.sections || []).map((section) => (
+          <section key={section.title} className="mt-7">
+            <h3 className="font-semibold text-[#241f20]">
+              {section.title}
+            </h3>
+
+            {section.text && (
+              <p className="mt-3 text-sm leading-7 text-stone-600">
+                {section.text}
+              </p>
+            )}
+
+            {section.items && (
+              <div className="mt-3 space-y-2.5">
+                {section.items.map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-3 rounded-2xl bg-stone-50 px-4 py-3 text-sm leading-6 text-stone-600"
+                  >
+                    <Check
+                      size={16}
+                      className="mt-1 shrink-0 text-[#f43f72]"
+                    />
+                    {item}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.comparisons && (
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                {section.comparisons.map((comparison) => (
+                  <div
+                    key={comparison.title}
+                    className="rounded-2xl border border-pink-100 bg-pink-50/50 p-5"
+                  >
+                    <h4 className="font-semibold">
+                      {comparison.title}
+                    </h4>
+
+                    <p className="mt-2 text-sm leading-6 text-stone-600">
+                      {comparison.text}
+                    </p>
+
+                    <div className="mt-4 space-y-2">
+                      {comparison.keyPoints.map((point) => (
+                        <p
+                          key={point}
+                          className="text-xs leading-5 text-stone-500"
+                        >
+                          • {point}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        ))}
+
+        {message.relatedGuides?.length > 0 && (
+          <section className="mt-7">
+            <div className="flex items-center gap-2">
+              <BookOpen
+                size={18}
+                className="text-[#f43f72]"
+              />
+
+              <h3 className="font-semibold">
+                Related SHE Learn guides
+              </h3>
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {message.relatedGuides.map((guide) => (
+                <button
+                  key={guide.id}
+                  type="button"
+                  onClick={() => openGuide(guide)}
+                  className="group rounded-2xl border border-stone-100 p-4 text-left transition hover:border-pink-200 hover:bg-pink-50"
+                >
+                  <p className="text-xs font-medium text-[#f43f72]">
+                    {guide.category}
+                  </p>
+
+                  <p className="mt-1 font-semibold">
+                    {guide.title}
+                  </p>
+
+                  <p className="mt-2 line-clamp-2 text-xs leading-5 text-stone-500">
+                    {guide.summary}
+                  </p>
+
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="flex items-center gap-1 text-xs text-stone-400">
+                      <Clock3 size={12} />
+                      {guide.readTime} min
+                    </span>
+
+                    <ChevronRight
+                      size={16}
+                      className="text-stone-400 transition group-hover:translate-x-1 group-hover:text-[#f43f72]"
+                    />
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {message.disclaimer && (
+          <div className="mt-7 rounded-2xl bg-pink-50 px-4 py-3 text-xs leading-5 text-stone-500">
+            {message.disclaimer}
+          </div>
+        )}
+
+        {message.type !== "welcome" && (
+          <div className="mt-5 flex items-center gap-1 border-t border-stone-100 pt-4">
+            <button
+              type="button"
+              onClick={() => copyResponse(message)}
+              className="flex h-9 items-center gap-2 rounded-full px-3 text-xs text-stone-500 hover:bg-stone-100"
+            >
+              {feedback[`copy-${message.id}`] ? (
+                <Check size={15} />
+              ) : (
+                <Copy size={15} />
+              )}
+
+              {feedback[`copy-${message.id}`]
+                ? "Copied"
+                : "Copy"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                setFeedback((current) => ({
+                  ...current,
+                  [message.id]: "helpful",
+                }))
+              }
+              className={`flex h-9 w-9 items-center justify-center rounded-full ${
+                feedback[message.id] === "helpful"
+                  ? "bg-pink-50 text-[#f43f72]"
+                  : "text-stone-400 hover:bg-stone-100"
+              }`}
+            >
+              <ThumbsUp size={15} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                setFeedback((current) => ({
+                  ...current,
+                  [message.id]: "not-helpful",
+                }))
+              }
+              className={`flex h-9 w-9 items-center justify-center rounded-full ${
+                feedback[message.id] === "not-helpful"
+                  ? "bg-pink-50 text-[#f43f72]"
+                  : "text-stone-400 hover:bg-stone-100"
+              }`}
+            >
+              <ThumbsDown size={15} />
+            </button>
+          </div>
+        )}
+      </article>
+    </motion.div>
+  );
+}
+
+function ThinkingMessage() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex items-start gap-3"
+    >
+      <div className="mt-1 hidden h-9 w-9 items-center justify-center rounded-2xl bg-pink-50 text-[#f43f72] sm:flex">
+        <Search size={17} />
+      </div>
+
+      <div className="rounded-[22px] border border-stone-100 bg-white px-5 py-4 shadow-sm">
+        <p className="flex items-center gap-3 text-sm text-stone-500">
+          Searching SHE Learn
+          <span className="flex gap-1">
+            {[0, 1, 2].map((item) => (
+              <motion.span
+                key={item}
+                animate={{
+                  opacity: [0.25, 1, 0.25],
+                  y: [0, -3, 0],
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1,
+                  delay: item * 0.15,
+                }}
+                className="h-1.5 w-1.5 rounded-full bg-[#f43f72]"
+              />
+            ))}
+          </span>
+        </p>
+      </div>
+    </motion.div>
+  );
+}

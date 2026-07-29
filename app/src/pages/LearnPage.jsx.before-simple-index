@@ -1,0 +1,943 @@
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Activity,
+  ArrowLeft,
+  Baby,
+  BookMarked,
+  BookOpen,
+  Bookmark,
+  Brain,
+  Check,
+  ChevronRight,
+  Clock3,
+  Droplets,
+  FileQuestion,
+  Flower2,
+  Heart,
+  HeartPulse,
+  Library,
+  MoonStar,
+  Search,
+  ShieldPlus,
+  Sparkles,
+  Stethoscope,
+  X,
+} from "lucide-react";
+import {
+  getCategoryById,
+  learnCategories,
+  learnGuides,
+} from "../data/learnContent";
+
+const iconMap = {
+  Activity,
+  Baby,
+  Brain,
+  Droplets,
+  Flower2,
+  Heart,
+  HeartPulse,
+  MoonStar,
+  ShieldPlus,
+  Sparkles,
+};
+
+const STORAGE_KEYS = {
+  saved: "she-learn-saved",
+  recent: "she-learn-recent",
+  progress: "she-learn-progress",
+};
+
+function readStorage(key, fallback) {
+  try {
+    const stored = window.localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+export default function LearnPage() {
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedGuide, setSelectedGuide] = useState(null);
+  const [savedIds, setSavedIds] = useState(() =>
+    readStorage(STORAGE_KEYS.saved, []),
+  );
+  const [recentIds, setRecentIds] = useState(() =>
+    readStorage(STORAGE_KEYS.recent, []),
+  );
+  const [progress, setProgress] = useState(() =>
+    readStorage(STORAGE_KEYS.progress, {}),
+  );
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      STORAGE_KEYS.saved,
+      JSON.stringify(savedIds),
+    );
+  }, [savedIds]);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      STORAGE_KEYS.recent,
+      JSON.stringify(recentIds),
+    );
+  }, [recentIds]);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      STORAGE_KEYS.progress,
+      JSON.stringify(progress),
+    );
+  }, [progress]);
+
+  const filteredGuides = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    return learnGuides.filter((guide) => {
+      const matchesCategory =
+        selectedCategory === "all" ||
+        guide.category === selectedCategory;
+
+      const searchable = [
+        guide.title,
+        guide.subtitle,
+        guide.categoryLabel,
+        guide.summary,
+        guide.overview,
+        ...guide.tags,
+        ...guide.keyPoints,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return matchesCategory && (!query || searchable.includes(query));
+    });
+  }, [search, selectedCategory]);
+
+  const featuredGuides = learnGuides
+    .filter((guide) => guide.featured)
+    .slice(0, 6);
+
+  const savedGuides = savedIds
+    .map((id) => learnGuides.find((guide) => guide.id === id))
+    .filter(Boolean);
+
+  const recentGuides = recentIds
+    .map((id) => learnGuides.find((guide) => guide.id === id))
+    .filter(Boolean);
+
+  const continuingGuides = learnGuides
+    .filter((guide) => {
+      const value = progress[guide.id] || 0;
+      return value > 0 && value < 100;
+    })
+    .sort(
+      (a, b) =>
+        (progress[b.id] || 0) - (progress[a.id] || 0),
+    );
+
+  function openGuide(guide) {
+    setSelectedGuide(guide);
+
+    setRecentIds((current) => [
+      guide.id,
+      ...current.filter((id) => id !== guide.id),
+    ].slice(0, 6));
+
+    setProgress((current) => ({
+      ...current,
+      [guide.id]: Math.max(current[guide.id] || 0, 20),
+    }));
+  }
+
+  function closeGuide() {
+    setSelectedGuide(null);
+  }
+
+  function toggleSaved(id) {
+    setSavedIds((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : [id, ...current],
+    );
+  }
+
+  function markComplete(id) {
+    setProgress((current) => ({
+      ...current,
+      [id]: 100,
+    }));
+  }
+
+  return (
+    <main className="mx-auto w-full max-w-7xl px-5 pb-32 pt-8 md:px-8 lg:px-12">
+      <section className="relative overflow-hidden rounded-[36px] border border-pink-100 bg-gradient-to-br from-[#fff8fa] via-white to-[#fff2f6] px-6 py-10 md:px-10 md:py-14">
+        <div className="relative z-10 max-w-3xl">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#f43f72] shadow-sm">
+            <BookOpen size={24} />
+          </div>
+
+          <p className="mt-6 text-sm font-semibold text-[#f43f72]">
+            SHE Learn
+          </p>
+
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-[#241f20] md:text-6xl">
+            Understand your health,
+            <span className="block text-[#f43f72]">
+              one clear guide at a time.
+            </span>
+          </h1>
+
+          <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
+            Explore women’s health conditions, symptoms and care pathways
+            without the confusing medical language.
+          </p>
+
+          <label className="mt-8 flex max-w-2xl items-center gap-3 rounded-2xl border border-pink-100 bg-white px-5 py-4 shadow-sm focus-within:border-pink-300 focus-within:ring-4 focus-within:ring-pink-100">
+            <Search size={21} className="shrink-0 text-[#f43f72]" />
+
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search POTS, lupus, pelvic pain, fatigue..."
+              className="w-full bg-transparent text-base outline-none placeholder:text-stone-400"
+            />
+
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-100 text-stone-500"
+              >
+                <X size={15} />
+              </button>
+            )}
+          </label>
+        </div>
+
+        <div className="pointer-events-none absolute -right-14 -top-20 h-72 w-72 rounded-full bg-pink-200/30 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 right-40 h-64 w-64 rounded-full bg-rose-100/60 blur-3xl" />
+      </section>
+
+      <section className="mt-7 grid gap-4 sm:grid-cols-3">
+        <SummaryCard
+          icon={Library}
+          label="Health guides"
+          value={`${learnGuides.length}+`}
+        />
+
+        <SummaryCard
+          icon={Bookmark}
+          label="Saved guides"
+          value={savedIds.length}
+        />
+
+        <SummaryCard
+          icon={Check}
+          label="Completed"
+          value={
+            Object.values(progress).filter((value) => value === 100)
+              .length
+          }
+        />
+      </section>
+
+      {continuingGuides.length > 0 && !search && (
+        <section className="mt-12">
+          <SectionHeading
+            eyebrow="Your learning"
+            title="Continue reading"
+            icon={BookMarked}
+          />
+
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            {continuingGuides.slice(0, 2).map((guide) => (
+              <ContinueCard
+                key={guide.id}
+                guide={guide}
+                value={progress[guide.id]}
+                open={() => openGuide(guide)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {!search && selectedCategory === "all" && (
+        <section className="mt-12">
+          <SectionHeading
+            eyebrow="Start here"
+            title="Featured guides"
+            icon={Sparkles}
+          />
+
+          <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {featuredGuides.map((guide, index) => (
+              <GuideCard
+                key={guide.id}
+                guide={guide}
+                index={index}
+                saved={savedIds.includes(guide.id)}
+                progress={progress[guide.id] || 0}
+                toggleSaved={() => toggleSaved(guide.id)}
+                open={() => openGuide(guide)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="mt-12">
+        <SectionHeading
+          eyebrow="Explore"
+          title="Browse by category"
+          icon={Library}
+        />
+
+        <div className="mt-5 flex gap-3 overflow-x-auto pb-3">
+          <CategoryPill
+            label="All topics"
+            active={selectedCategory === "all"}
+            onClick={() => setSelectedCategory("all")}
+          />
+
+          {learnCategories.map((category) => (
+            <CategoryPill
+              key={category.id}
+              label={category.name}
+              active={selectedCategory === category.id}
+              onClick={() => setSelectedCategory(category.id)}
+            />
+          ))}
+        </div>
+
+        {!search && selectedCategory === "all" && (
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {learnCategories.map((category, index) => {
+              const Icon = iconMap[category.icon] || BookOpen;
+              const count = learnGuides.filter(
+                (guide) => guide.category === category.id,
+              ).length;
+
+              return (
+                <motion.button
+                  key={category.id}
+                  type="button"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.03 }}
+                  onClick={() => setSelectedCategory(category.id)}
+                  className="group rounded-[26px] border border-stone-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:border-pink-200 hover:shadow-lg"
+                >
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-pink-50 text-[#f43f72] transition group-hover:bg-[#f43f72] group-hover:text-white">
+                    <Icon size={21} />
+                  </div>
+
+                  <h3 className="mt-4 font-semibold leading-snug">
+                    {category.name}
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-5 text-stone-500">
+                    {category.description}
+                  </p>
+
+                  <p className="mt-4 text-xs font-medium text-[#f43f72]">
+                    {count} {count === 1 ? "guide" : "guides"}
+                  </p>
+                </motion.button>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      <section className="mt-12">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+          <SectionHeading
+            eyebrow={
+              search
+                ? "Search results"
+                : selectedCategory === "all"
+                  ? "SHE library"
+                  : "Selected topic"
+            }
+            title={
+              search
+                ? `Results for “${search}”`
+                : selectedCategory === "all"
+                  ? "All health guides"
+                  : getCategoryById(selectedCategory)?.name
+            }
+            icon={BookOpen}
+          />
+
+          <p className="text-sm text-stone-500">
+            {filteredGuides.length}{" "}
+            {filteredGuides.length === 1 ? "guide" : "guides"}
+          </p>
+        </div>
+
+        {filteredGuides.length > 0 ? (
+          <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {filteredGuides.map((guide, index) => (
+              <GuideCard
+                key={guide.id}
+                guide={guide}
+                index={index}
+                saved={savedIds.includes(guide.id)}
+                progress={progress[guide.id] || 0}
+                toggleSaved={() => toggleSaved(guide.id)}
+                open={() => openGuide(guide)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-5 rounded-[28px] border border-dashed border-pink-200 bg-pink-50/50 px-6 py-12 text-center">
+            <Search size={34} className="mx-auto text-[#f43f72]" />
+
+            <h3 className="mt-4 text-lg font-semibold">
+              No matching guide yet
+            </h3>
+
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-stone-500">
+              Try searching for a broader symptom, condition or category.
+              SHE’s library will continue growing.
+            </p>
+          </div>
+        )}
+      </section>
+
+      {(savedGuides.length > 0 || recentGuides.length > 0) && !search && (
+        <section className="mt-12 grid gap-6 lg:grid-cols-2">
+          {savedGuides.length > 0 && (
+            <CompactGuideList
+              title="Saved guides"
+              eyebrow="Your library"
+              guides={savedGuides.slice(0, 4)}
+              icon={Bookmark}
+              openGuide={openGuide}
+            />
+          )}
+
+          {recentGuides.length > 0 && (
+            <CompactGuideList
+              title="Recently viewed"
+              eyebrow="Pick up where you left off"
+              guides={recentGuides.slice(0, 4)}
+              icon={Clock3}
+              openGuide={openGuide}
+            />
+          )}
+        </section>
+      )}
+
+      <div className="mt-12 rounded-3xl bg-stone-50 px-6 py-5 text-xs leading-5 text-stone-500">
+        SHE Learn provides general educational information and does not
+        diagnose conditions or replace individual medical advice. Clinical
+        content and source links must be independently reviewed before public
+        launch.
+      </div>
+
+      <AnimatePresence>
+        {selectedGuide && (
+          <GuideModal
+            guide={selectedGuide}
+            saved={savedIds.includes(selectedGuide.id)}
+            progress={progress[selectedGuide.id] || 0}
+            close={closeGuide}
+            toggleSaved={() => toggleSaved(selectedGuide.id)}
+            markComplete={() => markComplete(selectedGuide.id)}
+          />
+        )}
+      </AnimatePresence>
+    </main>
+  );
+}
+
+function SummaryCard({ icon: Icon, label, value }) {
+  return (
+    <div className="rounded-3xl border border-stone-100 bg-white p-5 shadow-sm">
+      <div className="flex items-center justify-between">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-pink-50 text-[#f43f72]">
+          <Icon size={19} />
+        </div>
+
+        <p className="text-2xl font-semibold text-[#241f20]">
+          {value}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm text-stone-500">{label}</p>
+    </div>
+  );
+}
+
+function SectionHeading({ eyebrow, title, icon: Icon }) {
+  return (
+    <div>
+      <p className="flex items-center gap-2 text-sm font-medium text-[#f43f72]">
+        <Icon size={16} />
+        {eyebrow}
+      </p>
+
+      <h2 className="mt-2 text-2xl font-semibold tracking-tight md:text-3xl">
+        {title}
+      </h2>
+    </div>
+  );
+}
+
+function CategoryPill({ label, active, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`shrink-0 rounded-full px-4 py-2.5 text-sm transition ${
+        active
+          ? "bg-[#241f20] font-medium text-white"
+          : "border border-stone-200 bg-white text-stone-600 hover:border-pink-200 hover:bg-pink-50"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function ContinueCard({ guide, value, open }) {
+  return (
+    <button
+      type="button"
+      onClick={open}
+      className="rounded-[28px] border border-pink-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-medium text-[#f43f72]">
+            {guide.categoryLabel}
+          </p>
+
+          <h3 className="mt-2 text-xl font-semibold">{guide.title}</h3>
+        </div>
+
+        <ChevronRight size={20} className="text-stone-400" />
+      </div>
+
+      <div className="mt-5 h-2 overflow-hidden rounded-full bg-stone-100">
+        <div
+          className="h-full rounded-full bg-[#f43f72]"
+          style={{ width: `${value}%` }}
+        />
+      </div>
+
+      <p className="mt-2 text-xs text-stone-500">
+        {value}% complete
+      </p>
+    </button>
+  );
+}
+
+function GuideCard({
+  guide,
+  index,
+  saved,
+  progress,
+  toggleSaved,
+  open,
+}) {
+  const category = getCategoryById(guide.category);
+  const Icon = iconMap[category?.icon] || BookOpen;
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: Math.min(index * 0.025, 0.2) }}
+      className="group flex h-full flex-col rounded-[28px] border border-stone-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-pink-200 hover:shadow-xl"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-pink-50 text-[#f43f72] transition group-hover:bg-[#f43f72] group-hover:text-white">
+          <Icon size={22} />
+        </div>
+
+        <button
+          type="button"
+          onClick={toggleSaved}
+          className={`flex h-10 w-10 items-center justify-center rounded-full transition ${
+            saved
+              ? "bg-[#f43f72] text-white"
+              : "bg-stone-50 text-stone-500 hover:bg-pink-50 hover:text-[#f43f72]"
+          }`}
+          aria-label={saved ? "Remove saved guide" : "Save guide"}
+        >
+          <Bookmark
+            size={18}
+            fill={saved ? "currentColor" : "none"}
+          />
+        </button>
+      </div>
+
+      <p className="mt-5 text-xs font-medium text-[#f43f72]">
+        {guide.categoryLabel}
+      </p>
+
+      <h3 className="mt-2 text-xl font-semibold leading-snug">
+        {guide.title}
+      </h3>
+
+      {guide.subtitle && (
+        <p className="mt-1 text-xs font-medium text-stone-400">
+          {guide.subtitle}
+        </p>
+      )}
+
+      <p className="mt-3 flex-1 text-sm leading-6 text-stone-500">
+        {guide.summary}
+      </p>
+
+      <div className="mt-5 flex flex-wrap items-center gap-2">
+        <span className="flex items-center gap-1.5 rounded-full bg-stone-100 px-3 py-1.5 text-xs text-stone-600">
+          <Clock3 size={13} />
+          {guide.readTime} min
+        </span>
+
+        <span className="rounded-full bg-pink-50 px-3 py-1.5 text-xs font-medium text-[#f43f72]">
+          {guide.level}
+        </span>
+
+        {guide.popular && (
+          <span className="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700">
+            Popular
+          </span>
+        )}
+      </div>
+
+      {progress > 0 && (
+        <div className="mt-5">
+          <div className="h-1.5 overflow-hidden rounded-full bg-stone-100">
+            <div
+              className="h-full rounded-full bg-[#f43f72]"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          <p className="mt-2 text-xs text-stone-400">
+            {progress === 100 ? "Completed" : `${progress}% read`}
+          </p>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={open}
+        className="mt-5 flex items-center justify-between rounded-2xl bg-[#241f20] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#3a3335]"
+      >
+        Read guide
+        <ChevronRight size={17} />
+      </button>
+    </motion.article>
+  );
+}
+
+function CompactGuideList({
+  title,
+  eyebrow,
+  guides,
+  icon: Icon,
+  openGuide,
+}) {
+  return (
+    <section className="rounded-[30px] border border-stone-100 bg-white p-6 shadow-sm">
+      <p className="flex items-center gap-2 text-sm font-medium text-[#f43f72]">
+        <Icon size={16} />
+        {eyebrow}
+      </p>
+
+      <h2 className="mt-2 text-2xl font-semibold">{title}</h2>
+
+      <div className="mt-5 divide-y divide-stone-100">
+        {guides.map((guide) => (
+          <button
+            key={guide.id}
+            type="button"
+            onClick={() => openGuide(guide)}
+            className="flex w-full items-center justify-between gap-4 py-4 text-left"
+          >
+            <div>
+              <p className="font-medium">{guide.title}</p>
+              <p className="mt-1 text-xs text-stone-500">
+                {guide.categoryLabel} · {guide.readTime} min
+              </p>
+            </div>
+
+            <ChevronRight
+              size={18}
+              className="shrink-0 text-stone-400"
+            />
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function GuideModal({
+  guide,
+  saved,
+  progress,
+  close,
+  toggleSaved,
+  markComplete,
+}) {
+  const category = getCategoryById(guide.category);
+  const Icon = iconMap[category?.icon] || BookOpen;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 backdrop-blur-sm md:items-center md:p-6"
+      onClick={close}
+    >
+      <motion.article
+        initial={{ opacity: 0, y: 45, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 35, scale: 0.98 }}
+        onClick={(event) => event.stopPropagation()}
+        className="max-h-[95vh] w-full max-w-4xl overflow-y-auto rounded-t-[34px] bg-white shadow-2xl md:rounded-[34px]"
+      >
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-stone-100 bg-white/95 px-5 py-4 backdrop-blur-md md:px-8">
+          <button
+            type="button"
+            onClick={close}
+            className="flex items-center gap-2 text-sm font-medium text-stone-600"
+          >
+            <ArrowLeft size={18} />
+            Back to Learn
+          </button>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleSaved}
+              className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                saved
+                  ? "bg-[#f43f72] text-white"
+                  : "bg-stone-100 text-stone-600"
+              }`}
+            >
+              <Bookmark
+                size={18}
+                fill={saved ? "currentColor" : "none"}
+              />
+            </button>
+
+            <button
+              type="button"
+              onClick={close}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-stone-100 text-stone-600"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        </div>
+
+        <div className="px-6 pb-10 pt-8 md:px-10 md:pb-12">
+          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-pink-50 text-[#f43f72]">
+            <Icon size={29} />
+          </div>
+
+          <p className="mt-6 text-sm font-medium text-[#f43f72]">
+            {guide.categoryLabel}
+          </p>
+
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl">
+            {guide.title}
+          </h1>
+
+          {guide.subtitle && (
+            <p className="mt-2 text-lg font-medium text-stone-500">
+              {guide.subtitle}
+            </p>
+          )}
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            <span className="flex items-center gap-1.5 rounded-full bg-stone-100 px-3 py-2 text-xs text-stone-600">
+              <Clock3 size={14} />
+              {guide.readTime} minute read
+            </span>
+
+            <span className="rounded-full bg-pink-50 px-3 py-2 text-xs font-medium text-[#f43f72]">
+              {guide.level}
+            </span>
+          </div>
+
+          <div className="mt-7">
+            <div className="flex items-center justify-between text-xs text-stone-500">
+              <span>Reading progress</span>
+              <span>{progress}%</span>
+            </div>
+
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-stone-100">
+              <div
+                className="h-full rounded-full bg-[#f43f72] transition-all"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+
+          <section className="mt-9 rounded-[28px] bg-[#fff8fa] p-6 md:p-8">
+            <h2 className="text-2xl font-semibold">
+              What is {guide.title}?
+            </h2>
+
+            <p className="mt-4 text-base leading-8 text-stone-600">
+              {guide.overview}
+            </p>
+          </section>
+
+          <section className="mt-9">
+            <ContentHeading
+              icon={BookOpen}
+              title="Key things to know"
+            />
+
+            <div className="mt-5 grid gap-3">
+              {guide.keyPoints.map((point) => (
+                <PointCard key={point} text={point} />
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-9 rounded-[28px] border border-amber-100 bg-amber-50/60 p-6 md:p-8">
+            <ContentHeading
+              icon={Stethoscope}
+              title="When to seek medical advice"
+            />
+
+            <div className="mt-5 space-y-3">
+              {guide.seekHelp.map((point) => (
+                <div
+                  key={point}
+                  className="flex items-start gap-3 text-sm leading-6 text-stone-700"
+                >
+                  <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-amber-500" />
+                  {point}
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-5 text-xs leading-5 text-stone-500">
+              Seek urgent medical assistance for severe, sudden or
+              life-threatening symptoms.
+            </p>
+          </section>
+
+          <section className="mt-9">
+            <ContentHeading
+              icon={FileQuestion}
+              title="Questions for your clinician"
+            />
+
+            <div className="mt-5 grid gap-3">
+              {guide.questions.map((question, index) => (
+                <div
+                  key={question}
+                  className="flex items-start gap-4 rounded-2xl border border-stone-100 bg-white p-5 shadow-sm"
+                >
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-50 text-sm font-semibold text-[#f43f72]">
+                    {index + 1}
+                  </span>
+
+                  <p className="pt-1 text-sm leading-6 text-stone-700">
+                    {question}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-9 rounded-[28px] bg-stone-50 p-6">
+            <h2 className="text-lg font-semibold">
+              Related symptoms and topics
+            </h2>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {guide.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-stone-200 bg-white px-3 py-2 text-xs text-stone-600"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </section>
+
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={markComplete}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-medium ${
+                progress === 100
+                  ? "bg-emerald-50 text-emerald-700"
+                  : "bg-[#241f20] text-white"
+              }`}
+            >
+              <Check size={18} />
+              {progress === 100
+                ? "Guide completed"
+                : "Mark as complete"}
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleSaved}
+              className="flex flex-1 items-center justify-center gap-2 rounded-full border border-pink-200 px-6 py-4 text-sm font-medium text-[#f43f72]"
+            >
+              <Bookmark
+                size={18}
+                fill={saved ? "currentColor" : "none"}
+              />
+              {saved ? "Saved to your library" : "Save this guide"}
+            </button>
+          </div>
+
+          <div className="mt-7 rounded-2xl bg-pink-50 p-4 text-xs leading-5 text-stone-500">
+            This is general educational content, not a diagnosis or individual
+            treatment recommendation. All clinical copy and source links
+            should be independently reviewed before SHE is publicly released.
+          </div>
+        </div>
+      </motion.article>
+    </motion.div>
+  );
+}
+
+function ContentHeading({ icon: Icon, title }) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-pink-50 text-[#f43f72]">
+        <Icon size={19} />
+      </div>
+
+      <h2 className="text-2xl font-semibold">{title}</h2>
+    </div>
+  );
+}
+
+function PointCard({ text }) {
+  return (
+    <div className="flex items-start gap-3 rounded-2xl border border-stone-100 bg-white p-5 shadow-sm">
+      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-pink-50 text-[#f43f72]">
+        <Check size={14} />
+      </span>
+
+      <p className="text-sm leading-6 text-stone-700">{text}</p>
+    </div>
+  );
+}

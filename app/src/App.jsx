@@ -1,0 +1,100 @@
+import { useState } from "react";
+import { BookOpen, MapPin, ShoppingBag, User } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import Header from "./components/Header";
+import BottomNavigation from "./components/BottomNavigation";
+import DesktopSidebar from "./components/DesktopSidebar";
+import ChatPage from "./pages/ChatPage";
+import PlaceholderPage from "./pages/PlaceholderPage";
+import ProductsPage from "./pages/ProductsPage";
+
+import ServicesPage from "./pages/ServicesPage";
+import SHEIntelligencePage from "./pages/SHEIntelligencePage";
+import ProfilePage from "./pages/ProfilePage";
+export default function App() {
+  const [activeTab, setActiveTab] = useState("chat");
+  const [conversation, setConversation] = useState([]);
+  const [recentChats, setRecentChats] = useState([]);
+
+  function navigate(tab) {
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function newChat() {
+    setConversation([]);
+    navigate("chat");
+  }
+
+  function saveConversation(question, messages) {
+    setRecentChats((current) => {
+      const newChatEntry = {
+        id: Date.now(),
+        title:
+          question.length > 34
+            ? `${question.slice(0, 34)}...`
+            : question,
+        messages,
+      };
+
+      return [
+        newChatEntry,
+        ...current.filter((chat) => chat.title !== newChatEntry.title),
+      ].slice(0, 6);
+    });
+  }
+
+  function openRecentChat(chat) {
+    setConversation(chat.messages);
+    navigate("chat");
+  }
+
+  return (
+    <div className="min-h-screen bg-[#fffdfc] text-[#241f20]">
+      <DesktopSidebar
+        activeTab={activeTab}
+        navigate={navigate}
+        recentChats={recentChats}
+        newChat={newChat}
+        openRecentChat={openRecentChat}
+      />
+
+      <div className="lg:pl-72">
+        <div className="lg:hidden">
+          <Header onProfile={() => navigate("profile")} />
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22 }}
+          >
+            {activeTab === "chat" && (
+              <ChatPage
+                conversation={conversation}
+                setConversation={setConversation}
+                saveConversation={saveConversation}
+              />
+            )}
+
+            {activeTab === "products" && <ProductsPage />}
+
+            {activeTab === "services" && <ServicesPage />}
+
+
+            {activeTab === "education" && <SHEIntelligencePage onOpenChat={(prompt) => { if (prompt) window.localStorage.setItem("she-pending-chat-prompt", prompt); setActiveTab("chat"); }} />}
+
+            {activeTab === "profile" && <ProfilePage />}
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="lg:hidden">
+          <BottomNavigation activeTab={activeTab} navigate={navigate} />
+        </div>
+      </div>
+    </div>
+  );
+}

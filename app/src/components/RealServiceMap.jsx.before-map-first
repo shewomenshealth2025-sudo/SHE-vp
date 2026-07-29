@@ -1,0 +1,114 @@
+import { useEffect } from "react";
+import {
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMap,
+} from "react-leaflet";
+import L from "leaflet";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
+function FitVisibleMarkers({ services }) {
+  const map = useMap();
+
+  useEffect(() => {
+    const positions = services
+      .map((service) => service.coordinates)
+      .filter(Boolean);
+
+    if (positions.length === 1) {
+      map.setView(positions[0], 13);
+      return;
+    }
+
+    if (positions.length > 1) {
+      map.fitBounds(positions, {
+        padding: [45, 45],
+        maxZoom: 11,
+      });
+    }
+  }, [services, map]);
+
+  return null;
+}
+
+export default function RealServiceMap({
+  services,
+  selectService,
+}) {
+  return (
+    <div className="overflow-hidden rounded-[32px] border border-pink-100 bg-white shadow-sm">
+      <MapContainer
+        center={[54.75, -6.2]}
+        zoom={8}
+        scrollWheelZoom
+        className="h-[620px] w-full"
+      >
+        <TileLayer
+          attribution="&copy; OpenStreetMap contributors"
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={19}
+        />
+
+        <FitVisibleMarkers services={services} />
+
+        {services.map((service) => (
+          <Marker
+            key={service.id}
+            position={service.coordinates}
+          >
+            <Popup>
+              <div className="min-w-56">
+                <p className="text-xs font-semibold text-[#f43f72]">
+                  {service.type} · {service.topic}
+                </p>
+
+                <h3 className="mt-1 font-semibold">
+                  {service.name}
+                </h3>
+
+                <p className="mt-1 text-sm">
+                  {service.speciality}
+                </p>
+
+                <p className="mt-2 text-xs leading-5 text-stone-500">
+                  {service.referral.route}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => selectService(service)}
+                  className="mt-3 rounded-full bg-[#f43f72] px-3 py-2 text-xs font-medium text-white"
+                >
+                  Open full profile
+                </button>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+
+      <div className="border-t border-pink-100 bg-white px-5 py-4">
+        <p className="text-sm font-semibold">
+          Women’s health services and pathways
+        </p>
+
+        <p className="mt-1 text-xs leading-5 text-stone-500">
+          Only women’s-health-relevant services in the SHE directory are
+          shown. Service details must be verified before public launch.
+        </p>
+      </div>
+    </div>
+  );
+}
