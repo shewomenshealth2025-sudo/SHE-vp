@@ -1,32 +1,186 @@
 import {
   ArrowLeft,
   ArrowRight,
-  ArrowUpDown,
   Check,
   ChevronDown,
   ExternalLink,
   Heart,
+  Menu,
   Search,
-  ShieldCheck,
   SlidersHorizontal,
-  Sparkles,
   Star,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  productCategories,
-  productCount,
-  products,
-} from "../data/products";
+import { products, productCount } from "../data/products";
 
-const currencyFormatter = new Intl.NumberFormat("en-GB", {
+const money = new Intl.NumberFormat("en-GB", {
   style: "currency",
   currency: "GBP",
   minimumFractionDigits: 2,
 });
 
-function loadSavedProducts() {
+const categoryDirectory = [
+  {
+    group: "Periods & menstrual health",
+    items: [
+      { label: "All period products", categories: ["Period care"] },
+      { label: "Pads & towels", terms: ["pad", "towel"] },
+      { label: "Tampons", terms: ["tampon"] },
+      { label: "Period underwear", terms: ["period underwear", "brief"] },
+      { label: "Menstrual cups", terms: ["menstrual cup", "mooncup"] },
+      { label: "Menstrual discs", terms: ["menstrual disc", "disc"] },
+      { label: "Reusable period care", reusable: true, categories: ["Period care"] },
+      { label: "Heavy-period support", terms: ["heavy", "high capacity"] },
+      { label: "Period pain relief", categories: ["Pelvic pain"] },
+      { label: "Heat therapy", terms: ["heat", "hot-water"] },
+      { label: "TENS devices", terms: ["tens", "electrical"] },
+    ],
+  },
+  {
+    group: "Intimate & sexual health",
+    items: [
+      { label: "Intimate care", categories: ["Intimate care"] },
+      { label: "Vaginal dryness", terms: ["dryness", "moisturiser"] },
+      { label: "Lubricants", terms: ["lubricant"] },
+      { label: "Thrush treatment", terms: ["thrush", "clotrimazole"] },
+      { label: "Bacterial vaginosis", terms: ["bacterial vaginosis", "bv"] },
+      { label: "Sensitive vulval care", terms: ["vulval", "emollient"] },
+      { label: "Sexual wellbeing", terms: ["sexual", "intimate"] },
+      { label: "Contraception essentials", terms: ["contraception", "condom"] },
+      { label: "Emergency contraception", terms: ["morning after"] },
+      { label: "STI testing", terms: ["sti", "sexual health test"] },
+    ],
+  },
+  {
+    group: "Fertility & conception",
+    items: [
+      { label: "All fertility products", categories: ["Fertility"] },
+      { label: "Ovulation tests", terms: ["ovulation"] },
+      { label: "Cycle tracking", terms: ["cycle", "basal", "temperature"] },
+      { label: "Fertility monitors", terms: ["fertility monitor", "mira"] },
+      { label: "Trying-to-conceive supplements", terms: ["folic acid", "prenatal"] },
+      { label: "Fertility-friendly lubricants", terms: ["fertility-friendly"] },
+      { label: "Pregnancy tests", terms: ["pregnancy test"] },
+    ],
+  },
+  {
+    group: "Pregnancy",
+    items: [
+      { label: "All pregnancy products", categories: ["Pregnancy"] },
+      { label: "Pregnancy vitamins", terms: ["pregnancy multivitamin", "pregnacare"] },
+      { label: "Folic acid", terms: ["folic acid"] },
+      { label: "Pregnancy pillows", terms: ["pregnancy pillow"] },
+      { label: "Pelvic support belts", terms: ["support belt"] },
+      { label: "Morning-sickness support", terms: ["nausea", "wristband"] },
+      { label: "Pregnancy monitoring", terms: ["blood pressure", "thermometer"] },
+      { label: "Maternity comfort", categories: ["Pregnancy"] },
+    ],
+  },
+  {
+    group: "Postpartum & feeding",
+    items: [
+      { label: "All postpartum products", categories: ["Postpartum"] },
+      { label: "Post-birth recovery", terms: ["peri bottle", "postpartum"] },
+      { label: "Breast pumps", terms: ["breast pump", "pump"] },
+      { label: "Wearable breast pumps", terms: ["wearable breast pump"] },
+      { label: "Manual breast pumps", terms: ["manual breast pump"] },
+      { label: "Nipple care", terms: ["nipple", "lanolin"] },
+      { label: "Milk collection", terms: ["milk", "haakaa"] },
+      { label: "Breastfeeding support", terms: ["breastfeeding", "nursing"] },
+    ],
+  },
+  {
+    group: "Menopause",
+    items: [
+      { label: "All menopause products", categories: ["Menopause"] },
+      { label: "Hot-flush relief", terms: ["hot flush", "cooling", "fan"] },
+      { label: "Night-sweat support", terms: ["cooling pillow", "night"] },
+      { label: "Vaginal moisturisers", terms: ["vaginal moisturiser"] },
+      { label: "Menopause supplements", terms: ["menopause supplement"] },
+      { label: "Sleep support", terms: ["sleep"] },
+      { label: "Menopause testing", terms: ["menopause stage"] },
+      { label: "Bone-health support", terms: ["vitamin d", "bone"] },
+    ],
+  },
+  {
+    group: "Bladder & pelvic health",
+    items: [
+      { label: "All bladder care", categories: ["Bladder health"] },
+      { label: "Bladder-leak pads", terms: ["incontinence pad", "bladder leak"] },
+      { label: "Pelvic-floor trainers", terms: ["pelvic floor trainer"] },
+      { label: "Pelvic-floor apps", terms: ["pelvic floor app", "squeezy"] },
+      { label: "Pelvic-pain support", categories: ["Pelvic pain"] },
+      { label: "UTI support", terms: ["urinary", "uti"] },
+      { label: "Cystitis care", terms: ["cystitis"] },
+    ],
+  },
+  {
+    group: "Breast health & bras",
+    items: [
+      { label: "Bra fitting & sizing", terms: ["bra", "fitting", "size"] },
+      { label: "Everyday bras", terms: ["everyday bra"] },
+      { label: "Sports bras", terms: ["sports bra"] },
+      { label: "Maternity bras", terms: ["maternity bra"] },
+      { label: "Nursing bras", terms: ["nursing bra"] },
+      { label: "Post-surgery bras", terms: ["post-surgery bra"] },
+      { label: "Breast forms & prostheses", terms: ["breast form", "prosthesis"] },
+      { label: "Breast-care accessories", terms: ["breast care"] },
+      { label: "Breast self-check tools", terms: ["breast check"] },
+    ],
+  },
+  {
+    group: "Hair, skin & body",
+    items: [
+      { label: "Women’s hair loss", terms: ["hair loss"] },
+      { label: "Hormonal skin care", terms: ["hormonal skin"] },
+      { label: "Sensitive skin", terms: ["sensitive skin"] },
+      { label: "Dry skin", terms: ["dry skin", "moisturiser"] },
+      { label: "Body care", terms: ["body cream", "body moisturiser"] },
+      { label: "Acne care", terms: ["acne"] },
+      { label: "Scalp care", terms: ["scalp"] },
+      { label: "Hair supplements", terms: ["hair supplement"] },
+    ],
+  },
+  {
+    group: "Vitamins & supplements",
+    items: [
+      { label: "All supplements", categories: ["Supplements"] },
+      { label: "Vitamin D", terms: ["vitamin d"] },
+      { label: "Iron", terms: ["iron", "feroglobin", "spatone"] },
+      { label: "Vitamin B12", terms: ["b12"] },
+      { label: "Magnesium", terms: ["magnesium"] },
+      { label: "Omega-3", terms: ["omega-3"] },
+      { label: "Probiotics", terms: ["probiotic"] },
+      { label: "Pregnancy supplements", terms: ["pregnancy multivitamin", "prenatal"] },
+      { label: "Menopause supplements", terms: ["menopause supplement"] },
+    ],
+  },
+  {
+    group: "Monitoring & everyday health",
+    items: [
+      { label: "All everyday health", categories: ["Everyday health"] },
+      { label: "Blood-pressure monitors", terms: ["blood pressure"] },
+      { label: "Thermometers", terms: ["thermometer"] },
+      { label: "Pulse oximeters", terms: ["pulse oximeter"] },
+      { label: "Migraine support", terms: ["migraine", "headache"] },
+      { label: "Sleep support", terms: ["sleep"] },
+      { label: "Compression socks", terms: ["compression socks"] },
+      { label: "Home health devices", categories: ["Everyday health"] },
+    ],
+  },
+];
+
+const featuredCategoryLinks = [
+  { label: "Period care", categories: ["Period care"] },
+  { label: "Pelvic pain", categories: ["Pelvic pain"] },
+  { label: "Fertility", categories: ["Fertility"] },
+  { label: "Pregnancy", categories: ["Pregnancy"] },
+  { label: "Postpartum", categories: ["Postpartum"] },
+  { label: "Menopause", categories: ["Menopause"] },
+];
+
+function getSaved() {
   try {
     return JSON.parse(localStorage.getItem("she-saved-products") || "[]");
   } catch {
@@ -34,129 +188,108 @@ function loadSavedProducts() {
   }
 }
 
-function scoreStyle(score) {
-  if (score >= 8.7) return "bg-emerald-50 text-emerald-700";
-  if (score >= 8) return "bg-[#fff0f5] text-[#e93368]";
-  if (score >= 7) return "bg-amber-50 text-amber-700";
-  return "bg-stone-100 text-stone-600";
+function productText(product) {
+  return [
+    product.name,
+    product.brand,
+    product.category,
+    product.description,
+    product.badge,
+    product.suitableFor,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
 }
 
-function ProductImage({ product, large = false }) {
-  return (
-    <div
-      className={`relative overflow-hidden bg-[#fff6f8] ${
-        large
-          ? "aspect-[4/3] rounded-[28px]"
-          : "aspect-[4/3] rounded-t-[22px]"
-      }`}
-    >
-      <img
-        src={product.image}
-        alt={product.name}
-        className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
-      />
+function matchesSelection(product, selection) {
+  if (!selection) return true;
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+  if (
+    selection.categories?.length &&
+    !selection.categories.includes(product.category)
+  ) {
+    return false;
+  }
 
-      <div className="absolute bottom-3 left-3 flex h-10 w-10 items-center justify-center rounded-xl border border-white/70 bg-white/90 font-semibold text-[#f43f72] shadow-sm backdrop-blur">
-        {product.icon}
-      </div>
-    </div>
-  );
+  if (selection.reusable && !product.reusable) {
+    return false;
+  }
+
+  if (selection.terms?.length) {
+    const text = productText(product);
+    return selection.terms.some((term) =>
+      text.includes(term.toLowerCase()),
+    );
+  }
+
+  return true;
 }
 
-function Rating({ product }) {
+function ProductCard({ product, saved, onSave, onOpen }) {
   return (
-    <div className="flex items-center gap-1.5 text-xs text-stone-500">
-      <Star size={13} className="fill-amber-400 text-amber-400" />
-      <span className="font-medium text-stone-700">
-        {product.rating.toFixed(1)}
-      </span>
-      <span>({product.reviews.toLocaleString("en-GB")})</span>
-    </div>
-  );
-}
+    <article className="group overflow-hidden border border-stone-200 bg-white transition hover:border-[#efbdd0] hover:shadow-[0_12px_30px_rgba(52,35,41,0.06)]">
+      <div className="relative aspect-square overflow-hidden bg-[#f8f5f6]">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
+        />
 
-function CompactProductCard({
-  product,
-  saved,
-  compareMode,
-  compared,
-  onSave,
-  onOpen,
-  onCompare,
-}) {
-  return (
-    <article
-      className={`group relative flex h-full flex-col overflow-hidden rounded-[22px] border bg-white transition ${
-        compared
-          ? "border-[#f43f72] ring-2 ring-[#f43f72]/10"
-          : "border-[#f1e1e6] hover:-translate-y-0.5 hover:border-[#efbdd0]"
-      }`}
-    >
-      {compareMode && (
+        {product.badge && (
+          <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1.5 text-[11px] font-medium text-[#e93368] shadow-sm">
+            {product.badge}
+          </span>
+        )}
+
         <button
           type="button"
-          onClick={() => onCompare(product)}
-          className={`absolute left-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur ${
-            compared
-              ? "border-[#f43f72] bg-[#f43f72] text-white"
-              : "border-white/80 bg-white/90 text-stone-500"
-          }`}
-          aria-label={`Compare ${product.name}`}
+          onClick={() => onSave(product.id)}
+          className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-500 shadow-sm"
+          aria-label={`Save ${product.name}`}
         >
-          {compared ? <Check size={16} /> : <ArrowUpDown size={15} />}
+          <Heart
+            size={18}
+            className={saved ? "fill-current text-[#f43f72]" : ""}
+          />
         </button>
-      )}
+      </div>
 
-      <button
-        type="button"
-        onClick={() => onSave(product.id)}
-        className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/80 bg-white/90 text-stone-500 shadow-sm backdrop-blur hover:text-[#f43f72]"
-        aria-label={`Save ${product.name}`}
-      >
-        <Heart
-          size={16}
-          className={saved ? "fill-current text-[#f43f72]" : ""}
-        />
-      </button>
-
-      <button type="button" onClick={() => onOpen(product)}>
-        <ProductImage product={product} />
-      </button>
-
-      <div className="flex flex-1 flex-col p-4">
-        <div className="flex items-start justify-between gap-3">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-stone-400">
+      <div className="p-5">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-400">
             {product.brand}
           </p>
 
-          <Rating product={product} />
+          <div className="flex items-center gap-1 text-xs text-stone-500">
+            <Star size={13} className="fill-amber-400 text-amber-400" />
+            {product.rating.toFixed(1)}
+          </div>
         </div>
 
         <button
           type="button"
           onClick={() => onOpen(product)}
-          className="mt-2 text-left"
+          className="mt-3 block min-h-12 text-left"
         >
-          <h3 className="line-clamp-2 text-[16px] font-semibold leading-5 text-[#211d1f] transition group-hover:text-[#e93368]">
+          <h3 className="line-clamp-2 text-[17px] font-semibold leading-6 text-[#211d1f] group-hover:text-[#e93368]">
             {product.name}
           </h3>
         </button>
 
-        <div className="mt-auto flex items-end justify-between gap-3 pt-5">
+        <p className="mt-3 line-clamp-2 text-sm leading-6 text-stone-500">
+          {product.description}
+        </p>
+
+        <div className="mt-5 flex items-end justify-between gap-4">
           <div>
-            <p className="text-[10px] text-stone-400">From</p>
-            <p className="mt-0.5 text-lg font-semibold text-[#211d1f]">
-              {currencyFormatter.format(product.price)}
+            <p className="text-[11px] text-stone-400">From</p>
+            <p className="mt-1 text-xl font-semibold">
+              {money.format(product.price)}
             </p>
           </div>
 
-          <span
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${scoreStyle(
-              product.score,
-            )}`}
-          >
+          <span className="rounded-full bg-[#fff0f5] px-3 py-1.5 text-xs font-semibold text-[#e93368]">
             SHE {product.score.toFixed(1)}
           </span>
         </div>
@@ -164,7 +297,7 @@ function CompactProductCard({
         <button
           type="button"
           onClick={() => onOpen(product)}
-          className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#211d1f] px-4 py-3 text-sm font-medium text-white transition hover:bg-black"
+          className="mt-5 flex w-full items-center justify-center gap-2 bg-[#211d1f] px-4 py-3 text-sm font-medium text-white transition hover:bg-black"
         >
           View product
           <ArrowRight size={15} />
@@ -174,124 +307,30 @@ function CompactProductCard({
   );
 }
 
-function CollectionSection({
-  title,
-  description,
-  products: sectionProducts,
-  onViewAll,
-  cardProps,
-}) {
-  if (!sectionProducts.length) return null;
-
-  return (
-    <section className="mt-14">
-      <div className="flex items-end justify-between gap-6">
-        <div>
-          <h2 className="text-2xl font-semibold tracking-tight text-[#211d1f]">
-            {title}
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-stone-500">
-            {description}
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={onViewAll}
-          className="hidden items-center gap-2 text-sm font-medium text-[#e93368] sm:flex"
-        >
-          View all
-          <ArrowRight size={15} />
-        </button>
-      </div>
-
-      <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {sectionProducts.slice(0, 4).map((product) => (
-          <CompactProductCard
-            key={product.id}
-            product={product}
-            {...cardProps(product)}
-          />
-        ))}
-      </div>
-
-      <button
-        type="button"
-        onClick={onViewAll}
-        className="mt-5 flex items-center gap-2 text-sm font-medium text-[#e93368] sm:hidden"
-      >
-        View all
-        <ArrowRight size={15} />
-      </button>
-    </section>
-  );
-}
-
-function CategoryTile({ category, count, onClick }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group flex min-h-[150px] flex-col justify-between rounded-[22px] border border-[#f1e1e6] bg-white p-5 text-left transition hover:-translate-y-0.5 hover:border-[#efbdd0] hover:shadow-[0_14px_35px_rgba(52,35,41,0.05)]"
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#fff0f5] text-lg font-semibold text-[#f43f72]">
-          {category.icon}
-        </div>
-
-        <ArrowRight
-          size={17}
-          className="text-stone-300 transition group-hover:translate-x-1 group-hover:text-[#f43f72]"
-        />
-      </div>
-
-      <div>
-        <h3 className="font-semibold text-[#211d1f]">{category.name}</h3>
-        <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-stone-500">
-          {category.description}
-        </p>
-        <p className="mt-3 text-xs font-medium text-[#e93368]">
-          {count} products
-        </p>
-      </div>
-    </button>
-  );
-}
-
-function DetailModal({
-  product,
-  saved,
-  compared,
-  onClose,
-  onSave,
-  onCompare,
-}) {
-  const [tab, setTab] = useState("Overview");
-
+function ProductModal({ product, saved, onSave, onClose }) {
   useEffect(() => {
-    function closeOnEscape(event) {
-      if (event.key === "Escape") onClose();
-    }
-
-    window.addEventListener("keydown", closeOnEscape);
     document.body.style.overflow = "hidden";
 
+    const close = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", close);
+
     return () => {
-      window.removeEventListener("keydown", closeOnEscape);
       document.body.style.overflow = "";
+      window.removeEventListener("keydown", close);
     };
   }, [onClose]);
 
-  const tabs = ["Overview", "Evidence", "Safety", "Retailers"];
-
   return (
-    <div className="fixed inset-0 z-[1000] flex items-end justify-center bg-black/35 p-0 backdrop-blur-sm md:items-center md:p-6">
-      <div className="max-h-[94vh] w-full max-w-5xl overflow-y-auto rounded-t-[30px] bg-white shadow-2xl md:rounded-[30px]">
-        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-stone-100 bg-white/95 px-5 py-4 backdrop-blur md:px-8">
+    <div className="fixed inset-0 z-[1000] flex items-end justify-center bg-black/40 backdrop-blur-sm md:items-center md:p-6">
+      <div className="max-h-[94vh] w-full max-w-5xl overflow-y-auto rounded-t-[28px] bg-white shadow-2xl md:rounded-[28px]">
+        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-stone-100 bg-white/95 px-5 py-4 backdrop-blur">
           <button
             type="button"
             onClick={onClose}
-            className="flex items-center gap-2 text-sm font-medium text-stone-500 hover:text-stone-900"
+            className="flex items-center gap-2 text-sm font-medium text-stone-500"
           >
             <ArrowLeft size={17} />
             Back
@@ -300,280 +339,178 @@ function DetailModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-stone-100 text-stone-600"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-stone-100"
           >
             <X size={18} />
           </button>
         </div>
 
-        <div className="grid gap-9 p-5 md:grid-cols-[0.88fr_1.12fr] md:p-8">
-          <ProductImage product={product} large />
+        <div className="grid gap-9 p-6 md:grid-cols-2 md:p-9">
+          <div className="aspect-square overflow-hidden bg-stone-100">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="h-full w-full object-cover"
+            />
+          </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-stone-400">
               {product.brand}
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#211d1f]">
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight">
               {product.name}
             </h1>
 
             <div className="mt-4 flex flex-wrap items-center gap-3">
-              <Rating product={product} />
+              <div className="flex items-center gap-1.5 text-sm text-stone-500">
+                <Star size={15} className="fill-amber-400 text-amber-400" />
+                {product.rating.toFixed(1)}
+                <span>({product.reviews.toLocaleString("en-GB")})</span>
+              </div>
 
-              <span
-                className={`rounded-full px-3 py-1.5 text-xs font-semibold ${scoreStyle(
-                  product.score,
-                )}`}
-              >
+              <span className="rounded-full bg-[#fff0f5] px-3 py-1.5 text-xs font-semibold text-[#e93368]">
                 SHE Score {product.score.toFixed(1)}
               </span>
             </div>
 
-            <p className="mt-5 text-base leading-7 text-stone-600">
+            <p className="mt-6 text-base leading-7 text-stone-600">
               {product.description}
             </p>
 
-            <div className="mt-6 flex items-end justify-between rounded-2xl bg-[#fff7f9] p-5">
-              <div>
-                <p className="text-xs text-stone-400">Price from</p>
-                <p className="mt-1 text-3xl font-semibold text-[#211d1f]">
-                  {currencyFormatter.format(product.price)}
-                </p>
+            <p className="mt-7 text-3xl font-semibold">
+              {money.format(product.price)}
+            </p>
+
+            <button
+              type="button"
+              onClick={() => onSave(product.id)}
+              className="mt-5 flex w-full items-center justify-center gap-2 border border-[#efbdd0] px-4 py-3 text-sm font-medium text-[#e93368]"
+            >
+              <Heart
+                size={17}
+                className={saved ? "fill-current" : ""}
+              />
+              {saved ? "Saved" : "Save product"}
+            </button>
+
+            <div className="mt-8 space-y-4">
+              <Info title="Who it may suit" text={product.suitableFor} />
+              <Info title="Who it may not suit" text={product.notFor} />
+              <Info title="How to use it" text={product.howToUse} />
+              <Info title="Evidence summary" text={product.evidence} />
+              <Info title="Safety" text={product.safety} />
+            </div>
+
+            <div className="mt-8">
+              <h2 className="font-semibold">Where to buy</h2>
+
+              <div className="mt-3 space-y-2">
+                {product.retailers.map((retailer) => (
+                  <button
+                    key={retailer}
+                    type="button"
+                    className="flex w-full items-center justify-between border border-stone-200 px-4 py-3 text-left text-sm"
+                  >
+                    {retailer}
+                    <ExternalLink size={15} className="text-stone-400" />
+                  </button>
+                ))}
               </div>
-
-              <span className="rounded-full bg-white px-3 py-1.5 text-xs font-medium text-stone-500">
-                {product.category}
-              </span>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => onSave(product.id)}
-                className="flex items-center justify-center gap-2 rounded-xl border border-[#efc7d4] px-4 py-3 text-sm font-medium text-[#e93368]"
-              >
-                <Heart
-                  size={17}
-                  className={saved ? "fill-current" : ""}
-                />
-                {saved ? "Saved" : "Save"}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => onCompare(product)}
-                className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-medium ${
-                  compared
-                    ? "bg-[#fff0f5] text-[#e93368]"
-                    : "bg-[#211d1f] text-white"
-                }`}
-              >
-                <ArrowUpDown size={16} />
-                {compared ? "Selected" : "Compare"}
-              </button>
-            </div>
-
-            <div className="mt-8 flex gap-6 overflow-x-auto border-b border-stone-100">
-              {tabs.map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => setTab(item)}
-                  className={`border-b-2 pb-3 text-sm font-medium ${
-                    tab === item
-                      ? "border-[#f43f72] text-[#e93368]"
-                      : "border-transparent text-stone-400"
-                  }`}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-
-            <div className="pt-6">
-              {tab === "Overview" && (
-                <div className="space-y-4">
-                  <InformationBlock
-                    title="Who it may suit"
-                    text={product.suitableFor}
-                  />
-                  <InformationBlock
-                    title="Who it may not suit"
-                    text={product.notFor}
-                  />
-                  <InformationBlock
-                    title="How to use it"
-                    text={product.howToUse}
-                  />
-
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <ListBlock title="What we like" items={product.pros} />
-                    <ListBlock
-                      title="Things to consider"
-                      items={product.cons}
-                      neutral
-                    />
-                  </div>
-                </div>
-              )}
-
-              {tab === "Evidence" && (
-                <InformationBlock
-                  title="What the evidence says"
-                  text={product.evidence}
-                />
-              )}
-
-              {tab === "Safety" && (
-                <InformationBlock
-                  title="Safety considerations"
-                  text={product.safety}
-                />
-              )}
-
-              {tab === "Retailers" && (
-                <div className="space-y-3">
-                  {product.retailers.map((retailer) => (
-                    <button
-                      key={retailer}
-                      type="button"
-                      className="flex w-full items-center justify-between rounded-2xl border border-stone-200 px-5 py-4 text-left transition hover:border-[#efbdd0] hover:bg-[#fff8fa]"
-                    >
-                      <div>
-                        <p className="font-medium text-[#211d1f]">
-                          {retailer}
-                        </p>
-                        <p className="mt-1 text-xs text-stone-400">
-                          Check current price and availability
-                        </p>
-                      </div>
-                      <ExternalLink size={17} className="text-stone-400" />
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
-        </div>
-
-        <div className="border-t border-stone-100 bg-[#fffafa] px-5 py-5 text-xs leading-5 text-stone-500 md:px-8">
-          SHE provides general product information, not individual
-          medical advice. Prices and availability shown in this MVP
-          require confirmation with the retailer.
         </div>
       </div>
     </div>
   );
 }
 
-function InformationBlock({ title, text }) {
+function Info({ title, text }) {
   return (
-    <div className="rounded-2xl border border-stone-100 p-5">
-      <h3 className="font-semibold text-[#211d1f]">{title}</h3>
+    <div className="border-t border-stone-100 pt-4">
+      <h3 className="text-sm font-semibold">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-stone-600">{text}</p>
     </div>
   );
 }
 
-function ListBlock({ title, items, neutral = false }) {
+function CategoryDirectory({
+  selected,
+  onSelect,
+  mobile = false,
+  onClose,
+}) {
   return (
-    <div className="rounded-2xl bg-stone-50 p-5">
-      <h3 className="font-semibold text-[#211d1f]">{title}</h3>
-      <div className="mt-4 space-y-3">
-        {items.map((item) => (
-          <div
-            key={item}
-            className="flex items-start gap-2.5 text-sm leading-5 text-stone-600"
+    <div className={mobile ? "h-full overflow-y-auto px-5 pb-10" : ""}>
+      {mobile && (
+        <div className="sticky top-0 z-10 flex items-center justify-between bg-white py-5">
+          <h2 className="text-lg font-semibold">Categories</h2>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-stone-100"
           >
-            {neutral ? (
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-stone-400" />
-            ) : (
-              <Check
-                size={15}
-                className="mt-0.5 shrink-0 text-emerald-600"
-              />
-            )}
-            <span>{item}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function CompareBar({ selected, onClear, onOpen, onRemove }) {
-  if (!selected.length) return null;
-
-  return (
-    <div className="fixed bottom-4 left-1/2 z-[900] w-[calc(100%-2rem)] max-w-3xl -translate-x-1/2 rounded-[22px] border border-[#efc7d4] bg-white p-4 shadow-[0_18px_60px_rgba(49,30,37,0.16)]">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <p className="text-sm font-semibold text-[#211d1f]">
-            {selected.length} product{selected.length === 1 ? "" : "s"} selected
-          </p>
-          <p className="mt-1 text-xs text-stone-400">
-            Select up to three products.
-          </p>
+            <X size={18} />
+          </button>
         </div>
+      )}
 
-        <div className="flex flex-wrap items-center gap-2">
-          {selected.map((product) => (
-            <button
-              key={product.id}
-              type="button"
-              onClick={() => onOpen(product)}
-              className="flex items-center gap-2 rounded-full bg-stone-100 px-3 py-2 text-xs font-medium"
-            >
-              <span className="max-w-32 truncate">{product.name}</span>
-              <X
-                size={13}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onRemove(product.id);
+      <button
+        type="button"
+        onClick={() => {
+          onSelect(null);
+          onClose?.();
+        }}
+        className={`w-full py-2 text-left text-sm ${
+          !selected
+            ? "font-semibold text-[#e93368]"
+            : "text-stone-600 hover:text-[#e93368]"
+        }`}
+      >
+        All women’s health
+      </button>
+
+      {categoryDirectory.map((section) => (
+        <div key={section.group} className="mt-7">
+          <h3 className="border-b border-stone-200 pb-3 text-sm font-semibold text-[#211d1f]">
+            {section.group}
+          </h3>
+
+          <div className="mt-3 space-y-1">
+            {section.items.map((item) => (
+              <button
+                key={`${section.group}-${item.label}`}
+                type="button"
+                onClick={() => {
+                  onSelect(item);
+                  onClose?.();
                 }}
-              />
-            </button>
-          ))}
-
-          <button
-            type="button"
-            onClick={onClear}
-            className="px-2 text-xs text-stone-400"
-          >
-            Clear
-          </button>
-
-          <button
-            type="button"
-            disabled={selected.length < 2}
-            className="rounded-xl bg-[#211d1f] px-4 py-2.5 text-sm font-medium text-white disabled:opacity-40"
-          >
-            Compare
-          </button>
+                className={`block w-full py-1.5 text-left text-[13px] leading-5 transition ${
+                  selected?.label === item.label
+                    ? "font-semibold text-[#e93368]"
+                    : "text-stone-600 hover:text-[#e93368]"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 }
 
 export default function ProductsPage() {
-  const [view, setView] = useState("landing");
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [collectionTitle, setCollectionTitle] = useState("");
-  const [collectionIds, setCollectionIds] = useState(null);
   const [search, setSearch] = useState("");
+  const [selection, setSelection] = useState(null);
   const [sort, setSort] = useState("Recommended");
-  const [showFilters, setShowFilters] = useState(false);
-  const [minimumScore, setMinimumScore] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(300);
-  const [reusableOnly, setReusableOnly] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(12);
-  const [savedIds, setSavedIds] = useState(loadSavedProducts);
-  const [compareMode, setCompareMode] = useState(false);
-  const [compareIds, setCompareIds] = useState([]);
+  const [savedIds, setSavedIds] = useState(getSaved);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [savedOnly, setSavedOnly] = useState(false);
+  const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(16);
 
   useEffect(() => {
     localStorage.setItem(
@@ -582,80 +519,15 @@ export default function ProductsPage() {
     );
   }, [savedIds]);
 
-  const recommended = useMemo(
-    () =>
-      [...products]
-        .filter((product) => product.featured)
-        .sort((a, b) => b.score - a.score),
-    [],
-  );
-
-  const bestValue = useMemo(
-    () =>
-      [...products]
-        .filter((product) => product.price <= 15)
-        .sort((a, b) => b.score - a.score),
-    [],
-  );
-
-  const mostReviewed = useMemo(
-    () => [...products].sort((a, b) => b.reviews - a.reviews),
-    [],
-  );
-
-  const reusableProducts = useMemo(
-    () =>
-      [...products]
-        .filter((product) => product.reusable)
-        .sort((a, b) => b.score - a.score),
-    [],
-  );
-
-  const newest = useMemo(
-    () =>
-      [...products]
-        .filter((product) => product.newProduct)
-        .sort((a, b) => b.score - a.score),
-    [],
-  );
-
-  const browsingProducts = useMemo(() => {
+  const filteredProducts = useMemo(() => {
     const term = search.trim().toLowerCase();
 
     const result = products.filter((product) => {
-      const inCollection =
-        !collectionIds || collectionIds.includes(product.id);
-
-      const inCategory =
-        activeCategory === "All" ||
-        product.category === activeCategory;
-
+      const matchesCategory = matchesSelection(product, selection);
       const matchesSearch =
-        !term ||
-        [
-          product.name,
-          product.brand,
-          product.category,
-          product.description,
-          product.badge,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase()
-          .includes(term);
+        !term || productText(product).includes(term);
 
-      const matchesSaved =
-        !savedOnly || savedIds.includes(product.id);
-
-      return (
-        inCollection &&
-        inCategory &&
-        matchesSearch &&
-        matchesSaved &&
-        product.score >= minimumScore &&
-        product.price <= maxPrice &&
-        (!reusableOnly || product.reusable)
-      );
+      return matchesCategory && matchesSearch;
     });
 
     return [...result].sort((a, b) => {
@@ -666,24 +538,19 @@ export default function ProductsPage() {
 
       return (
         Number(b.featured) - Number(a.featured) ||
+        Number(b.popular) - Number(a.popular) ||
         b.score - a.score
       );
     });
-  }, [
-    activeCategory,
-    collectionIds,
-    maxPrice,
-    minimumScore,
-    reusableOnly,
-    savedIds,
-    savedOnly,
-    search,
-    sort,
-  ]);
+  }, [search, selection, sort]);
 
-  const comparedProducts = compareIds
-    .map((id) => products.find((product) => product.id === id))
-    .filter(Boolean);
+  const featuredProducts = useMemo(() => {
+    const selected = products
+      .filter((product) => product.featured || product.popular)
+      .sort((a, b) => b.score - a.score);
+
+    return selected.slice(0, 6);
+  }, []);
 
   function toggleSaved(id) {
     setSavedIds((current) =>
@@ -693,550 +560,239 @@ export default function ProductsPage() {
     );
   }
 
-  function toggleCompare(product) {
-    setCompareIds((current) => {
-      if (current.includes(product.id)) {
-        return current.filter((id) => id !== product.id);
-      }
-
-      if (current.length >= 3) {
-        return [...current.slice(1), product.id];
-      }
-
-      return [...current, product.id];
-    });
-  }
-
-  function resetBrowseState() {
-    setSearch("");
-    setMinimumScore(0);
-    setMaxPrice(300);
-    setReusableOnly(false);
-    setSavedOnly(false);
-    setSort("Recommended");
-    setVisibleCount(12);
-  }
-
-  function openCategory(category) {
-    resetBrowseState();
-    setCollectionIds(null);
-    setCollectionTitle("");
-    setActiveCategory(category);
-    setView("browse");
+  function chooseCategory(item) {
+    setSelection(item);
+    setVisibleCount(16);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function openCollection(title, items) {
-    resetBrowseState();
-    setActiveCategory("All");
-    setCollectionTitle(title);
-    setCollectionIds(items.map((product) => product.id));
-    setView("browse");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function openAllProducts() {
-    resetBrowseState();
-    setCollectionIds(null);
-    setCollectionTitle("");
-    setActiveCategory("All");
-    setView("browse");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function cardProps(product) {
-    return {
-      saved: savedIds.includes(product.id),
-      compared: compareIds.includes(product.id),
-      compareMode,
-      onSave: toggleSaved,
-      onOpen: setSelectedProduct,
-      onCompare: toggleCompare,
-    };
-  }
-
-  if (view === "browse") {
-    const pageTitle =
-      collectionTitle ||
-      (activeCategory === "All"
-        ? savedOnly
-          ? "Saved products"
-          : "All products"
-        : activeCategory);
-
-    const pageDescription = collectionTitle
-      ? "A focused selection from the SHE product library."
-      : activeCategory === "All"
-        ? "Browse the complete SHE product library."
-        : productCategories.find(
-              (category) => category.name === activeCategory,
-            )?.description;
-
-    return (
-      <div className="min-h-screen bg-[#fffdfd] text-[#211d1f]">
-        <main className="mx-auto max-w-[1420px] px-5 pb-32 pt-8 sm:px-8 lg:px-12">
-          <button
-            type="button"
-            onClick={() => {
-              setView("landing");
-              setCompareMode(false);
-              setCompareIds([]);
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="flex items-center gap-2 text-sm font-medium text-stone-500 hover:text-[#211d1f]"
-          >
-            <ArrowLeft size={17} />
-            Back to SHE Finds
-          </button>
-
-          <div className="mt-8 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-            <div>
-              <p className="text-sm font-medium text-[#f43f72]">
-                SHE Finds
-              </p>
-              <h1 className="mt-2 text-4xl font-semibold tracking-[-0.035em] md:text-5xl">
-                {pageTitle}
-              </h1>
-              <p className="mt-3 max-w-2xl text-base leading-7 text-stone-500">
-                {pageDescription}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => setCompareMode((value) => !value)}
-                className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium ${
-                  compareMode
-                    ? "border-[#f43f72] bg-[#fff0f5] text-[#e93368]"
-                    : "border-stone-200 bg-white text-stone-600"
-                }`}
-              >
-                <ArrowUpDown size={16} />
-                Compare mode
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setSavedOnly((value) => !value)}
-                className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium ${
-                  savedOnly
-                    ? "border-[#f43f72] bg-[#fff0f5] text-[#e93368]"
-                    : "border-stone-200 bg-white text-stone-600"
-                }`}
-              >
-                <Heart
-                  size={16}
-                  className={savedOnly ? "fill-current" : ""}
-                />
-                Saved
-              </button>
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-3 lg:grid-cols-[1fr_auto_auto]">
-            <div className="relative">
-              <Search
-                size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"
-              />
-              <input
-                value={search}
-                onChange={(event) => {
-                  setSearch(event.target.value);
-                  setVisibleCount(12);
-                }}
-                placeholder="Search this collection..."
-                className="h-12 w-full rounded-xl border border-stone-200 bg-white pl-12 pr-4 text-sm outline-none focus:border-[#efbdd0]"
-              />
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setShowFilters((value) => !value)}
-              className={`flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium ${
-                showFilters
-                  ? "border-[#f43f72] bg-[#fff0f5] text-[#e93368]"
-                  : "border-stone-200 bg-white text-stone-600"
-              }`}
-            >
-              <SlidersHorizontal size={16} />
-              Filters
-            </button>
-
-            <select
-              value={sort}
-              onChange={(event) => setSort(event.target.value)}
-              className="rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-600 outline-none"
-            >
-              <option>Recommended</option>
-              <option>Highest SHE Score</option>
-              <option>Most reviewed</option>
-              <option>Price: low to high</option>
-              <option>Price: high to low</option>
-            </select>
-          </div>
-
-          {!collectionIds && (
-            <div className="mt-5 flex gap-2 overflow-x-auto pb-2">
-              {["All", ...productCategories.map((item) => item.name)].map(
-                (item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => {
-                      setActiveCategory(item);
-                      setVisibleCount(12);
-                    }}
-                    className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm ${
-                      activeCategory === item
-                        ? "border-[#211d1f] bg-[#211d1f] text-white"
-                        : "border-stone-200 bg-white text-stone-600"
-                    }`}
-                  >
-                    {item}
-                  </button>
-                ),
-              )}
-            </div>
-          )}
-
-          {showFilters && (
-            <div className="mt-5 grid gap-5 rounded-[22px] border border-[#f1e1e6] bg-white p-5 md:grid-cols-3">
-              <label>
-                <span className="text-sm font-medium">
-                  Maximum price: {currencyFormatter.format(maxPrice)}
-                </span>
-                <input
-                  type="range"
-                  min="5"
-                  max="300"
-                  step="5"
-                  value={maxPrice}
-                  onChange={(event) => {
-                    setMaxPrice(Number(event.target.value));
-                    setVisibleCount(12);
-                  }}
-                  className="mt-4 w-full accent-[#f43f72]"
-                />
-              </label>
-
-              <label>
-                <span className="text-sm font-medium">
-                  Minimum SHE Score
-                </span>
-                <select
-                  value={minimumScore}
-                  onChange={(event) => {
-                    setMinimumScore(Number(event.target.value));
-                    setVisibleCount(12);
-                  }}
-                  className="mt-3 w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none"
-                >
-                  <option value="0">Any score</option>
-                  <option value="7">7.0 and above</option>
-                  <option value="8">8.0 and above</option>
-                  <option value="8.5">8.5 and above</option>
-                </select>
-              </label>
-
-              <label className="flex cursor-pointer items-center gap-3 rounded-xl bg-stone-50 px-4 py-3">
-                <input
-                  type="checkbox"
-                  checked={reusableOnly}
-                  onChange={(event) => {
-                    setReusableOnly(event.target.checked);
-                    setVisibleCount(12);
-                  }}
-                  className="h-4 w-4 accent-[#f43f72]"
-                />
-                <div>
-                  <p className="text-sm font-medium">
-                    Reusable products only
-                  </p>
-                  <p className="mt-1 text-xs text-stone-400">
-                    Hide single-use options
-                  </p>
-                </div>
-              </label>
-            </div>
-          )}
-
-          <div className="mt-8 flex items-center justify-between">
-            <p className="text-sm text-stone-500">
-              {browsingProducts.length} products
-            </p>
-
-            {compareMode && (
-              <p className="text-xs font-medium text-[#e93368]">
-                Select up to three products
-              </p>
-            )}
-          </div>
-
-          {browsingProducts.length ? (
-            <>
-              <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                {browsingProducts
-                  .slice(0, visibleCount)
-                  .map((product) => (
-                    <CompactProductCard
-                      key={product.id}
-                      product={product}
-                      {...cardProps(product)}
-                    />
-                  ))}
-              </div>
-
-              {visibleCount < browsingProducts.length && (
-                <div className="mt-9 text-center">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setVisibleCount((current) => current + 12)
-                    }
-                    className="rounded-xl border border-stone-200 bg-white px-6 py-3 text-sm font-medium text-stone-700 transition hover:border-[#efbdd0]"
-                  >
-                    Load more
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="mt-8 rounded-[24px] border border-dashed border-stone-200 py-20 text-center">
-              <Search size={26} className="mx-auto text-stone-300" />
-              <h3 className="mt-4 font-semibold">No products found</h3>
-              <p className="mt-2 text-sm text-stone-500">
-                Try changing your search or filters.
-              </p>
-            </div>
-          )}
-        </main>
-
-        {selectedProduct && (
-          <DetailModal
-            product={selectedProduct}
-            saved={savedIds.includes(selectedProduct.id)}
-            compared={compareIds.includes(selectedProduct.id)}
-            onClose={() => setSelectedProduct(null)}
-            onSave={toggleSaved}
-            onCompare={toggleCompare}
-          />
-        )}
-
-        <CompareBar
-          selected={comparedProducts}
-          onClear={() => setCompareIds([])}
-          onOpen={setSelectedProduct}
-          onRemove={(id) =>
-            setCompareIds((current) =>
-              current.filter((item) => item !== id),
-            )
-          }
-        />
-      </div>
-    );
   }
 
   return (
-    <div className="min-h-screen bg-[#fffdfd] text-[#211d1f]">
-      <main className="mx-auto max-w-[1420px] px-5 pb-24 pt-8 sm:px-8 lg:px-12">
-        <header className="rounded-[30px] border border-[#f1dce3] bg-gradient-to-br from-[#fff8fa] via-white to-[#fff2f6] px-6 py-8 md:px-9 md:py-10">
-          <div className="grid gap-8 xl:grid-cols-[1fr_290px] xl:items-end">
-            <div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#f43f72] shadow-sm">
-                <Sparkles size={21} />
-              </div>
+    <div className="min-h-screen bg-white text-[#211d1f]">
+      <div className="sticky top-0 z-30 border-b border-stone-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-[1500px] items-center gap-3 px-5 py-4 sm:px-8 lg:px-10">
+          <button
+            type="button"
+            onClick={() => setMobileCategoriesOpen(true)}
+            className="flex h-11 w-11 shrink-0 items-center justify-center border border-stone-200 lg:hidden"
+            aria-label="Open product categories"
+          >
+            <Menu size={20} />
+          </button>
 
-              <p className="mt-5 text-sm font-medium text-[#f43f72]">
-                SHE Finds
-              </p>
-
-              <h1 className="mt-2 max-w-3xl text-4xl font-semibold tracking-[-0.04em] md:text-5xl">
-                Find the right product for you
-              </h1>
-
-              <p className="mt-4 max-w-2xl text-base leading-7 text-stone-600">
-                Research and compare women’s-health products without
-                feeling overwhelmed.
-              </p>
-
-              <div className="relative mt-6 max-w-3xl">
-                <Search
-                  size={19}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"
-                />
-                <input
-                  value={search}
-                  onChange={(event) => {
-                    setSearch(event.target.value);
-                    if (event.target.value.trim()) {
-                      setView("browse");
-                      setActiveCategory("All");
-                      setCollectionIds(null);
-                      setCollectionTitle("");
-                    }
-                  }}
-                  placeholder="Search products, brands or health needs..."
-                  className="h-14 w-full rounded-2xl border border-[#ead8de] bg-white pl-12 pr-4 text-sm shadow-sm outline-none focus:border-[#efbdd0]"
-                />
-              </div>
-
-              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-stone-500">
-                <span>{productCount} reviewed products</span>
-                <span>Evidence-aware explanations</span>
-                <span>Compare before buying</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  openAllProducts();
-                  setSavedOnly(true);
-                }}
-                className="rounded-[20px] border border-white bg-white/80 p-5 text-left shadow-sm transition hover:border-[#efbdd0]"
-              >
-                <Heart size={19} className="text-[#f43f72]" />
-                <p className="mt-6 text-xs text-stone-500">
-                  Saved products
-                </p>
-                <p className="mt-1 text-2xl font-semibold">
-                  {savedIds.length}
-                </p>
-              </button>
-
-              <button
-                type="button"
-                onClick={openAllProducts}
-                className="rounded-[20px] border border-white bg-white/80 p-5 text-left shadow-sm transition hover:border-[#efbdd0]"
-              >
-                <Sparkles size={19} className="text-[#f43f72]" />
-                <p className="mt-6 text-xs text-stone-500">
-                  Product library
-                </p>
-                <p className="mt-1 text-2xl font-semibold">
-                  {productCount}
-                </p>
-              </button>
-            </div>
-          </div>
-        </header>
-
-        <section className="mt-12">
-          <p className="text-sm font-medium text-[#f43f72]">
-            Shop by need
-          </p>
-          <div className="mt-2 flex items-end justify-between gap-5">
-            <h2 className="text-3xl font-semibold tracking-tight">
-              What are you looking for?
-            </h2>
-            <button
-              type="button"
-              onClick={openAllProducts}
-              className="hidden items-center gap-2 text-sm font-medium text-[#e93368] sm:flex"
-            >
-              Browse all
-              <ArrowRight size={15} />
-            </button>
-          </div>
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {productCategories.map((category) => (
-              <CategoryTile
-                key={category.name}
-                category={category}
-                count={
-                  products.filter(
-                    (product) => product.category === category.name,
-                  ).length
-                }
-                onClick={() => openCategory(category.name)}
-              />
-            ))}
-          </div>
-        </section>
-
-        <CollectionSection
-          title="SHE recommends"
-          description="Strong all-round choices across evidence, usability and practicality."
-          products={recommended}
-          onViewAll={() =>
-            openCollection("SHE recommends", recommended)
-          }
-          cardProps={cardProps}
-        />
-
-        <CollectionSection
-          title="Best value"
-          description="Highly rated products costing £15 or less."
-          products={bestValue}
-          onViewAll={() => openCollection("Best value", bestValue)}
-          cardProps={cardProps}
-        />
-
-        <CollectionSection
-          title="Most reviewed"
-          description="Products with the largest number of customer ratings."
-          products={mostReviewed}
-          onViewAll={() =>
-            openCollection("Most reviewed", mostReviewed)
-          }
-          cardProps={cardProps}
-        />
-
-        <CollectionSection
-          title="Reusable options"
-          description="Longer-lasting products designed to reduce repeat purchases."
-          products={reusableProducts}
-          onViewAll={() =>
-            openCollection("Reusable options", reusableProducts)
-          }
-          cardProps={cardProps}
-        />
-
-        {newest.length > 0 && (
-          <CollectionSection
-            title="Recently added"
-            description="New additions to the SHE product library."
-            products={newest}
-            onViewAll={() =>
-              openCollection("Recently added", newest)
-            }
-            cardProps={cardProps}
-          />
-        )}
-
-        <section className="mt-14 rounded-[24px] border border-[#f1e1e6] bg-[#fff8fa] p-6 md:p-8">
-          <div className="flex gap-4">
-            <ShieldCheck
-              size={21}
-              className="mt-0.5 shrink-0 text-[#f43f72]"
+          <div className="relative mx-auto w-full max-w-3xl">
+            <Search
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"
             />
-            <div>
-              <h2 className="font-semibold text-[#211d1f]">
-                Research before you buy
-              </h2>
-              <p className="mt-2 max-w-4xl text-sm leading-6 text-stone-600">
-                SHE Scores are editorial comparison tools rather than
-                medical endorsements. Product pages explain suitability,
-                evidence limitations, safety considerations and practical
-                trade-offs.
-              </p>
-            </div>
+
+            <input
+              value={search}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setVisibleCount(16);
+              }}
+              placeholder="Search women’s-health products..."
+              className="h-12 w-full border border-stone-300 bg-white pl-12 pr-4 text-sm outline-none transition focus:border-[#f43f72]"
+            />
           </div>
-        </section>
+        </div>
+      </div>
+
+      <main className="mx-auto max-w-[1500px] px-5 pb-24 sm:px-8 lg:px-10">
+        <div className="grid gap-10 lg:grid-cols-[235px_minmax(0,1fr)]">
+          <aside className="hidden border-r border-stone-200 pr-7 pt-8 lg:block">
+            <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2">
+              <h2 className="text-base font-semibold">Categories</h2>
+
+              <CategoryDirectory
+                selected={selection}
+                onSelect={chooseCategory}
+              />
+            </div>
+          </aside>
+
+          <div className="min-w-0 pt-8">
+            {!selection && !search.trim() && (
+              <>
+                <section>
+                  <div className="text-center">
+                    <h1 className="text-3xl font-semibold tracking-tight">
+                      Women’s health
+                    </h1>
+
+                    <p className="mx-auto mt-3 max-w-3xl text-sm leading-6 text-stone-600">
+                      Research products for every stage of women’s health,
+                      from periods and fertility to pregnancy, menopause,
+                      breast health and everyday wellbeing.
+                    </p>
+                  </div>
+
+                  <div className="mt-8 flex gap-6 overflow-x-auto pb-3">
+                    {featuredCategoryLinks.map((item) => {
+                      const match = products.find((product) =>
+                        item.categories.includes(product.category),
+                      );
+
+                      return (
+                        <button
+                          key={item.label}
+                          type="button"
+                          onClick={() => chooseCategory(item)}
+                          className="group min-w-[115px] text-center"
+                        >
+                          <div className="mx-auto h-20 w-20 overflow-hidden rounded-full bg-[#fff0f5]">
+                            {match?.image ? (
+                              <img
+                                src={match.image}
+                                alt=""
+                                className="h-full w-full object-cover transition group-hover:scale-105"
+                              />
+                            ) : (
+                              <div className="flex h-full items-center justify-center text-[#f43f72]">
+                                <Heart size={22} />
+                              </div>
+                            )}
+                          </div>
+
+                          <p className="mt-3 text-sm font-medium">
+                            {item.label}
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+
+                <section className="mt-12">
+                  <div className="flex items-end justify-between gap-5">
+                    <div>
+                      <p className="text-sm font-medium text-[#e93368]">
+                        Featured
+                      </p>
+                      <h2 className="mt-1 text-2xl font-semibold">
+                        SHE recommended
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    {featuredProducts.map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        saved={savedIds.includes(product.id)}
+                        onSave={toggleSaved}
+                        onOpen={setSelectedProduct}
+                      />
+                    ))}
+                  </div>
+                </section>
+              </>
+            )}
+
+            <section className={selection || search.trim() ? "" : "mt-14"}>
+              <div className="flex flex-col justify-between gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-end">
+                <div>
+                  <p className="text-sm text-stone-500">
+                    Showing {Math.min(visibleCount, filteredProducts.length)} of{" "}
+                    {filteredProducts.length}
+                  </p>
+
+                  <h2 className="mt-1 text-2xl font-semibold">
+                    {selection?.label || (search.trim() ? "Search results" : "All products")}
+                  </h2>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal size={16} className="text-stone-400" />
+
+                  <select
+                    value={sort}
+                    onChange={(event) => setSort(event.target.value)}
+                    className="h-11 border border-stone-300 bg-white px-4 text-sm outline-none"
+                  >
+                    <option>Recommended</option>
+                    <option>Highest SHE Score</option>
+                    <option>Most reviewed</option>
+                    <option>Price: low to high</option>
+                    <option>Price: high to low</option>
+                  </select>
+                </div>
+              </div>
+
+              {filteredProducts.length ? (
+                <>
+                  <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    {filteredProducts
+                      .slice(0, visibleCount)
+                      .map((product) => (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          saved={savedIds.includes(product.id)}
+                          onSave={toggleSaved}
+                          onOpen={setSelectedProduct}
+                        />
+                      ))}
+                  </div>
+
+                  {visibleCount < filteredProducts.length && (
+                    <div className="mt-10 text-center">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setVisibleCount((current) => current + 16)
+                        }
+                        className="border border-stone-300 px-7 py-3 text-sm font-medium transition hover:border-[#f43f72] hover:text-[#e93368]"
+                      >
+                        Load more
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="py-24 text-center">
+                  <Search size={28} className="mx-auto text-stone-300" />
+                  <h3 className="mt-4 font-semibold">
+                    No products found yet
+                  </h3>
+                  <p className="mt-2 text-sm text-stone-500">
+                    This category is part of the SHE directory, but its
+                    products still need to be added.
+                  </p>
+                </div>
+              )}
+            </section>
+          </div>
+        </div>
       </main>
 
+      {mobileCategoriesOpen && (
+        <div className="fixed inset-0 z-[1100] lg:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/35"
+            onClick={() => setMobileCategoriesOpen(false)}
+            aria-label="Close categories"
+          />
+
+          <aside className="absolute inset-y-0 left-0 w-[86%] max-w-sm bg-white shadow-2xl">
+            <CategoryDirectory
+              mobile
+              selected={selection}
+              onSelect={chooseCategory}
+              onClose={() => setMobileCategoriesOpen(false)}
+            />
+          </aside>
+        </div>
+      )}
+
       {selectedProduct && (
-        <DetailModal
+        <ProductModal
           product={selectedProduct}
           saved={savedIds.includes(selectedProduct.id)}
-          compared={compareIds.includes(selectedProduct.id)}
-          onClose={() => setSelectedProduct(null)}
           onSave={toggleSaved}
-          onCompare={toggleCompare}
+          onClose={() => setSelectedProduct(null)}
         />
       )}
     </div>
