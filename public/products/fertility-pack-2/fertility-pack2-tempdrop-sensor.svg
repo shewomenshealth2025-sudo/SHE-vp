@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 500 500">
+<rect width="500" height="500" fill="#faf7f8"/>
+<circle cx="420" cy="75" r="115" fill="#4e6d86" opacity=".08"/>
+<rect x="155" y="105" width="190" height="285" rx="45" fill="white" stroke="#4e6d86" stroke-width="12"/>
+<rect x="185" y="150" width="130" height="82" rx="18" fill="#4e6d86" opacity=".2"/>
+<circle cx="250" cy="310" r="38" fill="#4e6d86" opacity=".85"/>
+<rect x="35" y="425" width="430" height="50" rx="25" fill="white"/>
+<text x="250" y="447" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#83777b">TEMPDROP</text>
+<text x="250" y="466" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#2d2729">Wearable Basal Temperature Sensor</text>
+</svg>
