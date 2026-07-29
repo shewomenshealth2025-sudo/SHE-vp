@@ -1,6 +1,5 @@
 // Period & Menstrual Health — Pack 1A
 // Product prices are indicative MVP values.
-// Educational copy is personalised but should receive clinical review before launch.
 
 export const periodCarePack1 = [
   {
@@ -21,10 +20,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-always-ultra-normal.svg",
     "suitableFor": "Daytime use and people who prefer thin winged pads.",
-    "notFor": "It may not suit people who find fragranced or disposable pads irritating, prefer reusable protection, or need greater coverage for a heavy flow.",
-    "howToUse": "Remove the wrapper and backing strip, centre the pad inside close-fitting underwear and fold the wings underneath. Change it regularly and sooner if it feels wet, shifts position or becomes saturated.",
-    "evidence": "Ultra-thin winged pads are designed to absorb menstrual blood externally while remaining less bulky than traditional thick pads. Wings can help keep the pad positioned, but comfort and leakage protection depend on underwear fit, flow and how often it is changed.",
-    "safety": "Change the pad regularly to limit prolonged moisture and friction. Stop using it if the surface causes persistent itching, soreness or a rash. Speak to a healthcare professional if you frequently need to change protection every 1 to 2 hours.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Everyday flow",
       "Clear intended use",
@@ -49,8 +48,7 @@ export const periodCarePack1 = [
     "ease": 8.5,
     "practical": 8.3,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-always-ultra-long-plus",
@@ -70,10 +68,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-always-ultra-long-plus.svg",
     "suitableFor": "People wanting more length than a standard daytime pad.",
-    "notFor": "It may not suit people with a light flow who find longer pads unnecessary, those who experience irritation from disposable pads, or anyone needing full overnight coverage.",
-    "howToUse": "Place the pad lengthways inside close-fitting underwear, with the longer section positioned where you usually experience leakage. Secure the wings beneath the gusset and replace it when wet or saturated.",
-    "evidence": "Longer pads provide a larger absorbent area than standard daytime pads and may help people who leak towards the front or back. They do not necessarily absorb a heavier flow unless the product is also designed for higher absorbency.",
-    "safety": "Do not continue wearing a saturated pad simply because it is longer. Replace it regularly and stop use if rubbing or irritation develops. Repeatedly bleeding through long pads may be a sign that heavy periods should be assessed.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Extra coverage",
       "Clear intended use",
@@ -98,8 +96,7 @@ export const periodCarePack1 = [
     "ease": 8.6,
     "practical": 8.4,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-always-secure-night-extra",
@@ -119,10 +116,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-always-secure-night-extra.svg",
     "suitableFor": "Overnight protection and people who need broader rear coverage.",
-    "notFor": "It may not suit people who dislike the bulk or warmth of overnight pads, experience adhesive sensitivity, or move so much during sleep that external protection regularly shifts.",
-    "howToUse": "Apply it immediately before bed, placing the wider or longer section towards the area where overnight leaks usually occur. Wear it with supportive underwear and replace it when you wake, or earlier if saturated.",
-    "evidence": "Overnight pads are shaped to provide greater length and rear coverage than typical daytime pads. This can reduce leakage onto bedding, although performance varies with sleeping position, underwear fit and menstrual flow.",
-    "safety": "Use a fresh pad for the night and change it after waking. Seek medical advice if you regularly soak through night protection, need to combine several products, pass large clots or feel unusually tired or short of breath.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Overnight protection",
       "Clear intended use",
@@ -147,8 +144,7 @@ export const periodCarePack1 = [
     "ease": 8.8,
     "practical": 8.6,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-always-ultimate-night",
@@ -168,10 +164,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-always-ultimate-night.svg",
     "suitableFor": "Very heavy nights and users who regularly leak at the front or back.",
-    "notFor": "It may feel excessive for light or moderate periods and may not suit people who find wide pads uncomfortable between the legs or irritating against sensitive vulval skin.",
-    "howToUse": "Position the pad carefully so its maximum coverage aligns with your usual leakage pattern. Secure all wings beneath snug underwear and check that the pad lies flat before sleeping.",
-    "evidence": "Extra-long night pads aim to protect a larger area during sleep and may be useful for people with heavier bleeding. Maximum-coverage branding does not guarantee leak-free use, particularly when a pad becomes saturated or moves.",
-    "safety": "Replace it promptly after waking and do not rely on a high-absorbency pad to conceal persistently excessive bleeding. Frequent flooding, dizziness, faintness or shortness of breath should be medically assessed.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Maximum coverage",
       "Clear intended use",
@@ -196,8 +192,7 @@ export const periodCarePack1 = [
     "ease": 8.9,
     "practical": 8.7,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-always-infinity-normal",
@@ -217,10 +212,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-always-infinity-normal.svg",
     "suitableFor": "People who dislike the bulk of conventional disposable pads.",
-    "notFor": "It may not suit people who prefer natural-fibre or reusable products, are sensitive to synthetic pad materials, or need a longer product for heavier days.",
-    "howToUse": "Remove the backing, place the foam pad centrally in close-fitting underwear and secure the wings beneath. Smooth it flat to avoid bunching and replace it whenever it feels wet or loses its shape.",
-    "evidence": "Foam-core pads are designed to distribute fluid through a thin absorbent structure rather than relying only on traditional pulp materials. A thinner construction may feel less bulky, but individual comfort and absorbency needs differ.",
-    "safety": "Stop use if the pad causes heat, itching, chafing or a rash. Change it regularly even if the surface still feels relatively dry, and assess unexpectedly heavy or prolonged bleeding with a healthcare professional.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Flexible foam",
       "Clear intended use",
@@ -240,13 +235,12 @@ export const periodCarePack1 = [
     "newProduct": true,
     "sheReviewStatus": "draft-review",
     "priceStatus": "indicative",
-    "effectiveness": 9,
+    "effectiveness": 9.0,
     "comfort": 8.6,
     "ease": 8.7,
     "practical": 8.5,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-always-sensitive-normal",
@@ -266,10 +260,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-always-sensitive-normal.svg",
     "suitableFor": "Users who prioritise a softer surface feel.",
-    "notFor": "Although designed for a softer feel, it may still not suit someone with a known reaction to adhesives, fragrances or disposable pad materials, or anyone with active vulval irritation.",
-    "howToUse": "Place the pad centrally inside breathable, close-fitting underwear and secure the wings underneath. Replace it regularly rather than waiting until it is fully saturated.",
-    "evidence": "A softer topsheet may reduce friction for some users, but a product labelled sensitive is not guaranteed to be non-irritating. Moisture, heat, adhesives and individual skin sensitivity can all contribute to discomfort.",
-    "safety": "Discontinue use if burning, persistent itching, swelling or a rash appears. Recurrent vulval irritation should not automatically be attributed to period products and may need professional assessment.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Softer feel",
       "Clear intended use",
@@ -294,8 +288,7 @@ export const periodCarePack1 = [
     "ease": 8.3,
     "practical": 8.1,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-bodyform-ultra-normal",
@@ -315,10 +308,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-bodyform-ultra-normal.svg",
     "suitableFor": "Affordable everyday protection.",
-    "notFor": "It may not provide enough coverage for heavy or overnight bleeding and may not suit people who find winged disposable pads restrictive or irritating.",
-    "howToUse": "Peel away the backing, align the pad with the underwear gusset and wrap the wings securely underneath. Replace it regularly during the day and after exercise if it has shifted or become damp.",
-    "evidence": "Standard ultra-thin pads are intended for routine daytime protection and prioritise a low-profile fit. Their practical effectiveness depends on selecting an appropriate absorbency and changing the pad before it becomes saturated.",
-    "safety": "Do not wear one pad for an extended period solely to reduce product use. Change it when damp and stop use if irritation develops. Regularly needing a new pad every 1 to 2 hours may indicate heavy menstrual bleeding.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Best value",
       "Clear intended use",
@@ -343,8 +336,7 @@ export const periodCarePack1 = [
     "ease": 8.4,
     "practical": 8.2,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-bodyform-ultra-long",
@@ -352,7 +344,7 @@ export const periodCarePack1 = [
     "name": "Ultra Long Period Pads with Wings",
     "category": "Period care",
     "subcategory": "Pads & towels",
-    "price": 3,
+    "price": 3.0,
     "score": 8.5,
     "rating": 4.5,
     "reviews": 590,
@@ -364,10 +356,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-bodyform-ultra-long.svg",
     "suitableFor": "People who need more coverage than a normal-length pad.",
-    "notFor": "It may be unnecessarily long for a light flow and may not suit people who experience bunching, chafing or adhesive irritation with extended-length pads.",
-    "howToUse": "Centre the pad within the underwear and adjust it slightly forwards or backwards based on where leakage usually occurs. Secure the wings and ensure the pad is flat before dressing.",
-    "evidence": "Extended-length pads offer more surface coverage than normal pads, which may help with directional leaks. Length and absorbency are separate features, so users should still match the absorbency level to their flow.",
-    "safety": "Replace it once saturated or uncomfortable. Persistent leakage despite correct positioning may mean a different absorbency, shape or product type is needed. Sudden changes in bleeding should be discussed with a clinician.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Longer fit",
       "Clear intended use",
@@ -392,8 +384,7 @@ export const periodCarePack1 = [
     "ease": 8.5,
     "practical": 8.3,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-bodyform-goodnight-xl",
@@ -413,10 +404,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-bodyform-goodnight-xl.svg",
     "suitableFor": "People who move during sleep or need broader night-time protection.",
-    "notFor": "It may not suit people who find extra-large pads bulky, those with adhesive sensitivity, or anyone who needs internal or reusable protection to prevent movement-related night leaks.",
-    "howToUse": "Apply it before going to bed, placing the wider rear section towards the back of the underwear. Use snug underwear to reduce movement and replace the pad after waking.",
-    "evidence": "Extra-large night pads are shaped to increase coverage during sleep, particularly towards the back. They may reduce bedding leaks, but they still require correct positioning and sufficient absorbency for the user's flow.",
-    "safety": "Do not ignore repeated overnight flooding because a product is marketed for heavy use. Speak to a healthcare professional if periods regularly disturb sleep, soak bedding or require multiple forms of protection.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Night-time pick",
       "Clear intended use",
@@ -436,13 +427,12 @@ export const periodCarePack1 = [
     "newProduct": true,
     "sheReviewStatus": "draft-review",
     "priceStatus": "indicative",
-    "effectiveness": 9,
+    "effectiveness": 9.0,
     "comfort": 8.6,
     "ease": 8.7,
     "practical": 8.5,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-bodyform-ultimate-normal",
@@ -462,10 +452,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-bodyform-ultimate-normal.svg",
     "suitableFor": "Heavy periods and rapid-flow days.",
-    "notFor": "It may be more absorbent than necessary for light periods and may not suit people who prefer a thinner everyday pad or who react to disposable materials.",
-    "howToUse": "Position it in supportive underwear before the heaviest part of the day. Secure the wings, check the fit after moving around and replace it before the absorbent core is overwhelmed.",
-    "evidence": "Pads designed for heavy flow generally use a larger or more absorbent core to hold more menstrual fluid. They can improve convenience, but they do not treat the underlying cause of heavy menstrual bleeding.",
-    "safety": "Track how frequently the pad requires changing. Needing to change it every 1 to 2 hours, bleeding through clothing or bedding, or feeling tired and short of breath warrants medical advice.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Heavy-flow support",
       "Clear intended use",
@@ -490,8 +480,7 @@ export const periodCarePack1 = [
     "ease": 8.8,
     "practical": 8.6,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-totm-organic-tampons",
@@ -499,7 +488,7 @@ export const periodCarePack1 = [
     "name": "Organic Cotton Applicator Tampons",
     "category": "Period care",
     "subcategory": "Tampons",
-    "price": 4,
+    "price": 4.0,
     "score": 8.3,
     "rating": 4.5,
     "reviews": 410,
@@ -511,10 +500,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-totm-organic-tampons.svg",
     "suitableFor": "Tampon users seeking an organic-cotton option.",
-    "notFor": "It may not suit people uncomfortable with insertion, those experiencing vaginal dryness or pain, or anyone advised not to use internal menstrual products after childbirth, surgery or treatment.",
-    "howToUse": "Wash your hands, select the lowest absorbency suitable for your flow and insert the applicator according to the pack instructions. Change the tampon every 4 to 8 hours and never leave one in for longer than 8 hours.",
-    "evidence": "Organic cotton describes the tampon material rather than superior protection or reduced health risk. Applicator tampons can make insertion easier for some users, while absorbency and correct wear time remain the main practical considerations.",
-    "safety": "Never use more than one tampon at a time or leave one inserted for more than 8 hours. Remove it immediately and seek urgent medical help if sudden fever, vomiting, dizziness, faintness or a widespread rash develops.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Organic cotton",
       "Clear intended use",
@@ -539,8 +528,7 @@ export const periodCarePack1 = [
     "ease": 8.3,
     "practical": 8.1,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-natracare-organic-tampons",
@@ -560,10 +548,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-natracare-organic-tampons.svg",
     "suitableFor": "Users prioritising organic materials and reduced plastic.",
-    "notFor": "It may not suit people who find non-applicator insertion difficult, have vaginal pain or dryness, or cannot reliably remember removal and replacement times.",
-    "howToUse": "Wash and dry your hands, unwrap the tampon and insert it gently using a clean finger. Choose the lowest effective absorbency and replace it every 4 to 8 hours, never exceeding 8 hours.",
-    "evidence": "These tampons provide an organic-cotton and reduced-plastic option, but organic materials have not been shown to remove the recognised risks associated with tampon use. Correct absorbency and wear time remain essential.",
-    "safety": "Do not use if insertion is painful or if the tampon feels excessively dry when removed. Be alert to possible toxic shock syndrome symptoms and never insert a new tampon without confirming the previous one has been removed.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Plastic-free option",
       "Clear intended use",
@@ -588,8 +576,7 @@ export const periodCarePack1 = [
     "ease": 8.4,
     "practical": 8.2,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   },
   {
     "id": "period-pack1-wuka-medium",
@@ -609,10 +596,10 @@ export const periodCarePack1 = [
     "reusable": true,
     "image": "/products/period-pack-1/period-pack1-wuka-medium.svg",
     "suitableFor": "Users wanting simple reusable protection without internal insertion.",
-    "notFor": "It may not suit people who cannot wash and dry reusable underwear between uses, dislike the feeling of an absorbent gusset, or require a higher absorbency for heavy days.",
-    "howToUse": "Wear it like ordinary underwear on medium-flow days. Change it when the absorbent area feels wet or reaches capacity, rinse in cold water if recommended, then wash and dry according to the care label.",
-    "evidence": "Reusable period underwear combines an absorbent layer with leak-resistant fabric. It can replace or support disposable products, but independent evidence comparing specific brands and stated tampon-equivalent capacities remains limited.",
-    "safety": "Follow the washing instructions to preserve absorbency and hygiene. Do not continue wearing it once saturated. Stop use if retained moisture causes irritation, odour or recurrent skin discomfort.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "SHE recommends",
       "Clear intended use",
@@ -637,8 +624,7 @@ export const periodCarePack1 = [
     "ease": 8.9,
     "practical": 8.7,
     "accessibility": 7.6,
-    "environmentalImpact": 9,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 9.0
   },
   {
     "id": "period-pack1-wuka-heavy",
@@ -647,7 +633,7 @@ export const periodCarePack1 = [
     "category": "Period care",
     "subcategory": "Heavy-period support",
     "price": 26.99,
-    "score": 9,
+    "score": 9.0,
     "rating": 4.7,
     "reviews": 1760,
     "badge": "Heavy-flow reusable",
@@ -658,10 +644,10 @@ export const periodCarePack1 = [
     "reusable": true,
     "image": "/products/period-pack-1/period-pack1-wuka-heavy.svg",
     "suitableFor": "Heavy days, overnight use or extra reassurance.",
-    "notFor": "It may not suit people who prefer a lighter gusset, lack access to washing facilities, or experience bleeding beyond the garment's capacity despite its heavy-flow design.",
-    "howToUse": "Use it on heavier days or overnight, checking the absorbent area periodically during the first few wears to learn its practical capacity. Change, rinse and wash it according to the manufacturer's instructions.",
-    "evidence": "Heavy-flow period underwear uses a larger absorbent zone than standard reusable briefs. It may reduce disposable product use and provide backup protection, but real-world capacity varies with flow rate, movement, fit and garment condition.",
-    "safety": "Do not treat leakage through heavy-flow underwear as normal if it happens frequently or rapidly. Consistently saturating protection, passing large clots or experiencing fatigue should prompt medical assessment.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Heavy-flow reusable",
       "Clear intended use",
@@ -683,11 +669,10 @@ export const periodCarePack1 = [
     "priceStatus": "indicative",
     "effectiveness": 9.3,
     "comfort": 8.9,
-    "ease": 9,
+    "ease": 9.0,
     "practical": 8.8,
     "accessibility": 7.6,
-    "environmentalImpact": 9,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 9.0
   },
   {
     "id": "period-pack1-modibodi-classic",
@@ -707,10 +692,10 @@ export const periodCarePack1 = [
     "reusable": true,
     "image": "/products/period-pack-1/period-pack1-modibodi-classic.svg",
     "suitableFor": "Users who prefer fuller coverage and a conventional brief shape.",
-    "notFor": "It may not suit people who dislike full-brief coverage, need easy changing away from home, or require a different absorbency than the version selected.",
-    "howToUse": "Choose the absorbency level that matches the day's expected flow and wear it as normal underwear. Change it once the gusset feels saturated, then wash without fabric softener according to the care instructions.",
-    "evidence": "Full-brief period underwear provides broad fabric coverage and may feel more secure than narrower cuts. The selected absorbency level matters more than the brief shape when estimating how long it can be worn.",
-    "safety": "Avoid fabric softener or other products prohibited by the care label because they may reduce absorbency. Replace garments showing damaged waterproof layers, persistent odour or reduced performance.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Everyday reusable",
       "Clear intended use",
@@ -730,13 +715,12 @@ export const periodCarePack1 = [
     "newProduct": true,
     "sheReviewStatus": "draft-review",
     "priceStatus": "indicative",
-    "effectiveness": 9,
+    "effectiveness": 9.0,
     "comfort": 8.6,
     "ease": 8.7,
     "practical": 8.5,
     "accessibility": 7.6,
-    "environmentalImpact": 9,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 9.0
   },
   {
     "id": "period-pack1-modibodi-swim",
@@ -744,7 +728,7 @@ export const periodCarePack1 = [
     "name": "Period Swimwear Brief",
     "category": "Period care",
     "subcategory": "Period swimwear",
-    "price": 32,
+    "price": 32.0,
     "score": 8.5,
     "rating": 4.5,
     "reviews": 620,
@@ -756,10 +740,10 @@ export const periodCarePack1 = [
     "reusable": true,
     "image": "/products/period-pack-1/period-pack1-modibodi-swim.svg",
     "suitableFor": "Swimming during light-to-moderate menstrual flow.",
-    "notFor": "It may not suit heavy menstrual flow when worn alone, people expecting it to absorb like ordinary period underwear, or anyone who needs protection outside the water for an extended period.",
-    "howToUse": "Wear it as fitted swimwear for the absorbency level stated by the manufacturer. Rinse it in cool water promptly after swimming and wash it according to the label before the next use.",
-    "evidence": "Period swimwear is designed differently from everyday period underwear so it can provide limited menstrual protection without absorbing a large volume of pool or sea water. It is generally most suitable for lighter flow.",
-    "safety": "Do not assume swimwear will contain a heavy flow for several hours. Change out of wet swimwear after use, wash it thoroughly and use additional protection before or after swimming where needed.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Best for swimming",
       "Clear intended use",
@@ -784,8 +768,7 @@ export const periodCarePack1 = [
     "ease": 8.5,
     "practical": 8.3,
     "accessibility": 7.6,
-    "environmentalImpact": 9,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 9.0
   },
   {
     "id": "period-pack1-mooncup-original",
@@ -805,10 +788,10 @@ export const periodCarePack1 = [
     "reusable": true,
     "image": "/products/period-pack-1/period-pack1-mooncup-original.svg",
     "suitableFor": "Users comfortable with internal products who want high reusable capacity.",
-    "notFor": "It may not suit people uncomfortable with internal products, those who find insertion or removal painful, or anyone who has been advised to avoid vaginal products. IUD users should discuss cup use and removal technique with a clinician.",
-    "howToUse": "Sterilise it before first use and between cycles. Fold and insert the cup, allow it to open below the cervix and check that it is comfortable. To remove it, pinch the base to release the seal before gently lowering it.",
-    "evidence": "Research indicates that menstrual cups can be a safe and effective reusable option, with leakage broadly comparable to other menstrual products in the available studies. Many users need practice over several cycles to become confident.",
-    "safety": "Wash your hands before insertion and removal and follow Mooncup's cleaning and maximum-wear instructions. Stop use if it causes persistent pelvic pain, urinary difficulty, unusual discharge or significant irritation.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Reusable classic",
       "Clear intended use",
@@ -833,8 +816,7 @@ export const periodCarePack1 = [
     "ease": 8.9,
     "practical": 8.7,
     "accessibility": 7.6,
-    "environmentalImpact": 9,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 9.0
   },
   {
     "id": "period-pack1-mooncup-beginner",
@@ -854,10 +836,10 @@ export const periodCarePack1 = [
     "reusable": true,
     "image": "/products/period-pack-1/period-pack1-mooncup-beginner.svg",
     "suitableFor": "People trying a menstrual cup for the first time.",
-    "notFor": "Despite its beginner positioning, it may not suit someone who does not want an internal product, experiences vaginismus or insertion pain, or needs a different cup firmness or shape for their anatomy.",
-    "howToUse": "Read the full beginner instructions, sterilise the cup and practise folding it when you are relaxed. Insert it low enough to remain comfortable, check that it has opened and break the seal at the base before removal.",
-    "evidence": "Beginner-focused cup designs may aim to make insertion or removal easier, but there is no universal cup shape that suits every first-time user. Familiarity, anatomy, firmness, size and removal technique all affect the experience.",
-    "safety": "Never pull only on the stem without releasing the seal. Stop if insertion or removal causes sharp pain, and seek advice if the cup becomes difficult to remove or causes urinary symptoms.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "First-cup option",
       "Clear intended use",
@@ -882,8 +864,7 @@ export const periodCarePack1 = [
     "ease": 8.6,
     "practical": 8.4,
     "accessibility": 7.6,
-    "environmentalImpact": 9,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 9.0
   },
   {
     "id": "period-pack1-saalt-soft-cup",
@@ -903,10 +884,10 @@ export const periodCarePack1 = [
     "reusable": true,
     "image": "/products/period-pack-1/period-pack1-saalt-soft-cup.svg",
     "suitableFor": "Users who find firmer cups uncomfortable or notice bladder pressure.",
-    "notFor": "A softer cup may not suit people who need a firmer rim for easier opening, have limited hand dexterity, or find that soft cups remain folded and leak after insertion.",
-    "howToUse": "Sterilise before use, fold the cup and insert it according to Saalt's sizing guidance. Run a clean finger around the base to check that it has opened, then pinch the base to release the seal before removal.",
-    "evidence": "A softer silicone cup may feel more comfortable for users who notice bladder pressure or sensitivity with firmer cups. The trade-off is that some people find softer cups harder to open fully after insertion.",
-    "safety": "Do not exceed the manufacturer's maximum wear time. Remove and reposition it if it presses painfully, leaks repeatedly or affects urination. Clean it exactly as directed and inspect it for damage before reuse.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Soft cup",
       "Clear intended use",
@@ -926,13 +907,12 @@ export const periodCarePack1 = [
     "newProduct": true,
     "sheReviewStatus": "draft-review",
     "priceStatus": "indicative",
-    "effectiveness": 9,
+    "effectiveness": 9.0,
     "comfort": 8.6,
     "ease": 8.7,
     "practical": 8.5,
     "accessibility": 7.6,
-    "environmentalImpact": 9,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 9.0
   },
   {
     "id": "period-pack1-saalt-disc",
@@ -952,10 +932,10 @@ export const periodCarePack1 = [
     "reusable": true,
     "image": "/products/period-pack-1/period-pack1-saalt-disc.svg",
     "suitableFor": "Experienced internal-product users seeking higher capacity.",
-    "notFor": "It may not suit people uncomfortable reaching high inside the vagina, those with difficulty hooking the rim for removal, or anyone who experiences pressure or pain from disc placement.",
-    "howToUse": "Pinch the disc into a narrow shape, insert it backwards towards the tailbone and tuck the front rim behind the pubic bone. For removal, hook a clean finger under the rim and draw it out slowly while keeping it level.",
-    "evidence": "Menstrual discs collect blood in the vaginal fornix rather than relying on the lower placement of a cup. Their high capacity may suit heavier flow, but independent comparative research on specific reusable discs remains limited.",
-    "safety": "Wash hands before insertion and removal and follow Saalt's wear-time and cleaning instructions. Stop if it causes persistent pain, urinary pressure, difficulty removing the disc or unusual irritation.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "High-capacity reusable",
       "Clear intended use",
@@ -980,8 +960,7 @@ export const periodCarePack1 = [
     "ease": 8.6,
     "practical": 8.4,
     "accessibility": 7.6,
-    "environmentalImpact": 9,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 9.0
   },
   {
     "id": "period-pack1-nixit-disc",
@@ -1001,10 +980,10 @@ export const periodCarePack1 = [
     "reusable": true,
     "image": "/products/period-pack-1/period-pack1-nixit-disc.svg",
     "suitableFor": "Users who prefer a softer disc and are comfortable with removal.",
-    "notFor": "Its soft, one-size design may not suit people who need a firmer rim for insertion, have difficulty reaching the disc for removal, or find that it repeatedly slips from behind the pubic bone.",
-    "howToUse": "Pinch the disc in half, guide it backwards and down, then tuck the front edge securely behind the pubic bone. Remove it by hooking a finger beneath the rim and easing it forwards slowly to reduce spilling.",
-    "evidence": "A softer disc can feel less rigid for some users, although firmness affects how easily a disc inserts, stays tucked and is removed. There is limited independent evidence showing that one reusable disc design performs best for all anatomies.",
-    "safety": "Do not force insertion or removal. Follow Nixit's cleaning and maximum-wear guidance, and stop use if you develop persistent pain, pressure, urinary symptoms or difficulty retrieving the disc.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Soft one-size disc",
       "Clear intended use",
@@ -1029,8 +1008,7 @@ export const periodCarePack1 = [
     "ease": 8.4,
     "practical": 8.2,
     "accessibility": 7.6,
-    "environmentalImpact": 9,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 9.0
   },
   {
     "id": "period-pack1-beurer-em50",
@@ -1050,10 +1028,10 @@ export const periodCarePack1 = [
     "reusable": true,
     "image": "/products/period-pack-1/period-pack1-beurer-em50.svg",
     "suitableFor": "People seeking reusable non-drug support for period pain.",
-    "notFor": "It should not be used by people with a pacemaker or certain implanted electrical devices, or by people with epilepsy. During pregnancy, TENS should only be used when a doctor or midwife has advised it.",
-    "howToUse": "Charge the device, place it on clean, dry lower-abdominal skin as shown in Beurer's instructions and begin with a low intensity. Increase it gradually until the sensation is strong but comfortable, never painful.",
-    "evidence": "TENS delivers low-voltage electrical stimulation through the skin and may provide temporary pain relief for some people. The EM 50 also includes heat, but individual response varies and the device does not treat the underlying cause of menstrual pain.",
-    "safety": "Do not place it over broken, numb or inflamed skin, the neck or chest. Do not use it while driving, sleeping or bathing. Stop immediately if it causes pain, dizziness, palpitations, skin damage or worsening symptoms.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Heat and TENS",
       "Clear intended use",
@@ -1078,8 +1056,7 @@ export const periodCarePack1 = [
     "ease": 8.5,
     "practical": 8.3,
     "accessibility": 7.6,
-    "environmentalImpact": 9,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 9.0
   },
   {
     "id": "period-pack1-myoovi-kit",
@@ -1087,7 +1064,7 @@ export const periodCarePack1 = [
     "name": "Period Pain Relief Kit",
     "category": "Pelvic pain",
     "subcategory": "TENS devices",
-    "price": 89,
+    "price": 89.0,
     "score": 8.2,
     "rating": 4.3,
     "reviews": 450,
@@ -1099,10 +1076,10 @@ export const periodCarePack1 = [
     "reusable": true,
     "image": "/products/period-pack-1/period-pack1-myoovi-kit.svg",
     "suitableFor": "Users wanting discreet electrical stimulation while moving around.",
-    "notFor": "It may not suit people with a pacemaker, implanted electrical equipment or epilepsy. It should not be used during pregnancy unless specifically approved by a doctor or midwife.",
-    "howToUse": "Attach the electrode pad to clean, dry skin in the position shown in MyOovi's guide. Connect the device, start at its lowest setting and increase slowly to a noticeable but comfortable tingling sensation.",
-    "evidence": "Wearable TENS devices may help some users manage menstrual cramps without medication by modifying pain signals. Evidence supports possible short-term benefit from TENS generally, but results cannot be assumed to be identical for every branded device.",
-    "safety": "Keep electrodes away from broken skin, the head, neck and chest. Do not use the device in water, while driving or while asleep. Stop use if the stimulation becomes painful or causes a skin reaction.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Wearable TENS",
       "Clear intended use",
@@ -1125,10 +1102,9 @@ export const periodCarePack1 = [
     "effectiveness": 8.5,
     "comfort": 8.1,
     "ease": 8.2,
-    "practical": 8,
+    "practical": 8.0,
     "accessibility": 7.6,
-    "environmentalImpact": 9,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 9.0
   },
   {
     "id": "period-pack1-beyou-patches",
@@ -1148,10 +1124,10 @@ export const periodCarePack1 = [
     "reusable": false,
     "image": "/products/period-pack-1/period-pack1-beyou-patches.svg",
     "suitableFor": "People wanting a portable, non-medicated comfort product.",
-    "notFor": "It may not suit people with very sensitive skin, known adhesive reactions, active eczema or broken skin in the intended application area. It is not a substitute for assessing severe or worsening pelvic pain.",
-    "howToUse": "Apply one patch to clean, dry, unbroken skin in the location permitted by BeYou's instructions. Press the edges down firmly and remove it within the stated wear time rather than leaving it on indefinitely.",
-    "evidence": "Adhesive comfort patches may provide a portable sensory distraction or soothing effect for some users. Evidence for relief from a specific branded patch is more limited than evidence for established treatments such as anti-inflammatory medicines or applied heat.",
-    "safety": "Do not place it on irritated, freshly shaved or damaged skin. Remove it immediately if burning, swelling, blistering or marked redness develops. Severe, disabling or newly changed period pain should be medically assessed.",
+    "notFor": "Anyone who cannot safely use this product type, experiences pain during use, or has been advised to avoid it.",
+    "howToUse": "Follow the complete instructions supplied by the manufacturer. Use the appropriate size, absorbency and wear time.",
+    "evidence": "SHE’s draft comparison considers product design, intended use, practicality and established guidance for this product type. The score is not a medical endorsement.",
+    "safety": "Stop use if pain, irritation or an unexpected reaction develops. Very heavy bleeding, dizziness, severe pelvic pain or rapidly saturating products should be medically assessed.",
     "pros": [
       "Portable comfort",
       "Clear intended use",
@@ -1172,11 +1148,10 @@ export const periodCarePack1 = [
     "sheReviewStatus": "draft-review",
     "priceStatus": "indicative",
     "effectiveness": 8.4,
-    "comfort": 8,
+    "comfort": 8.0,
     "ease": 8.1,
     "practical": 7.9,
     "accessibility": 8.8,
-    "environmentalImpact": 5.5,
-    "contentStatus": "personalised-draft"
+    "environmentalImpact": 5.5
   }
 ];
