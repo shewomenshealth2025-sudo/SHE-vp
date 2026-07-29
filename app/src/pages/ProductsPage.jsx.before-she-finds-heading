@@ -1,0 +1,1146 @@
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  ExternalLink,
+  Heart,
+  Menu,
+  Search,
+  SlidersHorizontal,
+  Star,
+  X,
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { products, productCount } from "../data/products";
+
+const money = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+  minimumFractionDigits: 2,
+});
+
+const categoryDirectory = [
+  {
+    group: "Periods & menstrual health",
+    items: [
+      { label: "All period products", categories: ["Period care"] },
+      { label: "Pads & towels", terms: ["pad", "towel"] },
+      { label: "Tampons", terms: ["tampon"] },
+      { label: "Period underwear", terms: ["period underwear", "brief"] },
+      { label: "Menstrual cups", terms: ["menstrual cup", "mooncup"] },
+      { label: "Menstrual discs", terms: ["menstrual disc", "disc"] },
+      { label: "Reusable period care", reusable: true, categories: ["Period care"] },
+      { label: "Heavy-period support", terms: ["heavy", "high capacity"] },
+      { label: "Period pain relief", categories: ["Pelvic pain"] },
+      { label: "Heat therapy", terms: ["heat", "hot-water"] },
+      { label: "TENS devices", terms: ["tens", "electrical"] },
+    ],
+  },
+  {
+    group: "Intimate & sexual health",
+    items: [
+      { label: "Intimate care", categories: ["Intimate care"] },
+      { label: "Vaginal dryness", terms: ["dryness", "moisturiser"] },
+      { label: "Lubricants", terms: ["lubricant"] },
+      { label: "Thrush treatment", terms: ["thrush", "clotrimazole"] },
+      { label: "Bacterial vaginosis", terms: ["bacterial vaginosis", "bv"] },
+      { label: "Sensitive vulval care", terms: ["vulval", "emollient"] },
+      { label: "Sexual wellbeing", terms: ["sexual", "intimate"] },
+      { label: "Contraception essentials", terms: ["contraception", "condom"] },
+      { label: "Emergency contraception", terms: ["morning after"] },
+      { label: "STI testing", terms: ["sti", "sexual health test"] },
+    ],
+  },
+  {
+    group: "Fertility & conception",
+    items: [
+      { label: "All fertility products", categories: ["Fertility"] },
+      { label: "Ovulation tests", terms: ["ovulation"] },
+      { label: "Cycle tracking", terms: ["cycle", "basal", "temperature"] },
+      { label: "Fertility monitors", terms: ["fertility monitor", "mira"] },
+      { label: "Trying-to-conceive supplements", terms: ["folic acid", "prenatal"] },
+      { label: "Fertility-friendly lubricants", terms: ["fertility-friendly"] },
+      { label: "Pregnancy tests", terms: ["pregnancy test"] },
+    ],
+  },
+  {
+    group: "Pregnancy",
+    items: [
+      { label: "All pregnancy products", categories: ["Pregnancy"] },
+      { label: "Pregnancy vitamins", terms: ["pregnancy multivitamin", "pregnacare"] },
+      { label: "Folic acid", terms: ["folic acid"] },
+      { label: "Pregnancy pillows", terms: ["pregnancy pillow"] },
+      { label: "Pelvic support belts", terms: ["support belt"] },
+      { label: "Morning-sickness support", terms: ["nausea", "wristband"] },
+      { label: "Pregnancy monitoring", terms: ["blood pressure", "thermometer"] },
+      { label: "Maternity comfort", categories: ["Pregnancy"] },
+    ],
+  },
+  {
+    group: "Postpartum & feeding",
+    items: [
+      { label: "All postpartum products", categories: ["Postpartum"] },
+      { label: "Post-birth recovery", terms: ["peri bottle", "postpartum"] },
+      { label: "Breast pumps", terms: ["breast pump", "pump"] },
+      { label: "Wearable breast pumps", terms: ["wearable breast pump"] },
+      { label: "Manual breast pumps", terms: ["manual breast pump"] },
+      { label: "Nipple care", terms: ["nipple", "lanolin"] },
+      { label: "Milk collection", terms: ["milk", "haakaa"] },
+      { label: "Breastfeeding support", terms: ["breastfeeding", "nursing"] },
+    ],
+  },
+  {
+    group: "Menopause",
+    items: [
+      { label: "All menopause products", categories: ["Menopause"] },
+      { label: "Hot-flush relief", terms: ["hot flush", "cooling", "fan"] },
+      { label: "Night-sweat support", terms: ["cooling pillow", "night"] },
+      { label: "Vaginal moisturisers", terms: ["vaginal moisturiser"] },
+      { label: "Menopause supplements", terms: ["menopause supplement"] },
+      { label: "Sleep support", terms: ["sleep"] },
+      { label: "Menopause testing", terms: ["menopause stage"] },
+      { label: "Bone-health support", terms: ["vitamin d", "bone"] },
+    ],
+  },
+  {
+    group: "Bladder & pelvic health",
+    items: [
+      { label: "All bladder care", categories: ["Bladder health"] },
+      { label: "Bladder-leak pads", terms: ["incontinence pad", "bladder leak"] },
+      { label: "Pelvic-floor trainers", terms: ["pelvic floor trainer"] },
+      { label: "Pelvic-floor apps", terms: ["pelvic floor app", "squeezy"] },
+      { label: "Pelvic-pain support", categories: ["Pelvic pain"] },
+      { label: "UTI support", terms: ["urinary", "uti"] },
+      { label: "Cystitis care", terms: ["cystitis"] },
+    ],
+  },
+  {
+    group: "Breast health & bras",
+    items: [
+      {
+        label: "Bra fitting & sizing",
+        exactTerms: ["bra fitting", "bra size", "measuring tape"],
+      },
+      {
+        label: "Everyday bras",
+        exactTerms: ["everyday t-shirt bra", "full-cup support bra", "wire-free comfort bra"],
+      },
+      {
+        label: "Sports bras",
+        exactTerms: ["sports bra", "yoga bra"],
+      },
+      {
+        label: "Maternity bras",
+        exactTerms: ["maternity bra"],
+      },
+      {
+        label: "Nursing bras",
+        exactTerms: ["nursing bra"],
+      },
+      {
+        label: "Post-surgery bras",
+        exactTerms: ["post-surgery support bra"],
+      },
+      {
+        label: "Breast forms & prostheses",
+        exactTerms: ["breast form", "prosthesis"],
+      },
+      {
+        label: "Breast-care accessories",
+        exactTerms: ["breast-care accessory", "nipple care", "milk collection"],
+      },
+      {
+        label: "Breast self-check tools",
+        exactTerms: ["breast self-check", "breast awareness"],
+      },
+    ],
+  },
+  {
+    group: "Hair, skin & body",
+    items: [
+      { label: "Women’s hair loss", terms: ["hair loss"] },
+      { label: "Hormonal skin care", terms: ["hormonal skin"] },
+      { label: "Sensitive skin", terms: ["sensitive skin"] },
+      { label: "Dry skin", terms: ["dry skin", "moisturiser"] },
+      { label: "Body care", terms: ["body cream", "body moisturiser"] },
+      { label: "Acne care", terms: ["acne"] },
+      { label: "Scalp care", terms: ["scalp"] },
+      { label: "Hair supplements", terms: ["hair supplement"] },
+    ],
+  },
+  {
+    group: "Vitamins & supplements",
+    items: [
+      { label: "All supplements", categories: ["Supplements"] },
+      { label: "Vitamin D", terms: ["vitamin d"] },
+      { label: "Iron", terms: ["iron", "feroglobin", "spatone"] },
+      { label: "Vitamin B12", terms: ["b12"] },
+      { label: "Magnesium", terms: ["magnesium"] },
+      { label: "Omega-3", terms: ["omega-3"] },
+      { label: "Probiotics", terms: ["probiotic"] },
+      { label: "Pregnancy supplements", terms: ["pregnancy multivitamin", "prenatal"] },
+      { label: "Menopause supplements", terms: ["menopause supplement"] },
+    ],
+  },
+  {
+    group: "Monitoring & everyday health",
+    items: [
+      { label: "All everyday health", categories: ["Everyday health"] },
+      { label: "Blood-pressure monitors", terms: ["blood pressure"] },
+      { label: "Thermometers", terms: ["thermometer"] },
+      { label: "Pulse oximeters", terms: ["pulse oximeter"] },
+      { label: "Migraine support", terms: ["migraine", "headache"] },
+      { label: "Sleep support", terms: ["sleep"] },
+      { label: "Compression socks", terms: ["compression socks"] },
+      { label: "Home health devices", categories: ["Everyday health"] },
+    ],
+  },
+  {
+    group: "Hormonal health",
+    items: [
+      { label: "PCOS support", terms: ["pcos", "polycystic"] },
+      { label: "Endometriosis support", terms: ["endometriosis"] },
+      { label: "Adenomyosis support", terms: ["adenomyosis"] },
+      { label: "Hormone tracking", terms: ["hormone", "cycle tracker"] },
+      { label: "Hormonal acne", terms: ["hormonal acne"] },
+      { label: "Insulin-resistance support", terms: ["insulin resistance"] },
+      { label: "Thyroid monitoring", terms: ["thyroid"] },
+    ],
+  },
+  {
+    group: "Diagnostics & testing",
+    items: [
+      { label: "Pregnancy tests", terms: ["pregnancy test"] },
+      { label: "Ovulation tests", terms: ["ovulation test"] },
+      { label: "Fertility testing", terms: ["fertility test", "fertility monitor"] },
+      { label: "Menopause tests", terms: ["menopause test", "menopause stage"] },
+      { label: "STI tests", terms: ["sti test", "sexual health test"] },
+      { label: "UTI tests", terms: ["uti test", "urinary test"] },
+      { label: "Vaginal-health tests", terms: ["vaginal health", "bv test"] },
+      { label: "Home blood tests", terms: ["blood test", "home test"] },
+    ],
+  },
+  {
+    group: "Clothing, comfort & support",
+    items: [
+      { label: "Period clothing", terms: ["period underwear", "period swimwear"] },
+      { label: "Maternity clothing", terms: ["maternity"] },
+      { label: "Postpartum clothing", terms: ["postpartum clothing"] },
+      { label: "Compression clothing", terms: ["compression"] },
+      { label: "Abdominal support", terms: ["abdominal support", "support belt"] },
+      { label: "Cooling clothing", terms: ["cooling clothing", "menopause clothing"] },
+      { label: "Comfort footwear", terms: ["comfort footwear", "support shoes"] },
+    ],
+  },
+  {
+    group: "Mental health & wellbeing",
+    items: [
+      { label: "Stress support", terms: ["stress"] },
+      { label: "Anxiety support", terms: ["anxiety"] },
+      { label: "Sleep wellbeing", terms: ["sleep"] },
+      { label: "Mood tracking", terms: ["mood tracker"] },
+      { label: "Journals", terms: ["journal"] },
+      { label: "Meditation tools", terms: ["meditation"] },
+      { label: "Postnatal wellbeing", terms: ["postnatal mental health"] },
+    ],
+  },
+  {
+    group: "Books, apps & digital tools",
+    items: [
+      { label: "Women’s-health books", terms: ["book", "guide"] },
+      { label: "Cycle-tracking apps", terms: ["cycle app", "period tracker"] },
+      { label: "Fertility apps", terms: ["fertility app"] },
+      { label: "Pregnancy apps", terms: ["pregnancy app"] },
+      { label: "Pelvic-floor apps", terms: ["pelvic floor app", "squeezy"] },
+      { label: "Menopause apps", terms: ["menopause app"] },
+      { label: "Mental-health apps", terms: ["mental health app"] },
+    ],
+  },
+  {
+    group: "Fitness, recovery & lifestyle",
+    items: [
+      { label: "Women’s fitness", terms: ["fitness", "exercise"] },
+      { label: "Pelvic-health exercise", terms: ["pelvic exercise"] },
+      { label: "Pregnancy exercise", terms: ["pregnancy exercise"] },
+      { label: "Postpartum recovery", terms: ["postpartum recovery"] },
+      { label: "Yoga & mobility", terms: ["yoga", "mobility"] },
+      { label: "Recovery tools", terms: ["recovery", "massage"] },
+      { label: "Hydration", terms: ["hydration", "water bottle"] },
+    ],
+  },
+];
+
+const featuredCategoryLinks = [
+  { label: "Period care", categories: ["Period care"] },
+  { label: "Pelvic pain", categories: ["Pelvic pain"] },
+  { label: "Fertility", categories: ["Fertility"] },
+  { label: "Pregnancy", categories: ["Pregnancy"] },
+  { label: "Postpartum", categories: ["Postpartum"] },
+  { label: "Menopause", categories: ["Menopause"] },
+];
+
+function getSaved() {
+  try {
+    return JSON.parse(localStorage.getItem("she-saved-products") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function productText(product) {
+  return [
+    product.name,
+    product.brand,
+    product.category,
+    product.description,
+    product.badge,
+    product.suitableFor,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function matchesSelection(product, selection) {
+  if (!selection) return true;
+
+  if (
+    selection.categories?.length &&
+    !selection.categories.includes(product.category)
+  ) {
+    return false;
+  }
+
+  if (selection.reusable && !product.reusable) {
+    return false;
+  }
+
+  if (selection.productIds?.length) {
+    return selection.productIds.includes(product.id);
+  }
+
+  if (selection.exactTerms?.length) {
+    const searchableText = [
+      product.name,
+      product.brand,
+      product.badge,
+      product.description,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return selection.exactTerms.some((term) =>
+      searchableText.includes(term.toLowerCase()),
+    );
+  }
+
+  if (selection.terms?.length) {
+    const searchableText = productText(product);
+
+    return selection.terms.some((term) =>
+      searchableText.includes(term.toLowerCase()),
+    );
+  }
+
+  return true;
+}
+
+function countForSelection(selection) {
+  return products.filter((product) =>
+    matchesSelection(product, selection),
+  ).length;
+}
+
+function selectionDescription(selection) {
+  if (!selection) {
+    return "Browse products covering periods, fertility, pregnancy, postpartum, menopause, intimate health, breast health and everyday wellbeing.";
+  }
+
+  const descriptions = {
+    "Pads & towels":
+      "Disposable and reusable products designed to absorb menstrual flow across different absorbency levels.",
+    Tampons:
+      "Internal menstrual products available in different absorbencies and applicator styles.",
+    "Period underwear":
+      "Reusable absorbent underwear for periods, spotting and light bladder leaks.",
+    "Menstrual cups":
+      "Reusable internal products designed to collect menstrual flow.",
+    "Menstrual discs":
+      "Flexible internal products positioned higher in the vaginal canal to collect menstrual flow.",
+    "Period pain relief":
+      "Heat, electrical stimulation and comfort products used to support period and pelvic-pain management.",
+    "Bra fitting & sizing":
+      "Guidance and products for finding supportive, comfortable and correctly fitted bras.",
+    "Vaginal dryness":
+      "Non-hormonal moisturisers, lubricants and comfort products for vaginal dryness.",
+    "Ovulation tests":
+      "Urine and digital products used to identify hormonal changes associated with ovulation.",
+    "Pregnancy tests":
+      "Home urine tests designed to detect the pregnancy hormone hCG.",
+    "Post-birth recovery":
+      "Products designed to support comfort, hygiene and recovery following childbirth.",
+    "Hot-flush relief":
+      "Cooling and comfort products for hot flushes and temperature changes during menopause.",
+    "Pelvic-floor trainers":
+      "Devices and tools designed to support structured pelvic-floor exercise.",
+    "Blood-pressure monitors":
+      "Home devices used to measure and record blood pressure.",
+  };
+
+  return (
+    descriptions[selection.label] ||
+    `Explore SHE-reviewed products related to ${selection.label.toLowerCase()}.`
+  );
+}
+
+function ProductCard({ product, saved, onSave, onOpen }) {
+  return (
+    <article className="group overflow-hidden border border-stone-200 bg-white transition hover:border-[#efbdd0] hover:shadow-[0_12px_30px_rgba(52,35,41,0.06)]">
+      <div className="relative aspect-square overflow-hidden bg-[#f8f5f6]">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
+        />
+
+        {product.badge && (
+          <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1.5 text-[11px] font-medium text-[#e93368] shadow-sm">
+            {product.badge}
+          </span>
+        )}
+
+        <button
+          type="button"
+          onClick={() => onSave(product.id)}
+          className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-500 shadow-sm"
+          aria-label={`Save ${product.name}`}
+        >
+          <Heart
+            size={18}
+            className={saved ? "fill-current text-[#f43f72]" : ""}
+          />
+        </button>
+      </div>
+
+      <div className="p-5">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-400">
+            {product.brand}
+          </p>
+
+          <div className="flex items-center gap-1 text-xs text-stone-500">
+            <Star size={13} className="fill-amber-400 text-amber-400" />
+            {product.rating.toFixed(1)}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onOpen(product)}
+          className="mt-3 block min-h-12 text-left"
+        >
+          <h3 className="line-clamp-2 text-[17px] font-semibold leading-6 text-[#211d1f] group-hover:text-[#e93368]">
+            {product.name}
+          </h3>
+        </button>
+
+        <p className="mt-3 line-clamp-2 text-sm leading-6 text-stone-500">
+          {product.description}
+        </p>
+
+        <div className="mt-5 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-[11px] text-stone-400">From</p>
+            <p className="mt-1 text-xl font-semibold">
+              {money.format(product.price)}
+            </p>
+          </div>
+
+          <span className="rounded-full bg-[#fff0f5] px-3 py-1.5 text-xs font-semibold text-[#e93368]">
+            SHE {product.score.toFixed(1)}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onOpen(product)}
+          className="mt-5 flex w-full items-center justify-center gap-2 bg-[#211d1f] px-4 py-3 text-sm font-medium text-white transition hover:bg-black"
+        >
+          View product
+          <ArrowRight size={15} />
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function ProductModal({ product, saved, onSave, onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    const close = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", close);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", close);
+    };
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-[1000] flex items-end justify-center bg-black/40 backdrop-blur-sm md:items-center md:p-6">
+      <div className="max-h-[94vh] w-full max-w-5xl overflow-y-auto rounded-t-[28px] bg-white shadow-2xl md:rounded-[28px]">
+        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-stone-100 bg-white/95 px-5 py-4 backdrop-blur">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex items-center gap-2 text-sm font-medium text-stone-500"
+          >
+            <ArrowLeft size={17} />
+            Back
+          </button>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-stone-100"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="grid gap-9 p-6 md:grid-cols-2 md:p-9">
+          <div className="aspect-square overflow-hidden bg-stone-100">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="h-full w-full object-cover"
+            />
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-stone-400">
+              {product.brand}
+            </p>
+
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+              {product.name}
+            </h1>
+
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-1.5 text-sm text-stone-500">
+                <Star size={15} className="fill-amber-400 text-amber-400" />
+                {product.rating.toFixed(1)}
+                <span>({product.reviews.toLocaleString("en-GB")})</span>
+              </div>
+
+              <span className="rounded-full bg-[#fff0f5] px-3 py-1.5 text-xs font-semibold text-[#e93368]">
+                SHE Score {product.score.toFixed(1)}
+              </span>
+            </div>
+
+            <p className="mt-6 text-base leading-7 text-stone-600">
+              {product.description}
+            </p>
+
+            <p className="mt-7 text-3xl font-semibold">
+              {money.format(product.price)}
+            </p>
+
+            <button
+              type="button"
+              onClick={() => onSave(product.id)}
+              className="mt-5 flex w-full items-center justify-center gap-2 border border-[#efbdd0] px-4 py-3 text-sm font-medium text-[#e93368]"
+            >
+              <Heart
+                size={17}
+                className={saved ? "fill-current" : ""}
+              />
+              {saved ? "Saved" : "Save product"}
+            </button>
+
+            <div className="mt-8 space-y-4">
+              <Info title="Who it may suit" text={product.suitableFor} />
+              <Info title="Who it may not suit" text={product.notFor} />
+              <Info title="How to use it" text={product.howToUse} />
+              <Info title="Evidence summary" text={product.evidence} />
+              <Info title="Safety" text={product.safety} />
+            </div>
+
+            <div className="mt-8">
+              <h2 className="font-semibold">Where to buy</h2>
+
+              <div className="mt-3 space-y-2">
+                {product.retailers.map((retailer) => (
+                  <button
+                    key={retailer}
+                    type="button"
+                    className="flex w-full items-center justify-between border border-stone-200 px-4 py-3 text-left text-sm"
+                  >
+                    {retailer}
+                    <ExternalLink size={15} className="text-stone-400" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Info({ title, text }) {
+  return (
+    <div className="border-t border-stone-100 pt-4">
+      <h3 className="text-sm font-semibold">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-stone-600">{text}</p>
+    </div>
+  );
+}
+
+function CategoryDirectory({
+  selected,
+  onSelect,
+  mobile = false,
+  onClose,
+}) {
+  return (
+    <div className={mobile ? "h-full overflow-y-auto px-5 pb-10" : ""}>
+      {mobile && (
+        <div className="sticky top-0 z-10 flex items-center justify-between bg-white py-5">
+          <h2 className="text-lg font-semibold">Categories</h2>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-stone-100"
+          >
+            <X size={18} />
+          </button>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => {
+          onSelect(null);
+          onClose?.();
+        }}
+        className={`w-full py-2 text-left text-sm ${
+          !selected
+            ? "font-semibold text-[#e93368]"
+            : "text-stone-600 hover:text-[#e93368]"
+        }`}
+      >
+        All women’s health
+      </button>
+
+      {categoryDirectory.map((section) => (
+        <div key={section.group} className="mt-7">
+          <h3 className="border-b border-stone-200 pb-3 text-sm font-semibold text-[#211d1f]">
+            {section.group}
+          </h3>
+
+          <div className="mt-3 space-y-1">
+            {section.items.map((item) => (
+              <button
+                key={`${section.group}-${item.label}`}
+                type="button"
+                onClick={() => {
+                  onSelect(item);
+                  onClose?.();
+                }}
+                className={`flex w-full items-start justify-between gap-3 py-1.5 text-left text-[13px] leading-5 transition ${
+                  selected?.label === item.label
+                    ? "font-semibold text-[#e93368]"
+                    : "text-stone-600 hover:text-[#e93368]"
+                }`}
+              >
+                <span>{item.label}</span>
+                <span className="shrink-0 text-[11px] font-normal text-stone-400">
+                  {countForSelection(item)}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default function ProductsPage() {
+  const [search, setSearch] = useState("");
+  const [selection, setSelection] = useState(null);
+  const [sort, setSort] = useState("Recommended");
+  const [savedIds, setSavedIds] = useState(getSaved);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(16);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [selectedBrand, setSelectedBrand] = useState("All brands");
+  const [maximumPrice, setMaximumPrice] = useState(300);
+  const [minimumScore, setMinimumScore] = useState(0);
+  const [reusableOnly, setReusableOnly] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "she-saved-products",
+      JSON.stringify(savedIds),
+    );
+  }, [savedIds]);
+
+  const brandOptions = useMemo(
+    () => [
+      "All brands",
+      ...Array.from(
+        new Set(products.map((product) => product.brand)),
+      ).sort(),
+    ],
+    [],
+  );
+
+  const filteredProducts = useMemo(() => {
+    const term = search.trim().toLowerCase();
+
+    const result = products.filter((product) => {
+      const matchesCategory = matchesSelection(product, selection);
+      const matchesSearch =
+        !term || productText(product).includes(term);
+
+      const matchesBrand =
+        selectedBrand === "All brands" ||
+        product.brand === selectedBrand;
+
+      const matchesPrice = product.price <= maximumPrice;
+      const matchesScore = product.score >= minimumScore;
+      const matchesReusable = !reusableOnly || product.reusable;
+
+      return (
+        matchesCategory &&
+        matchesSearch &&
+        matchesBrand &&
+        matchesPrice &&
+        matchesScore &&
+        matchesReusable
+      );
+    });
+
+    return [...result].sort((a, b) => {
+      if (sort === "Highest SHE Score") return b.score - a.score;
+      if (sort === "Most reviewed") return b.reviews - a.reviews;
+      if (sort === "Price: low to high") return a.price - b.price;
+      if (sort === "Price: high to low") return b.price - a.price;
+
+      return (
+        Number(b.featured) - Number(a.featured) ||
+        Number(b.popular) - Number(a.popular) ||
+        b.score - a.score
+      );
+    });
+  }, [
+    maximumPrice,
+    minimumScore,
+    reusableOnly,
+    search,
+    selectedBrand,
+    selection,
+    sort,
+  ]);
+
+  const featuredProducts = useMemo(() => {
+    const selected = products
+      .filter((product) => product.featured || product.popular)
+      .sort((a, b) => b.score - a.score);
+
+    return selected.slice(0, 6);
+  }, []);
+
+  function toggleSaved(id) {
+    setSavedIds((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : [...current, id],
+    );
+  }
+
+  function chooseCategory(item) {
+    setSelection(item);
+    setVisibleCount(16);
+    setSelectedBrand("All brands");
+    setMaximumPrice(300);
+    setMinimumScore(0);
+    setReusableOnly(false);
+    setFiltersOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  return (
+    <div className="min-h-screen bg-white text-[#211d1f]">
+      <div className="sticky top-0 z-30 border-b border-stone-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-[1500px] items-center gap-3 px-5 py-4 sm:px-8 lg:px-10">
+          <button
+            type="button"
+            onClick={() => setMobileCategoriesOpen(true)}
+            className="flex h-11 w-11 shrink-0 items-center justify-center border border-stone-200 lg:hidden"
+            aria-label="Open product categories"
+          >
+            <Menu size={20} />
+          </button>
+
+          <div className="relative mx-auto w-full max-w-3xl">
+            <Search
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"
+            />
+
+            <input
+              value={search}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setVisibleCount(16);
+              }}
+              placeholder="Search women’s-health products..."
+              className="h-12 w-full border border-stone-300 bg-white pl-12 pr-4 text-sm outline-none transition focus:border-[#f43f72]"
+            />
+          </div>
+        </div>
+      </div>
+
+      <main className="mx-auto max-w-[1500px] px-5 pb-24 sm:px-8 lg:px-10">
+        <div className="grid gap-10 lg:grid-cols-[235px_minmax(0,1fr)]">
+          <aside className="hidden border-r border-stone-200 pr-7 pt-8 lg:block">
+            <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2">
+              <h2 className="text-base font-semibold">Categories</h2>
+
+              <CategoryDirectory
+                selected={selection}
+                onSelect={chooseCategory}
+              />
+            </div>
+          </aside>
+
+          <div className="min-w-0 pt-8">
+            {!selection && !search.trim() && (
+              <>
+                <section>
+                  <div className="mx-auto max-w-3xl text-center">
+                    <p className="text-sm font-medium text-[#e93368]">
+                      The SHE Score
+                    </p>
+
+                    <h1 className="mt-2 text-2xl font-semibold tracking-tight">
+                      Compare products more clearly
+                    </h1>
+
+                    <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-600">
+                      Products are reviewed across effectiveness, comfort,
+                      ease of use, practicality and accessibility. The SHE
+                      Score is a comparison tool, not a medical endorsement.
+                    </p>
+                  </div>
+
+                  <div className="mt-8 flex gap-6 overflow-x-auto pb-3">
+                    {featuredCategoryLinks.map((item) => {
+                      const match = products.find((product) =>
+                        item.categories.includes(product.category),
+                      );
+
+                      return (
+                        <button
+                          key={item.label}
+                          type="button"
+                          onClick={() => chooseCategory(item)}
+                          className="group min-w-[115px] text-center"
+                        >
+                          <div className="mx-auto h-20 w-20 overflow-hidden rounded-full bg-[#fff0f5]">
+                            {match?.image ? (
+                              <img
+                                src={match.image}
+                                alt=""
+                                className="h-full w-full object-cover transition group-hover:scale-105"
+                              />
+                            ) : (
+                              <div className="flex h-full items-center justify-center text-[#f43f72]">
+                                <Heart size={22} />
+                              </div>
+                            )}
+                          </div>
+
+                          <p className="mt-3 text-sm font-medium">
+                            {item.label}
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+
+                <section className="mt-12">
+                  <div className="flex items-end justify-between gap-5">
+                    <div>
+                      <p className="text-sm font-medium text-[#e93368]">
+                        Featured
+                      </p>
+                      <h2 className="mt-1 text-2xl font-semibold">
+                        SHE recommended
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    {featuredProducts.map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        saved={savedIds.includes(product.id)}
+                        onSave={toggleSaved}
+                        onOpen={setSelectedProduct}
+                      />
+                    ))}
+                  </div>
+                </section>
+              </>
+            )}
+
+            <section className={selection || search.trim() ? "" : "mt-14"}>
+              <div className="border-b border-stone-200 pb-6">
+                <div className="flex flex-wrap items-center gap-1.5 text-xs text-stone-400">
+                  <button
+                    type="button"
+                    onClick={() => chooseCategory(null)}
+                    className="transition hover:text-[#e93368]"
+                  >
+                    Women’s health
+                  </button>
+
+                  {selection && (
+                    <>
+                      <ChevronRight size={13} />
+                      <span className="text-stone-600">
+                        {selection.label}
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                <div className="mt-4 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+                  <div className="max-w-2xl">
+                    <p className="text-sm text-stone-500">
+                      Showing {Math.min(visibleCount, filteredProducts.length)} of{" "}
+                      {filteredProducts.length}
+                    </p>
+
+                    <h2 className="mt-1 text-2xl font-semibold">
+                      {selection?.label ||
+                        (search.trim()
+                          ? "Search results"
+                          : "All products")}
+                    </h2>
+
+                    <p className="mt-3 text-sm leading-6 text-stone-500">
+                      {search.trim()
+                        ? `Products matching “${search.trim()}”.`
+                        : selectionDescription(selection)}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setFiltersOpen((current) => !current)}
+                      className={`flex h-11 items-center gap-2 border px-4 text-sm font-medium transition ${
+                        filtersOpen
+                          ? "border-[#f43f72] bg-[#fff5f8] text-[#e93368]"
+                          : "border-stone-300 bg-white text-stone-600"
+                      }`}
+                    >
+                      <SlidersHorizontal size={16} />
+                      Filters
+                    </button>
+
+                    <select
+                      value={sort}
+                      onChange={(event) => setSort(event.target.value)}
+                      className="h-11 border border-stone-300 bg-white px-4 text-sm outline-none"
+                    >
+                      <option>Recommended</option>
+                      <option>Highest SHE Score</option>
+                      <option>Most reviewed</option>
+                      <option>Price: low to high</option>
+                      <option>Price: high to low</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {filtersOpen && (
+                <div className="grid gap-5 border-b border-stone-200 bg-[#fffafa] px-5 py-6 md:grid-cols-2 xl:grid-cols-4">
+                  <label>
+                    <span className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
+                      Brand
+                    </span>
+
+                    <select
+                      value={selectedBrand}
+                      onChange={(event) => {
+                        setSelectedBrand(event.target.value);
+                        setVisibleCount(16);
+                      }}
+                      className="mt-2 h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none"
+                    >
+                      {brandOptions.map((brand) => (
+                        <option key={brand}>{brand}</option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label>
+                    <span className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
+                      Maximum price
+                    </span>
+
+                    <div className="mt-2">
+                      <p className="text-sm font-medium">
+                        {money.format(maximumPrice)}
+                      </p>
+
+                      <input
+                        type="range"
+                        min="5"
+                        max="300"
+                        step="5"
+                        value={maximumPrice}
+                        onChange={(event) => {
+                          setMaximumPrice(Number(event.target.value));
+                          setVisibleCount(16);
+                        }}
+                        className="mt-3 w-full accent-[#f43f72]"
+                      />
+                    </div>
+                  </label>
+
+                  <label>
+                    <span className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
+                      Minimum SHE Score
+                    </span>
+
+                    <select
+                      value={minimumScore}
+                      onChange={(event) => {
+                        setMinimumScore(Number(event.target.value));
+                        setVisibleCount(16);
+                      }}
+                      className="mt-2 h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none"
+                    >
+                      <option value="0">Any score</option>
+                      <option value="7">7.0 and above</option>
+                      <option value="8">8.0 and above</option>
+                      <option value="8.5">8.5 and above</option>
+                      <option value="9">9.0 and above</option>
+                    </select>
+                  </label>
+
+                  <label className="flex cursor-pointer items-center gap-3 self-end border border-stone-300 bg-white px-4 py-3">
+                    <input
+                      type="checkbox"
+                      checked={reusableOnly}
+                      onChange={(event) => {
+                        setReusableOnly(event.target.checked);
+                        setVisibleCount(16);
+                      }}
+                      className="h-4 w-4 accent-[#f43f72]"
+                    />
+
+                    <span className="text-sm font-medium">
+                      Reusable products only
+                    </span>
+                  </label>
+                </div>
+              )}
+
+              {filteredProducts.length ? (
+                <>
+                  <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    {filteredProducts
+                      .slice(0, visibleCount)
+                      .map((product) => (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          saved={savedIds.includes(product.id)}
+                          onSave={toggleSaved}
+                          onOpen={setSelectedProduct}
+                        />
+                      ))}
+                  </div>
+
+                  {visibleCount < filteredProducts.length && (
+                    <div className="mt-10 text-center">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setVisibleCount((current) => current + 16)
+                        }
+                        className="border border-stone-300 px-7 py-3 text-sm font-medium transition hover:border-[#f43f72] hover:text-[#e93368]"
+                      >
+                        Load more
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="py-24 text-center">
+                  <Search size={28} className="mx-auto text-stone-300" />
+                  <h3 className="mt-4 font-semibold">
+                    No products found yet
+                  </h3>
+                  <p className="mt-2 text-sm text-stone-500">
+                    This category is part of the SHE directory, but its
+                    products still need to be added.
+                  </p>
+                </div>
+              )}
+            </section>
+          </div>
+        </div>
+      </main>
+
+      {mobileCategoriesOpen && (
+        <div className="fixed inset-0 z-[1100] lg:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/35"
+            onClick={() => setMobileCategoriesOpen(false)}
+            aria-label="Close categories"
+          />
+
+          <aside className="absolute inset-y-0 left-0 w-[86%] max-w-sm bg-white shadow-2xl">
+            <CategoryDirectory
+              mobile
+              selected={selection}
+              onSelect={chooseCategory}
+              onClose={() => setMobileCategoriesOpen(false)}
+            />
+          </aside>
+        </div>
+      )}
+
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          saved={savedIds.includes(selectedProduct.id)}
+          onSave={toggleSaved}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
+    </div>
+  );
+}

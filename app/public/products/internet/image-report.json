@@ -1,0 +1,1209 @@
+[
+  {
+    "id": "beyou-monthly-patches",
+    "name": "Monthly Patches",
+    "status": "fallback",
+    "query": "Monthly Patches Pelvic pain health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "beyou-period-pain-relief",
+    "name": "Period Pain Relief Roll-On",
+    "status": "fallback",
+    "query": "Period Pain Relief Roll-On Pelvic pain health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "moon-cup",
+    "name": "Reusable Menstrual Cup",
+    "status": "fallback",
+    "query": "menstrual cup product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "saalt-soft-cup",
+    "name": "Soft Menstrual Cup",
+    "status": "fallback",
+    "query": "menstrual cup product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "saalt-disc",
+    "name": "Menstrual Disc",
+    "status": "fallback",
+    "query": "menstrual disc product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "nixit-disc",
+    "name": "Reusable Menstrual Disc",
+    "status": "fallback",
+    "query": "menstrual disc product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "wuka-medium-flow",
+    "name": "Ultimate Medium Flow Brief",
+    "status": "downloaded",
+    "query": "period underwear product",
+    "image": "/products/internet/wuka-medium-flow.webp"
+  },
+  {
+    "id": "modibodi-classic",
+    "name": "Classic Full Brief",
+    "status": "downloaded",
+    "query": "period underwear product",
+    "image": "/products/internet/modibodi-classic.webp"
+  },
+  {
+    "id": "bodyform-ultra",
+    "name": "Ultra Towels",
+    "status": "fallback",
+    "query": "sanitary pads menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "always-infinity",
+    "name": "Infinity Pads",
+    "status": "fallback",
+    "query": "sanitary pads menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "totm-organic-tampons",
+    "name": "Organic Cotton Tampons",
+    "status": "fallback",
+    "query": "tampons menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "daye-organic-tampons",
+    "name": "Organic Tampons",
+    "status": "fallback",
+    "query": "tampons menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "lil-lets-non-applicator",
+    "name": "Non-Applicator Tampons",
+    "status": "fallback",
+    "query": "tampons menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "beurer-em50",
+    "name": "EM 50 Menstrual Relax",
+    "status": "fallback",
+    "query": "EM 50 Menstrual Relax Pelvic pain health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "omron-e3-intense",
+    "name": "E3 Intense TENS Device",
+    "status": "fallback",
+    "query": "sanitary pads menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "portable-heat-belt",
+    "name": "Rechargeable Heat Belt",
+    "status": "fallback",
+    "query": "Rechargeable Heat Belt Pelvic pain health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "clearblue-advanced-ovulation",
+    "name": "Advanced Digital Ovulation Test",
+    "status": "fallback",
+    "query": "ovulation test kit",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1531988042231-d39a9cc12a9a?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "easy-home-ovulation",
+    "name": "Ovulation Test Strips",
+    "status": "fallback",
+    "query": "ovulation test kit",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1531988042231-d39a9cc12a9a?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "mira-fertility-plus",
+    "name": "Fertility Plus Starter Kit",
+    "status": "fallback",
+    "query": "fertility monitor device",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1531988042231-d39a9cc12a9a?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "tempdrop-sensor",
+    "name": "Wearable Basal Temperature Sensor",
+    "status": "downloaded",
+    "query": "digital basal thermometer",
+    "image": "/products/internet/tempdrop-sensor.webp"
+  },
+  {
+    "id": "clearblue-pregnancy-test",
+    "name": "Digital Pregnancy Test",
+    "status": "fallback",
+    "query": "pregnancy test product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1532330384785-f94c3dc79872?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "first-response-test",
+    "name": "Early Result Pregnancy Test",
+    "status": "fallback",
+    "query": "pregnancy test product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1532330384785-f94c3dc79872?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "seven-seas-pregnancy",
+    "name": "Pregnancy Multivitamin",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/seven-seas-pregnancy.webp"
+  },
+  {
+    "id": "pregnacare-original",
+    "name": "Pregnacare Original",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/pregnacare-original.webp"
+  },
+  {
+    "id": "serola-pregnancy-belt",
+    "name": "Sacroiliac Support Belt",
+    "status": "fallback",
+    "query": "pregnancy maternity support belt",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1532330384785-f94c3dc79872?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "frida-mom-peri-bottle",
+    "name": "Upside Down Peri Bottle",
+    "status": "fallback",
+    "query": "postpartum peri bottle",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "lansinoh-nipple-cream",
+    "name": "HPA Lanolin Nipple Cream",
+    "status": "fallback",
+    "query": "nipple cream breastfeeding product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "medela-harmony",
+    "name": "Harmony Manual Breast Pump",
+    "status": "fallback",
+    "query": "electric breast pump product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "elvie-pump",
+    "name": "Wearable Breast Pump",
+    "status": "fallback",
+    "query": "electric breast pump product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "yes-vm-moisturiser",
+    "name": "VM Vaginal Moisturiser",
+    "status": "fallback",
+    "query": "vaginal moisturiser product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "replens-md",
+    "name": "Long-Lasting Vaginal Moisturiser",
+    "status": "fallback",
+    "query": "vaginal moisturiser product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "chillow-cooling-pillow",
+    "name": "Cooling Pillow Insert",
+    "status": "fallback",
+    "query": "menopause cooling product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "jml-chillmax",
+    "name": "ChillMax Neck Fan",
+    "status": "fallback",
+    "query": "menopause cooling product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "tena-lady-discreet",
+    "name": "Lady Discreet Pads",
+    "status": "fallback",
+    "query": "sanitary pads menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "always-discreet",
+    "name": "Incontinence Pads",
+    "status": "fallback",
+    "query": "sanitary pads menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "elvie-trainer",
+    "name": "Pelvic Floor Trainer",
+    "status": "fallback",
+    "query": "pelvic floor trainer device",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "squeezy-app",
+    "name": "Squeezy Pelvic Floor App",
+    "status": "fallback",
+    "query": "smartphone health application",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "yes-wb-lubricant",
+    "name": "WB Water-Based Lubricant",
+    "status": "downloaded",
+    "query": "personal lubricant bottle",
+    "image": "/products/internet/yes-wb-lubricant.webp"
+  },
+  {
+    "id": "sylk-lubricant",
+    "name": "Natural Personal Lubricant",
+    "status": "downloaded",
+    "query": "personal lubricant bottle",
+    "image": "/products/internet/sylk-lubricant.webp"
+  },
+  {
+    "id": "balance-activ-gel",
+    "name": "Bacterial Vaginosis Treatment Gel",
+    "status": "fallback",
+    "query": "bacterial vaginosis treatment gel",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "boots-vitamin-d",
+    "name": "Vitamin D 10 μg",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/boots-vitamin-d.webp"
+  },
+  {
+    "id": "feroglobin",
+    "name": "Feroglobin Capsules",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/feroglobin.webp"
+  },
+  {
+    "id": "spatone-iron",
+    "name": "Liquid Iron Sachets",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/spatone-iron.webp"
+  },
+  {
+    "id": "betteryou-magnesium-spray",
+    "name": "Magnesium Body Spray",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/betteryou-magnesium-spray.webp"
+  },
+  {
+    "id": "solgar-b12",
+    "name": "Vitamin B12 Tablets",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/solgar-b12.webp"
+  },
+  {
+    "id": "omron-m3",
+    "name": "M3 Comfort Blood Pressure Monitor",
+    "status": "downloaded",
+    "query": "blood pressure monitor product",
+    "image": "/products/internet/omron-m3.webp"
+  },
+  {
+    "id": "beurer-ft85",
+    "name": "Non-Contact Thermometer",
+    "status": "downloaded",
+    "query": "digital thermometer product",
+    "image": "/products/internet/beurer-ft85.webp"
+  },
+  {
+    "id": "manta-sleep-mask",
+    "name": "Sleep Mask",
+    "status": "fallback",
+    "query": "Sleep Mask Everyday health health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "theraice-migraine-cap",
+    "name": "Migraine Relief Cap",
+    "status": "fallback",
+    "query": "Migraine Relief Cap Everyday health health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "hot-water-bottle",
+    "name": "Long Hot-Water Bottle",
+    "status": "downloaded",
+    "query": "insulated water bottle",
+    "image": "/products/internet/hot-water-bottle.webp"
+  },
+  {
+    "id": "boots-heat-patches",
+    "name": "Heat Patches",
+    "status": "fallback",
+    "query": "Heat Patches Pelvic pain health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "neom-perfect-night",
+    "name": "Perfect Night's Sleep Pillow Mist",
+    "status": "fallback",
+    "query": "urinary tract health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "myoovi-kit",
+    "name": "Period Pain Relief Kit",
+    "status": "fallback",
+    "query": "menstrual disc product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "flo-period-underwear",
+    "name": "Classic Period Brief",
+    "status": "downloaded",
+    "query": "period underwear product",
+    "image": "/products/internet/flo-period-underwear.webp"
+  },
+  {
+    "id": "bambody-period-underwear",
+    "name": "Absorbent Period Underwear",
+    "status": "downloaded",
+    "query": "period underwear product",
+    "image": "/products/internet/bambody-period-underwear.webp"
+  },
+  {
+    "id": "clearblue-menopause-stage",
+    "name": "Menopause Stage Indicator",
+    "status": "fallback",
+    "query": "menopause cooling product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "aveeno-calm-restore",
+    "name": "Calm + Restore Oat Gel Moisturiser",
+    "status": "fallback",
+    "query": "skincare moisturiser product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "cerave-smoothing-cream",
+    "name": "SA Smoothing Cream",
+    "status": "fallback",
+    "query": "skincare moisturiser product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "femfresh-zero",
+    "name": "0% Sensitive Wash",
+    "status": "fallback",
+    "query": "0% Sensitive Wash Intimate care health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "canesten-thrush",
+    "name": "Thrush Internal Cream",
+    "status": "fallback",
+    "query": "thrush treatment pharmacy product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "myvitamins-omega3",
+    "name": "Omega-3 Softgels",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/myvitamins-omega3.webp"
+  },
+  {
+    "id": "symprove",
+    "name": "Daily Water-Based Probiotic",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/symprove.webp"
+  },
+  {
+    "id": "optibac-women",
+    "name": "For Women Probiotic",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/optibac-women.webp"
+  },
+  {
+    "id": "compression-socks",
+    "name": "Graduated Compression Socks",
+    "status": "fallback",
+    "query": "compression socks product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "acupressure-bands",
+    "name": "Nausea Relief Wristbands",
+    "status": "fallback",
+    "query": "smartphone health application",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1532330384785-f94c3dc79872?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "bbhugme-pillow",
+    "name": "Pregnancy Pillow",
+    "status": "fallback",
+    "query": "pregnancy support pillow",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1532330384785-f94c3dc79872?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "haakaa-silicone-pump",
+    "name": "Silicone Breast Pump",
+    "status": "fallback",
+    "query": "electric breast pump product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "silverette-cups",
+    "name": "Nursing Cups",
+    "status": "fallback",
+    "query": "nipple cream breastfeeding product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "vagisil-prohydrate",
+    "name": "ProHydrate External Gel",
+    "status": "fallback",
+    "query": "menopause cooling product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "hydromol-ointment",
+    "name": "Ointment",
+    "status": "fallback",
+    "query": "Ointment Intimate care health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "braun-pulse-oximeter",
+    "name": "Pulse Oximeter",
+    "status": "downloaded",
+    "query": "pulse oximeter product",
+    "image": "/products/internet/braun-pulse-oximeter.webp"
+  },
+  {
+    "id": "natural-cycles-thermometer",
+    "name": "Basal Thermometer",
+    "status": "downloaded",
+    "query": "digital basal thermometer",
+    "image": "/products/internet/natural-cycles-thermometer.webp"
+  },
+  {
+    "id": "conceive-plus",
+    "name": "Fertility-Friendly Lubricant",
+    "status": "downloaded",
+    "query": "personal lubricant bottle",
+    "image": "/products/internet/conceive-plus.webp"
+  },
+  {
+    "id": "boots-folic-acid",
+    "name": "Folic Acid 400 μg",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/boots-folic-acid.webp"
+  },
+  {
+    "id": "natracare-pads",
+    "name": "Organic Cotton Pads",
+    "status": "fallback",
+    "query": "sanitary pads menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "dame-reusable-applicator",
+    "name": "Reusable Tampon Applicator",
+    "status": "fallback",
+    "query": "tampons menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "period-swimwear",
+    "name": "Period Swimwear Brief",
+    "status": "downloaded",
+    "query": "period underwear product",
+    "image": "/products/internet/period-swimwear.webp"
+  },
+  {
+    "id": "biofreeze-gel",
+    "name": "Pain Relief Gel",
+    "status": "fallback",
+    "query": "Pain Relief Gel Pelvic pain health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "thermacare-menstrual",
+    "name": "Menstrual HeatWraps",
+    "status": "fallback",
+    "query": "Menstrual HeatWraps Pelvic pain health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "theraline-pillow",
+    "name": "Maternity and Nursing Pillow",
+    "status": "fallback",
+    "query": "Maternity and Nursing Pillow Pregnancy health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1532330384785-f94c3dc79872?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "frida-mom-cooling-pads",
+    "name": "Instant Ice Maxi Pads",
+    "status": "fallback",
+    "query": "sanitary pads menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "my-expert-midwife-spritz",
+    "name": "Spritz for Bits",
+    "status": "downloaded",
+    "query": "postpartum recovery product",
+    "image": "/products/internet/my-expert-midwife-spritz.webp"
+  },
+  {
+    "id": "cooling-blanket",
+    "name": "Breathable Cooling Blanket",
+    "status": "fallback",
+    "query": "menopause cooling product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "vagifem-organiser",
+    "name": "Weekly Medication Organiser",
+    "status": "fallback",
+    "query": "menopause cooling product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "cystitis-test-strips",
+    "name": "Urinary Tract Infection Test",
+    "status": "fallback",
+    "query": "Urinary Tract Infection Test Bladder health health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "hydralyte",
+    "name": "Oral Rehydration Sachets",
+    "status": "fallback",
+    "query": "Oral Rehydration Sachets Everyday health health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "fitbit-charge",
+    "name": "Charge Fitness Tracker",
+    "status": "fallback",
+    "query": "Charge Fitness Tracker Everyday health health product",
+    "error": "No usable Openverse result",
+    "image": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "everyday-tshirt-bra",
+    "name": "Everyday T-Shirt Bra",
+    "status": "fallback",
+    "query": "women bra product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/everyday-tshirt-bra.svg"
+  },
+  {
+    "id": "full-cup-support-bra",
+    "name": "Full-Cup Support Bra",
+    "status": "fallback",
+    "query": "women bra product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/full-cup-support-bra.svg"
+  },
+  {
+    "id": "wirefree-comfort-bra",
+    "name": "Wire-Free Comfort Bra",
+    "status": "fallback",
+    "query": "women bra product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/wirefree-comfort-bra.svg"
+  },
+  {
+    "id": "high-impact-sports-bra",
+    "name": "High-Impact Sports Bra",
+    "status": "fallback",
+    "query": "sports bra product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/high-impact-sports-bra.svg"
+  },
+  {
+    "id": "low-impact-yoga-bra",
+    "name": "Low-Impact Yoga Bra",
+    "status": "fallback",
+    "query": "sports bra product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/low-impact-yoga-bra.svg"
+  },
+  {
+    "id": "maternity-seamless-bra",
+    "name": "Seamless Maternity Bra",
+    "status": "fallback",
+    "query": "maternity bra product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/maternity-seamless-bra.svg"
+  },
+  {
+    "id": "nursing-clip-bra",
+    "name": "Nursing Clip Bra",
+    "status": "fallback",
+    "query": "nursing bra product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/nursing-clip-bra.svg"
+  },
+  {
+    "id": "post-surgery-support-bra",
+    "name": "Post-Surgery Support Bra",
+    "status": "fallback",
+    "query": "smartphone health application",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/post-surgery-support-bra.svg"
+  },
+  {
+    "id": "bra-fitting-tape-kit",
+    "name": "Bra Fitting Tape and Guide",
+    "status": "fallback",
+    "query": "Bra Fitting Tape and Guide Everyday health health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/bra-fitting-tape-kit.svg"
+  },
+  {
+    "id": "silicone-breast-form",
+    "name": "Symmetrical Breast Form",
+    "status": "fallback",
+    "query": "breast prosthesis product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/silicone-breast-form.svg"
+  },
+  {
+    "id": "breast-self-check-card",
+    "name": "Breast Self-Check Reminder Card",
+    "status": "fallback",
+    "query": "Breast Self-Check Reminder Card Everyday health health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/breast-self-check-card.svg"
+  },
+  {
+    "id": "pcos-symptom-journal",
+    "name": "PCOS Symptom and Cycle Journal",
+    "status": "downloaded",
+    "query": "wellbeing journal book",
+    "image": "/products/internet/pcos-symptom-journal.webp"
+  },
+  {
+    "id": "inositol-powder",
+    "name": "Inositol Powder",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/inositol-powder.webp"
+  },
+  {
+    "id": "hormone-cycle-thermometer",
+    "name": "Basal Body Thermometer",
+    "status": "downloaded",
+    "query": "digital basal thermometer",
+    "image": "/products/internet/hormone-cycle-thermometer.webp"
+  },
+  {
+    "id": "hormone-tracking-ring",
+    "name": "Cycle Tracking Smart Ring",
+    "status": "fallback",
+    "query": "smart health tracking ring",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/hormone-tracking-ring.svg"
+  },
+  {
+    "id": "hormonal-acne-patches",
+    "name": "Hydrocolloid Acne Patches",
+    "status": "downloaded",
+    "query": "acne skincare product",
+    "image": "/products/internet/hormonal-acne-patches.webp"
+  },
+  {
+    "id": "insulin-resistance-meal-planner",
+    "name": "Balanced Meal Planner",
+    "status": "fallback",
+    "query": "sanitary pads menstrual product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/insulin-resistance-meal-planner.svg"
+  },
+  {
+    "id": "thyroid-pill-organiser",
+    "name": "Weekly Medication Organiser",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/thyroid-pill-organiser.webp"
+  },
+  {
+    "id": "digital-pregnancy-test-2pk",
+    "name": "Digital Pregnancy Test Two-Pack",
+    "status": "fallback",
+    "query": "pregnancy test product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/digital-pregnancy-test-2pk.svg"
+  },
+  {
+    "id": "early-pregnancy-strip-pack",
+    "name": "Early Pregnancy Test Strips",
+    "status": "fallback",
+    "query": "pregnancy test product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/early-pregnancy-strip-pack.svg"
+  },
+  {
+    "id": "digital-ovulation-kit",
+    "name": "Digital Ovulation Test Kit",
+    "status": "fallback",
+    "query": "ovulation test kit",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/digital-ovulation-kit.svg"
+  },
+  {
+    "id": "fertility-hormone-monitor",
+    "name": "Home Fertility Hormone Monitor",
+    "status": "fallback",
+    "query": "Home Fertility Hormone Monitor Fertility health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/fertility-hormone-monitor.svg"
+  },
+  {
+    "id": "menopause-stage-test",
+    "name": "Menopause Stage Indicator",
+    "status": "fallback",
+    "query": "menopause cooling product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/menopause-stage-test.svg"
+  },
+  {
+    "id": "vaginal-ph-test",
+    "name": "Self-Test for Vaginal Symptoms",
+    "status": "fallback",
+    "query": "Self-Test for Vaginal Symptoms Intimate care health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/vaginal-ph-test.svg"
+  },
+  {
+    "id": "uti-home-test",
+    "name": "Urinary Tract Infection Test",
+    "status": "fallback",
+    "query": "Urinary Tract Infection Test Bladder health health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/uti-home-test.svg"
+  },
+  {
+    "id": "sti-home-sampling-kit",
+    "name": "Home STI Sampling Kit",
+    "status": "fallback",
+    "query": "Home STI Sampling Kit Intimate care health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/sti-home-sampling-kit.svg"
+  },
+  {
+    "id": "iron-home-blood-test",
+    "name": "Iron Status Home Blood Test",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/iron-home-blood-test.webp"
+  },
+  {
+    "id": "thyroid-home-blood-test",
+    "name": "Thyroid Function Home Test",
+    "status": "fallback",
+    "query": "Thyroid Function Home Test Everyday health health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/thyroid-home-blood-test.svg"
+  },
+  {
+    "id": "women-hair-loss-minoxidil",
+    "name": "Women’s Hair Regrowth Foam",
+    "status": "fallback",
+    "query": "women hair loss treatment product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/women-hair-loss-minoxidil.svg"
+  },
+  {
+    "id": "gentle-scalp-serum",
+    "name": "Gentle Scalp Treatment Serum",
+    "status": "fallback",
+    "query": "scalp serum bottle",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/gentle-scalp-serum.svg"
+  },
+  {
+    "id": "sensitive-face-cleanser",
+    "name": "Hydrating Facial Cleanser",
+    "status": "downloaded",
+    "query": "facial cleanser product",
+    "image": "/products/internet/sensitive-face-cleanser.webp"
+  },
+  {
+    "id": "barrier-repair-cream",
+    "name": "Cicaplast Barrier Balm",
+    "status": "fallback",
+    "query": "Cicaplast Barrier Balm Everyday health health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/barrier-repair-cream.svg"
+  },
+  {
+    "id": "acne-gel",
+    "name": "Benzoyl Peroxide Gel",
+    "status": "downloaded",
+    "query": "acne skincare product",
+    "image": "/products/internet/acne-gel.webp"
+  },
+  {
+    "id": "body-moisturiser",
+    "name": "Daily Moisturising Lotion",
+    "status": "fallback",
+    "query": "skincare moisturiser product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/body-moisturiser.svg"
+  },
+  {
+    "id": "hair-supplement",
+    "name": "Perfectil Hair Supplement",
+    "status": "downloaded",
+    "query": "vitamin supplement bottle",
+    "image": "/products/internet/hair-supplement.webp"
+  },
+  {
+    "id": "postpartum-hair-serum",
+    "name": "Postpartum Scalp Serum",
+    "status": "downloaded",
+    "query": "postpartum recovery product",
+    "image": "/products/internet/postpartum-hair-serum.webp"
+  },
+  {
+    "id": "guided-wellbeing-journal",
+    "name": "Women’s Wellbeing Journal",
+    "status": "downloaded",
+    "query": "wellbeing journal book",
+    "image": "/products/internet/guided-wellbeing-journal.webp"
+  },
+  {
+    "id": "mood-tracking-app",
+    "name": "Mood Tracking App",
+    "status": "fallback",
+    "query": "smartphone health application",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/mood-tracking-app.svg"
+  },
+  {
+    "id": "meditation-app",
+    "name": "Meditation and Sleep App",
+    "status": "fallback",
+    "query": "smartphone health application",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/meditation-app.svg"
+  },
+  {
+    "id": "weighted-eye-mask",
+    "name": "Weighted Sleep Eye Mask",
+    "status": "fallback",
+    "query": "sleep eye mask product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/weighted-eye-mask.svg"
+  },
+  {
+    "id": "sunrise-alarm",
+    "name": "Bodyclock Sunrise Alarm",
+    "status": "fallback",
+    "query": "urinary tract health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/sunrise-alarm.svg"
+  },
+  {
+    "id": "postnatal-reflection-journal",
+    "name": "Postnatal Wellbeing Journal",
+    "status": "downloaded",
+    "query": "postpartum recovery product",
+    "image": "/products/internet/postnatal-reflection-journal.webp"
+  },
+  {
+    "id": "food-medic-book",
+    "name": "The Female Factor",
+    "status": "downloaded",
+    "query": "women health book",
+    "image": "/products/internet/food-medic-book.webp"
+  },
+  {
+    "id": "period-repair-book",
+    "name": "Period Repair Manual",
+    "status": "downloaded",
+    "query": "women health book",
+    "image": "/products/internet/period-repair-book.webp"
+  },
+  {
+    "id": "menopause-manifesto-book",
+    "name": "The Menopause Manifesto",
+    "status": "fallback",
+    "query": "menopause cooling product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/menopause-manifesto-book.svg"
+  },
+  {
+    "id": "flo-cycle-app",
+    "name": "Cycle and Symptom Tracking App",
+    "status": "fallback",
+    "query": "smartphone health application",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/flo-cycle-app.svg"
+  },
+  {
+    "id": "natural-cycles-app",
+    "name": "Temperature-Based Cycle App",
+    "status": "fallback",
+    "query": "smartphone health application",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/natural-cycles-app.svg"
+  },
+  {
+    "id": "pregnancy-plus-app",
+    "name": "Pregnancy+ App",
+    "status": "fallback",
+    "query": "smartphone health application",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/pregnancy-plus-app.svg"
+  },
+  {
+    "id": "squeezy-app",
+    "name": "Squeezy Pelvic Floor App",
+    "status": "fallback",
+    "query": "urinary tract health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/squeezy-app.svg"
+  },
+  {
+    "id": "balance-menopause-app",
+    "name": "Menopause Support App",
+    "status": "fallback",
+    "query": "menopause cooling product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/balance-menopause-app.svg"
+  },
+  {
+    "id": "pregnancy-exercise-ball",
+    "name": "Pregnancy Exercise Ball",
+    "status": "fallback",
+    "query": "smartphone health application",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/pregnancy-exercise-ball.svg"
+  },
+  {
+    "id": "postpartum-resistance-band",
+    "name": "Postpartum Resistance Band Set",
+    "status": "downloaded",
+    "query": "postpartum recovery product",
+    "image": "/products/internet/postpartum-resistance-band.webp"
+  },
+  {
+    "id": "yoga-mat",
+    "name": "Supportive Yoga Mat",
+    "status": "downloaded",
+    "query": "yoga mat product",
+    "image": "/products/internet/yoga-mat.webp"
+  },
+  {
+    "id": "foam-roller",
+    "name": "Grid Foam Roller",
+    "status": "fallback",
+    "query": "foam roller product",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/foam-roller.svg"
+  },
+  {
+    "id": "stainless-water-bottle",
+    "name": "Insulated Water Bottle",
+    "status": "downloaded",
+    "query": "insulated water bottle",
+    "image": "/products/internet/stainless-water-bottle.webp"
+  },
+  {
+    "id": "compression-socks",
+    "name": "Graduated Compression Socks",
+    "status": "fallback",
+    "query": "compression socks product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/compression-socks.svg"
+  },
+  {
+    "id": "maternity-support-leggings",
+    "name": "Maternity Support Leggings",
+    "status": "fallback",
+    "query": "women maternity leggings",
+    "error": "HTTP Error 424: Failed Dependency",
+    "image": "/products/generated/maternity-support-leggings.svg"
+  },
+  {
+    "id": "menopause-cooling-pyjamas",
+    "name": "Menopause Cooling Pyjamas",
+    "status": "fallback",
+    "query": "menopause cooling product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/menopause-cooling-pyjamas.svg"
+  },
+  {
+    "id": "period-swimwear",
+    "name": "Period Swimwear Brief",
+    "status": "cached",
+    "query": "period underwear product",
+    "image": "/products/internet/period-swimwear.webp"
+  },
+  {
+    "id": "postpartum-compression-shorts",
+    "name": "Postpartum Support Shorts",
+    "status": "downloaded",
+    "query": "postpartum recovery product",
+    "image": "/products/internet/postpartum-compression-shorts.webp"
+  },
+  {
+    "id": "abdominal-support-band",
+    "name": "Postpartum Abdominal Support Band",
+    "status": "downloaded",
+    "query": "postpartum recovery product",
+    "image": "/products/internet/abdominal-support-band.webp"
+  },
+  {
+    "id": "comfort-walking-shoes",
+    "name": "Arch Support Walking Shoes",
+    "status": "downloaded",
+    "query": "women walking shoes",
+    "image": "/products/internet/comfort-walking-shoes.webp"
+  },
+  {
+    "id": "water-based-lubricant",
+    "name": "WB Water-Based Lubricant",
+    "status": "downloaded",
+    "query": "personal lubricant bottle",
+    "image": "/products/internet/water-based-lubricant.webp"
+  },
+  {
+    "id": "vaginal-moisturiser",
+    "name": "VM Vaginal Moisturiser",
+    "status": "fallback",
+    "query": "vaginal moisturiser product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/vaginal-moisturiser.svg"
+  },
+  {
+    "id": "thrush-treatment",
+    "name": "Internal Thrush Treatment",
+    "status": "fallback",
+    "query": "thrush treatment pharmacy product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/thrush-treatment.svg"
+  },
+  {
+    "id": "bv-gel",
+    "name": "Bacterial Vaginosis Treatment Gel",
+    "status": "fallback",
+    "query": "bacterial vaginosis treatment gel",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/bv-gel.svg"
+  },
+  {
+    "id": "vulval-emollient",
+    "name": "Fragrance-Free Emollient",
+    "status": "fallback",
+    "query": "Fragrance-Free Emollient Intimate care health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/vulval-emollient.svg"
+  },
+  {
+    "id": "pelvic-floor-device",
+    "name": "Pelvic Floor Trainer",
+    "status": "fallback",
+    "query": "pelvic floor trainer device",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/pelvic-floor-device.svg"
+  },
+  {
+    "id": "bladder-leak-underwear",
+    "name": "Reusable Bladder Leak Brief",
+    "status": "downloaded",
+    "query": "period underwear product",
+    "image": "/products/internet/bladder-leak-underwear.webp"
+  },
+  {
+    "id": "uti-relief-sachets",
+    "name": "Cystitis Relief Sachets",
+    "status": "fallback",
+    "query": "urinary tract health product",
+    "error": "No usable Openverse result",
+    "image": "/products/generated/uti-relief-sachets.svg"
+  }
+]
