@@ -44,7 +44,7 @@ const services = allCandidateServices.filter(
 
 const typeFilters = [
   "All",
-  "NHS",
+  "Public",
   "Private",
   "Specialist",
   "Community",
@@ -434,7 +434,7 @@ export default function ServicesPage() {
           </p>
 
           <div className="space-y-2 text-xs text-stone-600">
-            <LegendItem colour="#ec407a" label="NHS" />
+            <LegendItem colour="#ec407a" label="Public" />
             <LegendItem colour="#8b5cf6" label="Private" />
             <LegendItem colour="#38bdf8" label="Support" />
             <LegendItem colour="#22c55e" label="Pelvic health" />
