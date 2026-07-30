@@ -374,3 +374,309 @@ export const vaginismus = createCondition({
     "Pelvic examinations or tampon use are difficult or impossible.",
   ],
 });
+export const lupus = createCondition({
+  id: "lupus",
+  title: "Lupus",
+  category: "Autoimmune health",
+  readTime: 7,
+  summary:
+    "Lupus is a long-term autoimmune condition in which the immune system mistakenly attacks healthy tissues, potentially affecting the skin, joints, blood, kidneys and other organs.",
+  quickFacts: [
+    "Lupus affects women more commonly than men.",
+    "Symptoms may come and go in periods known as flares.",
+    "Symptoms and severity vary significantly between individuals.",
+  ],
+  symptoms: [
+    "fatigue",
+    "joint-pain",
+    "skin-rashes",
+    "fever",
+    "hair-loss",
+    "sun-sensitivity",
+    "chest-pain",
+  ],
+  diagnosis: [
+    "Diagnosis may involve reviewing symptoms and medical history.",
+    "Blood and urine tests may be used.",
+    "Assessment may involve a rheumatology specialist.",
+  ],
+  treatments: [
+    "Anti-inflammatory or immune-modifying medicines may be prescribed.",
+    "Treatment depends on which parts of the body are affected.",
+    "Regular monitoring may be required.",
+  ],
+  selfCare: [
+    "Protect skin from excessive sun exposure.",
+    "Track symptoms and possible flare triggers.",
+    "Balance activity with appropriate rest.",
+  ],
+  whenToSeeGP: [
+    "Persistent fatigue, joint pain or unexplained rashes are affecting daily life.",
+    "Symptoms repeatedly occur together or are worsening.",
+  ],
+  emergencySigns: [
+    "Severe chest pain or difficulty breathing.",
+    "Sudden weakness, confusion or neurological symptoms.",
+  ],
+});
+
+export const rheumatoidArthritis = createCondition({
+  id: "rheumatoid-arthritis",
+  title: "Rheumatoid Arthritis",
+  category: "Autoimmune health",
+  readTime: 6,
+  summary:
+    "Rheumatoid arthritis is an autoimmune condition that causes inflammation, pain, swelling and stiffness in the joints.",
+  quickFacts: [
+    "It commonly affects the small joints of the hands and feet.",
+    "Morning stiffness may last longer than with ordinary joint strain.",
+    "Early treatment can help limit joint damage.",
+  ],
+  symptoms: [
+    "joint-pain",
+    "joint-swelling",
+    "morning-stiffness",
+    "fatigue",
+    "reduced-mobility",
+  ],
+  diagnosis: [
+    "Assessment includes symptoms and examination of the joints.",
+    "Blood tests and imaging may support diagnosis.",
+    "Referral to rheumatology may be required.",
+  ],
+  treatments: [
+    "Disease-modifying medicines may reduce inflammation and joint damage.",
+    "Pain relief and physiotherapy may support symptom management.",
+  ],
+  whenToSeeGP: [
+    "Joint pain, swelling or stiffness persists for several weeks.",
+    "Morning stiffness is prolonged or multiple joints are affected.",
+  ],
+});
+
+export const hashimotosThyroiditis = createCondition({
+  id: "hashimotos-thyroiditis",
+  title: "Hashimoto’s Thyroiditis",
+  category: "Autoimmune health",
+  readTime: 6,
+  summary:
+    "Hashimoto’s thyroiditis is an autoimmune condition in which the immune system attacks the thyroid gland and may gradually reduce thyroid hormone production.",
+  quickFacts: [
+    "It is a common cause of an underactive thyroid.",
+    "Symptoms may develop gradually.",
+    "Blood tests are used to assess thyroid function and antibodies.",
+  ],
+  symptoms: [
+    "fatigue",
+    "weight-changes",
+    "feeling-cold",
+    "dry-skin",
+    "hair-thinning",
+    "constipation",
+    "heavy-periods",
+    "low-mood",
+  ],
+  diagnosis: [
+    "Thyroid-stimulating hormone and thyroid hormone levels are assessed.",
+    "Thyroid antibody testing may support diagnosis.",
+  ],
+  treatments: [
+    "Thyroid hormone replacement may be prescribed when thyroid function is reduced.",
+    "Ongoing blood-test monitoring may be required.",
+  ],
+  whenToSeeGP: [
+    "Persistent fatigue, cold intolerance or unexplained weight changes occur.",
+    "Periods become unusually heavy or irregular alongside other symptoms.",
+  ],
+});
+
+export const hypothyroidism = createCondition({
+  id: "hypothyroidism",
+  title: "Hypothyroidism",
+  category: "Hormonal health",
+  readTime: 6,
+  summary:
+    "Hypothyroidism, or an underactive thyroid, occurs when the thyroid gland does not produce enough thyroid hormones.",
+  quickFacts: [
+    "Symptoms often develop slowly.",
+    "Thyroid hormones influence energy, temperature, metabolism and menstrual health.",
+    "A blood test is needed to assess thyroid function.",
+  ],
+  symptoms: [
+    "fatigue",
+    "weight-changes",
+    "feeling-cold",
+    "constipation",
+    "dry-skin",
+    "hair-thinning",
+    "heavy-periods",
+    "difficulty-concentrating",
+  ],
+  diagnosis: [
+    "Blood tests measure thyroid-stimulating hormone and thyroid hormone levels.",
+    "Further testing may investigate the underlying cause.",
+  ],
+  treatments: [
+    "Daily thyroid hormone replacement is commonly used.",
+    "Blood tests help ensure the dose remains appropriate.",
+  ],
+  whenToSeeGP: [
+    "Persistent tiredness or cold intolerance has no clear explanation.",
+    "Several thyroid-related symptoms occur together.",
+  ],
+});
+
+export const migraine = createCondition({
+  id: "migraine",
+  title: "Migraine",
+  category: "Neurological health",
+  readTime: 6,
+  summary:
+    "Migraine is a neurological condition that can cause recurring headaches alongside symptoms such as nausea and sensitivity to light, sound or movement.",
+  quickFacts: [
+    "Migraine is more common in women.",
+    "Hormonal changes may influence migraine patterns.",
+    "Some people experience aura before or during an attack.",
+  ],
+  symptoms: [
+    "headache",
+    "nausea",
+    "light-sensitivity",
+    "sound-sensitivity",
+    "visual-changes",
+    "dizziness",
+  ],
+  diagnosis: [
+    "Diagnosis is usually based on symptoms and headache history.",
+    "A headache diary may help identify patterns and triggers.",
+  ],
+  treatments: [
+    "Pain-relieving or migraine-specific medicines may be used during attacks.",
+    "Preventive treatment may be offered for frequent or severe migraine.",
+  ],
+  selfCare: [
+    "Track attacks, menstrual patterns and possible triggers.",
+    "Regular meals, hydration and sleep may help reduce some triggers.",
+  ],
+  emergencySigns: [
+    "A sudden, extremely severe headache.",
+    "Headache with new weakness, confusion, seizure or difficulty speaking.",
+  ],
+});
+
+export const ironDeficiencyAnaemia = createCondition({
+  id: "iron-deficiency-anaemia",
+  title: "Iron-Deficiency Anaemia",
+  category: "Blood health",
+  readTime: 5,
+  summary:
+    "Iron-deficiency anaemia occurs when the body does not have enough iron to produce sufficient healthy red blood cells.",
+  quickFacts: [
+    "Heavy menstrual bleeding is a common cause.",
+    "A blood test is needed to confirm anaemia and assess iron levels.",
+    "The cause of iron deficiency should be investigated.",
+  ],
+  symptoms: [
+    "fatigue",
+    "shortness-of-breath",
+    "dizziness",
+    "headaches",
+    "heart-palpitations",
+    "pale-skin",
+    "hair-loss",
+  ],
+  diagnosis: [
+    "A full blood count can assess haemoglobin levels.",
+    "Ferritin and other blood tests may assess iron stores.",
+    "Further investigation may be needed to identify blood loss.",
+  ],
+  treatments: [
+    "Iron supplements may be prescribed.",
+    "Dietary changes may support iron intake.",
+    "Underlying causes such as heavy periods may also require treatment.",
+  ],
+  whenToSeeGP: [
+    "Persistent fatigue, breathlessness or dizziness is affecting daily life.",
+    "Periods are very heavy or prolonged.",
+  ],
+  emergencySigns: [
+    "Severe breathlessness, chest pain or fainting.",
+    "Very heavy bleeding accompanied by weakness or dizziness.",
+  ],
+});
+
+export const osteoporosis = createCondition({
+  id: "osteoporosis",
+  title: "Osteoporosis",
+  category: "Bone health",
+  readTime: 6,
+  summary:
+    "Osteoporosis is a condition in which bones become less dense and more likely to fracture.",
+  quickFacts: [
+    "Risk increases after menopause as oestrogen levels fall.",
+    "Osteoporosis may cause no symptoms until a fracture occurs.",
+    "Bone density scanning can help assess bone strength.",
+  ],
+  symptoms: [
+    "fractures",
+    "back-pain",
+    "loss-of-height",
+    "posture-changes",
+  ],
+  riskFactors: [
+    "Menopause and increasing age.",
+    "Long-term use of certain steroid medicines.",
+    "Low body weight or nutritional deficiencies.",
+    "Family history of osteoporosis or hip fracture.",
+  ],
+  diagnosis: [
+    "A bone-density scan may be used.",
+    "Blood tests may investigate contributing conditions.",
+  ],
+  treatments: [
+    "Medicines may be prescribed to strengthen bones.",
+    "Calcium and vitamin D intake may be reviewed.",
+    "Weight-bearing and resistance exercise may be recommended.",
+  ],
+  whenToSeeGP: [
+    "There is concern about fracture risk.",
+    "A fracture occurs after a minor fall or injury.",
+    "Menopause occurred unusually early.",
+  ],
+});
+
+export const coeliacDisease = createCondition({
+  id: "coeliac-disease",
+  title: "Coeliac Disease",
+  category: "Autoimmune health",
+  readTime: 6,
+  summary:
+    "Coeliac disease is an autoimmune condition in which eating gluten triggers damage to the lining of the small intestine.",
+  quickFacts: [
+    "Symptoms may involve digestion, energy levels, skin, fertility or bone health.",
+    "Testing should usually occur before removing gluten from the diet.",
+    "Treatment involves a lifelong gluten-free diet.",
+  ],
+  symptoms: [
+    "bloating",
+    "abdominal-pain",
+    "diarrhoea",
+    "constipation",
+    "fatigue",
+    "iron-deficiency",
+    "weight-changes",
+  ],
+  diagnosis: [
+    "Blood tests can look for antibodies associated with coeliac disease.",
+    "A small-bowel biopsy may sometimes be used to confirm diagnosis.",
+  ],
+  treatments: [
+    "A strict lifelong gluten-free diet is the main treatment.",
+    "Dietetic support can help ensure nutrition remains balanced.",
+    "Nutritional deficiencies may require treatment.",
+  ],
+  whenToSeeGP: [
+    "Persistent digestive symptoms or unexplained iron deficiency occur.",
+    "There is a close family history of coeliac disease.",
+  ],
+});

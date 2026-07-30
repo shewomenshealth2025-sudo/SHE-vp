@@ -11,4 +11,12 @@ export {
   perimenopause,
   menopause,
   vaginismus,
+  lupus,
+  rheumatoidArthritis,
+  hashimotosThyroiditis,
+  hypothyroidism,
+  migraine,
+  ironDeficiencyAnaemia,
+  osteoporosis,
+  coeliacDisease,
 } from "./demoConditions";

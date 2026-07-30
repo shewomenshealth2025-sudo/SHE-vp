@@ -10,6 +10,14 @@ import {
   perimenopause,
   menopause,
   vaginismus,
+  lupus,
+  rheumatoidArthritis,
+  hashimotosThyroiditis,
+  hypothyroidism,
+  migraine,
+  ironDeficiencyAnaemia,
+  osteoporosis,
+  coeliacDisease,
 } from "./conditions";
 
 import { pelvicPain } from "./symptoms";
@@ -26,6 +34,14 @@ export const conditions = [
   perimenopause,
   menopause,
   vaginismus,
+  lupus,
+  rheumatoidArthritis,
+  hashimotosThyroiditis,
+  hypothyroidism,
+  migraine,
+  ironDeficiencyAnaemia,
+  osteoporosis,
+  coeliacDisease,
 ];
 
 export const symptoms = [
