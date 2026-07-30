@@ -1,6 +1,19 @@
-import { Check, Copy, ThumbsDown, ThumbsUp } from "lucide-react";
+import {
+  Check,
+  Copy,
+  FileText,
+  ThumbsDown,
+  ThumbsUp,
+} from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
+
+function formatFileSize(bytes = 0) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 export default function ChatMessage({
   message,
@@ -10,7 +23,7 @@ export default function ChatMessage({
   const [copied, setCopied] = useState(false);
 
   async function copyMessage() {
-    await navigator.clipboard.writeText(message.text);
+    await navigator.clipboard.writeText(message.text || "");
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1400);
   }
@@ -22,8 +35,46 @@ export default function ChatMessage({
         animate={{ opacity: 1, y: 0 }}
         className="flex justify-end"
       >
-        <div className="max-w-[85%] rounded-3xl rounded-br-lg bg-[#f43f72] px-5 py-4 text-white shadow-sm">
-          <p className="whitespace-pre-wrap leading-7">{message.text}</p>
+        <div className="max-w-[88%] rounded-3xl rounded-br-lg bg-[#f43f72] px-4 py-4 text-white shadow-sm md:px-5">
+          {message.attachments?.length > 0 && (
+            <div className="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {message.attachments.map((attachment) => (
+                <div
+                  key={attachment.id}
+                  className="overflow-hidden rounded-2xl bg-white/15"
+                >
+                  {attachment.previewUrl ? (
+                    <img
+                      src={attachment.previewUrl}
+                      alt={attachment.name}
+                      className="max-h-56 w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center gap-3 p-3">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20">
+                        <FileText size={19} />
+                      </span>
+
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-medium">
+                          {attachment.name}
+                        </span>
+                        <span className="mt-0.5 block text-xs text-white/70">
+                          {formatFileSize(attachment.size)}
+                        </span>
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {message.text && (
+            <p className="whitespace-pre-wrap leading-7">
+              {message.text}
+            </p>
+          )}
         </div>
       </motion.div>
     );

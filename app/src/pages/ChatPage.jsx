@@ -8,9 +8,7 @@ import {
 } from "lucide-react";
 import ChatComposer from "../components/ChatComposer";
 import ChatMessage from "../components/ChatMessage";
-
 import { buildGroundedResponse } from "../utils/chatKnowledge";
-
 
 function formatSHELearnResponse(response) {
   const blocks = [];
@@ -92,85 +90,6 @@ function formatSHELearnResponse(response) {
   return blocks.filter(Boolean).join("\n\n");
 }
 
-function formatSHEKnowledgeResponse(response) {
-  const parts = [];
-
-  if (response.urgentWarning) {
-    parts.push(
-      `⚠️ Urgent safety information\n${response.urgentWarning}\n\n` +
-      "Seek urgent medical care when symptoms are severe, sudden or life-threatening."
-    );
-  }
-
-  if (response.title) {
-    parts.push(response.title);
-  }
-
-  if (response.introduction) {
-    parts.push(response.introduction);
-  }
-
-  (response.sections || []).forEach((section) => {
-    const sectionParts = [];
-
-    if (section.title) {
-      sectionParts.push(section.title);
-    }
-
-    if (section.text) {
-      sectionParts.push(section.text);
-    }
-
-    if (section.items?.length) {
-      sectionParts.push(
-        section.items.map((item) => `• ${item}`).join("\n")
-      );
-    }
-
-    if (section.comparisons?.length) {
-      sectionParts.push(
-        section.comparisons
-          .map((comparison) => {
-            const points = (comparison.keyPoints || [])
-              .map((point) => `• ${point}`)
-              .join("\n");
-
-            return [
-              comparison.title,
-              comparison.text,
-              points,
-            ]
-              .filter(Boolean)
-              .join("\n");
-          })
-          .join("\n\n")
-      );
-    }
-
-    if (sectionParts.length) {
-      parts.push(sectionParts.join("\n\n"));
-    }
-  });
-
-  if (response.relatedGuides?.length) {
-    parts.push(
-      [
-        "Related SHE Learn guides",
-        ...response.relatedGuides.map(
-          (guide) =>
-            `• ${guide.title} — ${guide.readTime} min read`
-        ),
-      ].join("\n")
-    );
-  }
-
-  if (response.disclaimer) {
-    parts.push(response.disclaimer);
-  }
-
-  return parts.filter(Boolean).join("\n\n");
-}
-
 const topics = [
   {
     title: "Painful periods",
@@ -205,6 +124,7 @@ export default function ChatPage({
   saveConversation,
 }) {
   const [message, setMessage] = useState("");
+  const [attachments, setAttachments] = useState([]);
   const [isThinking, setIsThinking] = useState(false);
   const [streamingText, setStreamingText] = useState("");
   const endRef = useRef(null);
@@ -219,20 +139,40 @@ export default function ChatPage({
     event.preventDefault();
 
     const cleanMessage = message.trim();
-    if (!cleanMessage || isThinking) return;
+
+    if ((!cleanMessage && attachments.length === 0) || isThinking) {
+      return;
+    }
+
+    const submittedAttachments = attachments.map((attachment) => ({
+      id: attachment.id,
+      name: attachment.name,
+      size: attachment.size,
+      type: attachment.type,
+      previewUrl: attachment.previewUrl,
+    }));
 
     const userMessage = {
       id: Date.now(),
       role: "user",
       text: cleanMessage,
+      attachments: submittedAttachments,
     };
 
     setConversation((current) => [...current, userMessage]);
     setMessage("");
+    setAttachments([]);
     setIsThinking(true);
 
+    const questionForResponse =
+      cleanMessage ||
+      createAttachmentPrompt(submittedAttachments);
+
     window.setTimeout(() => {
-      streamResponse(createResponse(cleanMessage), cleanMessage);
+      streamResponse(
+        createResponse(questionForResponse),
+        questionForResponse
+      );
     }, 650);
   }
 
@@ -295,6 +235,8 @@ export default function ChatPage({
                 setMessage={setMessage}
                 submitMessage={submitMessage}
                 disabled={isThinking}
+                attachments={attachments}
+                setAttachments={setAttachments}
               />
             </div>
           </div>
@@ -307,7 +249,9 @@ export default function ChatPage({
             <p className="text-sm font-medium text-[#f43f72]">
               SHE Health Navigator
             </p>
-            <h2 className="mt-1 text-2xl font-semibold">Your conversation</h2>
+            <h2 className="mt-1 text-2xl font-semibold">
+              Your conversation
+            </h2>
           </div>
 
           <div className="space-y-6">
@@ -367,12 +311,32 @@ export default function ChatPage({
               submitMessage={submitMessage}
               disabled={isThinking || Boolean(streamingText)}
               compact
+              attachments={attachments}
+              setAttachments={setAttachments}
             />
           </div>
         </section>
       )}
     </main>
   );
+}
+
+function createAttachmentPrompt(attachments) {
+  const imageCount = attachments.filter((attachment) =>
+    attachment.type?.startsWith("image/")
+  ).length;
+
+  const documentCount = attachments.length - imageCount;
+
+  if (imageCount > 0 && documentCount > 0) {
+    return "I have attached images and documents and would like help understanding them.";
+  }
+
+  if (imageCount > 0) {
+    return "I have attached an image and would like help understanding it.";
+  }
+
+  return "I have attached a document and would like help understanding it.";
 }
 
 function getSuggestions(text) {
@@ -401,8 +365,7 @@ function getSuggestions(text) {
   ];
 }
 
-function createResponse(question) 
-{
+function createResponse(question) {
   const groundedResponse = buildGroundedResponse(
     String(question ?? "")
   );
