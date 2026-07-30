@@ -20,11 +20,13 @@ import RealServiceMap from "../components/RealServiceMap";
 import { services as originalServices } from "../data/services";
 import { expandedServices } from "../data/expandedServices";
 import { expandedServices2 } from "../data/expandedServices2";
+import { serviceDatabase } from "../data/services/database";
 
 const allCandidateServices = [
   ...originalServices,
   ...expandedServices,
   ...expandedServices2,
+  ...serviceDatabase,
 ];
 
 const services = allCandidateServices.filter(
