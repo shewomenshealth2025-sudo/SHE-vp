@@ -1,35 +1,53 @@
-import {
-  getAllConditions,
-} from "../data/knowledge";
+import { useState } from "react";
+
+import { getAllConditions } from "../data/knowledge";
 
 import KnowledgeSearch from "../components/knowledge/KnowledgeSearch";
 import KnowledgeSection from "../components/knowledge/KnowledgeSection";
 import ConditionCard from "../components/knowledge/ConditionCard";
+import ConditionViewer from "../components/knowledge/ConditionViewer";
 
-export default function LearnPage() {
+export default function LearnPageV2() {
+  const [selectedCondition, setSelectedCondition] = useState(null);
 
   const conditions = getAllConditions();
 
-  return (
-    <main className="max-w-7xl mx-auto px-6 py-12">
+  function openCondition(condition) {
+    setSelectedCondition(condition);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
-      <KnowledgeSearch />
+  function closeCondition() {
+    setSelectedCondition(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  if (selectedCondition) {
+    return (
+      <main className="mx-auto max-w-7xl px-6 py-12">
+        <ConditionViewer
+          condition={selectedCondition}
+          onBack={closeCondition}
+        />
+      </main>
+    );
+  }
+
+  return (
+    <main className="mx-auto max-w-7xl px-6 py-12">
+      <KnowledgeSearch onSelectCondition={openCondition} />
 
       <KnowledgeSection title="Popular Conditions">
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-          {conditions.map(condition => (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {conditions.map((condition) => (
             <ConditionCard
               key={condition.id}
               condition={condition}
+              onClick={openCondition}
             />
           ))}
-
         </div>
-
       </KnowledgeSection>
-
     </main>
   );
 }
