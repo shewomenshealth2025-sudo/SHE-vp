@@ -1,42 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Baby,
-  Droplets,
-  Flower2,
-  Pill,
-  ShieldPlus,
-} from "lucide-react";
 import ChatComposer from "../components/ChatComposer";
 import ChatMessage from "../components/ChatMessage";
 import { buildGroundedResponse } from "../utils/chatKnowledge";
-
-const topics = [
-  {
-    title: "Painful periods",
-    prompt: "Why are my periods so painful?",
-    icon: Droplets,
-  },
-  {
-    title: "Endometriosis",
-    prompt: "Could I have endometriosis?",
-    icon: Flower2,
-  },
-  {
-    title: "Trying to conceive",
-    prompt: "What should I know about trying to conceive?",
-    icon: Baby,
-  },
-  {
-    title: "Contraception",
-    prompt: "Help me compare contraception options.",
-    icon: Pill,
-  },
-  {
-    title: "Autoimmune health",
-    prompt: "How can autoimmune diseases affect women’s health?",
-    icon: ShieldPlus,
-  },
-];
 
 export default function ChatPage({
   conversation,
@@ -104,12 +69,12 @@ export default function ChatPage({
     setAttachments([]);
     setIsThinking(true);
 
-    const attachmentContext =
-      analyseAttachments(submittedAttachments);
+    const attachmentContext = analyseAttachments(
+      submittedAttachments
+    );
 
     const questionForResponse =
-      cleanMessage ||
-      createAttachmentPrompt(attachmentContext);
+      cleanMessage || createAttachmentPrompt(attachmentContext);
 
     setProcessingLabel(
       getProcessingLabel(attachmentContext)
@@ -177,35 +142,18 @@ export default function ChatPage({
     }, 50);
   }
 
-  function chooseTopic(prompt) {
-    if (isBusy) return;
-
-    setMessage(prompt);
-
-    window.setTimeout(() => {
-      document
-        .querySelector("#she-message-input")
-        ?.focus();
-    }, 50);
-  }
-
   return (
     <main className="mx-auto w-full max-w-6xl px-5 pb-32 pt-4 md:px-8 lg:px-12">
       {!hasConversation && !streamingText && (
         <section className="flex min-h-[calc(100vh-8rem)] items-center justify-center py-10">
           <div className="w-full">
             <div className="text-center">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-[#f43f72]">
-                SHE Health Navigator
-              </p>
-
-              <h2 className="mx-auto max-w-3xl text-4xl font-semibold leading-tight tracking-tight text-stone-900 md:text-6xl">
+              <h2 className="mx-auto max-w-3xl text-4xl font-semibold leading-tight tracking-tight md:text-6xl">
                 How can SHE help today?
               </h2>
 
-              <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-stone-500 md:text-xl">
-                Ask a health question, describe what has been happening,
-                or attach a health document.
+              <p className="mx-auto mt-4 max-w-xl text-base text-stone-500 md:text-xl">
+                Your health, your questions, your next step.
               </p>
             </div>
 
@@ -219,40 +167,6 @@ export default function ChatPage({
                 setAttachments={setAttachments}
               />
             </div>
-
-            <div className="mx-auto mt-7 max-w-3xl">
-              <p className="mb-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-stone-400">
-                Common questions
-              </p>
-
-              <div className="flex flex-wrap justify-center gap-2.5">
-                {topics.map((topic) => {
-                  const Icon = topic.icon;
-
-                  return (
-                    <button
-                      key={topic.title}
-                      type="button"
-                      onClick={() => chooseTopic(topic.prompt)}
-                      className="group flex items-center gap-2 rounded-full border border-pink-100 bg-white px-4 py-2.5 text-sm font-medium text-stone-600 shadow-sm transition hover:-translate-y-0.5 hover:border-pink-200 hover:bg-pink-50 hover:text-[#f43f72] hover:shadow-md"
-                    >
-                      <Icon
-                        size={16}
-                        className="text-[#f43f72]"
-                      />
-
-                      {topic.title}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <p className="mx-auto mt-8 max-w-xl text-center text-xs leading-5 text-stone-400">
-              SHE provides general health information and navigation
-              support. It does not diagnose medical conditions or replace
-              professional medical care.
-            </p>
           </div>
         </section>
       )}
@@ -364,6 +278,277 @@ function createMessageId() {
     .slice(2)}`;
 }
 
+function createResponse({
+  question,
+  attachmentContext,
+  hasUserText,
+}) {
+  const cleanQuestion = String(question ?? "").trim();
+
+  if (attachmentContext.total > 0) {
+    const attachmentResponse =
+      createAttachmentAcknowledgement(
+        attachmentContext,
+        hasUserText
+      );
+
+    if (!hasUserText) {
+      return attachmentResponse;
+    }
+
+    const conversationalResponse =
+      createConversationalResponse(cleanQuestion);
+
+    if (conversationalResponse) {
+      return [attachmentResponse, conversationalResponse]
+        .filter(Boolean)
+        .join("\n\n");
+    }
+
+    const groundedResponse = buildGroundedResponse(
+      cleanQuestion
+    );
+
+    const formattedResponse =
+      formatSHELearnResponse(groundedResponse);
+
+    return [attachmentResponse, formattedResponse]
+      .filter(Boolean)
+      .join("\n\n");
+  }
+
+  const conversationalResponse =
+    createConversationalResponse(cleanQuestion);
+
+  if (conversationalResponse) {
+    return conversationalResponse;
+  }
+
+  const groundedResponse = buildGroundedResponse(
+    cleanQuestion
+  );
+
+  return formatSHELearnResponse(groundedResponse);
+}
+
+function createConversationalResponse(question) {
+  const normalised = question
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s']/gu, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!normalised) {
+    return "What would you like help with today?";
+  }
+
+  if (isGreeting(normalised)) {
+    return [
+      "Hi! I’m SHE.",
+      "You can ask me a women’s health question, describe symptoms you’ve been experiencing, or ask for help preparing for a healthcare appointment.",
+      "What would you like help with today?",
+    ].join("\n\n");
+  }
+
+  if (isThankYou(normalised)) {
+    return "You’re very welcome. Is there anything else you’d like help understanding?";
+  }
+
+  if (isGoodbye(normalised)) {
+    return "Take care. You can come back whenever you need help finding your next step.";
+  }
+
+  if (isPositiveReply(normalised)) {
+    return "I’m glad that helped. What would you like to look at next?";
+  }
+
+  if (isNegativeReply(normalised)) {
+    return [
+      "I’m sorry that wasn’t helpful.",
+      "Tell me what felt unclear or what you were hoping to understand, and I’ll try a different approach.",
+    ].join("\n\n");
+  }
+
+  if (isHelpRequest(normalised)) {
+    return [
+      "Of course. Tell me what has been happening in your own words.",
+      "You can include your symptoms, how long they have been happening, what makes them better or worse, and anything you’re worried about.",
+    ].join("\n\n");
+  }
+
+  if (isIdentityQuestion(normalised)) {
+    return [
+      "I’m SHE, a women’s health navigation assistant.",
+      "I can help explain health information, suggest questions to ask a clinician, and help you understand possible next steps.",
+      "I can’t diagnose a condition or replace professional medical care.",
+    ].join("\n\n");
+  }
+
+  if (isVeryShortOrVague(normalised)) {
+    return createClarifyingResponse(normalised);
+  }
+
+  return null;
+}
+
+function isGreeting(text) {
+  const greetings = [
+    "hi",
+    "hello",
+    "hey",
+    "hiya",
+    "hey there",
+    "hello there",
+    "good morning",
+    "good afternoon",
+    "good evening",
+  ];
+
+  return greetings.includes(text);
+}
+
+function isThankYou(text) {
+  const responses = [
+    "thanks",
+    "thank you",
+    "thankyou",
+    "thanks so much",
+    "thank you so much",
+    "cheers",
+  ];
+
+  return responses.includes(text);
+}
+
+function isGoodbye(text) {
+  const responses = [
+    "bye",
+    "goodbye",
+    "see you",
+    "talk later",
+    "speak later",
+  ];
+
+  return responses.includes(text);
+}
+
+function isPositiveReply(text) {
+  const responses = [
+    "okay",
+    "ok",
+    "great",
+    "perfect",
+    "that helps",
+    "helpful",
+    "got it",
+    "makes sense",
+    "yes",
+    "yeah",
+  ];
+
+  return responses.includes(text);
+}
+
+function isNegativeReply(text) {
+  const responses = [
+    "no",
+    "not helpful",
+    "that didnt help",
+    "that didn't help",
+    "i dont understand",
+    "i don't understand",
+    "thats wrong",
+    "that's wrong",
+  ];
+
+  return responses.includes(text);
+}
+
+function isHelpRequest(text) {
+  const responses = [
+    "help",
+    "can you help me",
+    "i need help",
+    "please help",
+    "help me",
+  ];
+
+  return responses.includes(text);
+}
+
+function isIdentityQuestion(text) {
+  const responses = [
+    "who are you",
+    "what are you",
+    "what can you do",
+    "how can you help",
+    "what is she",
+  ];
+
+  return responses.includes(text);
+}
+
+function isVeryShortOrVague(text) {
+  const words = text.split(" ").filter(Boolean);
+
+  if (words.length > 3) {
+    return false;
+  }
+
+  const healthWords = [
+    "period",
+    "periods",
+    "pain",
+    "bleeding",
+    "bloating",
+    "pregnant",
+    "pregnancy",
+    "fertility",
+    "contraception",
+    "endometriosis",
+    "pcos",
+    "menopause",
+    "thyroid",
+    "discharge",
+    "itching",
+    "cramps",
+    "headache",
+    "fatigue",
+    "nausea",
+    "dizzy",
+    "dizziness",
+    "sweating",
+    "weight",
+    "pill",
+    "implant",
+    "coil",
+  ];
+
+  return !healthWords.some((word) =>
+    text.includes(word)
+  );
+}
+
+function createClarifyingResponse(text) {
+  const vagueResponses = {
+    maybe:
+      "That’s okay. Tell me a little more about what you’re unsure about.",
+    why:
+      "What would you like me to explain? You can include the symptom, condition or part of my previous response you mean.",
+    how:
+      "What would you like help doing? Tell me a little more and I’ll guide you.",
+    what:
+      "What would you like to understand? You can ask about a symptom, condition, treatment or next step.",
+    worried:
+      "I’m sorry you’re feeling worried. Tell me what is happening and what concerns you most.",
+  };
+
+  return (
+    vagueResponses[text] ||
+    "Could you tell me a little more about what you’d like help with?"
+  );
+}
+
 function analyseAttachments(attachments = []) {
   const analysis = {
     total: attachments.length,
@@ -375,8 +560,13 @@ function analyseAttachments(attachments = []) {
   };
 
   attachments.forEach((attachment) => {
-    const name = String(attachment.name || "").toLowerCase();
-    const type = String(attachment.type || "").toLowerCase();
+    const name = String(
+      attachment.name || ""
+    ).toLowerCase();
+
+    const type = String(
+      attachment.type || ""
+    ).toLowerCase();
 
     if (type.startsWith("image/")) {
       analysis.images.push(attachment);
@@ -420,7 +610,9 @@ function analyseAttachments(attachments = []) {
         "pharmacy",
       ])
     ) {
-      analysis.possibleMedicationFiles.push(attachment);
+      analysis.possibleMedicationFiles.push(
+        attachment
+      );
     }
   });
 
@@ -485,36 +677,6 @@ function createAttachmentPrompt(attachmentContext) {
   return "I have attached a health document and would like help understanding it.";
 }
 
-function createResponse({
-  question,
-  attachmentContext,
-  hasUserText,
-}) {
-  const responseParts = [];
-
-  if (attachmentContext.total > 0) {
-    responseParts.push(
-      createAttachmentAcknowledgement(
-        attachmentContext,
-        hasUserText
-      )
-    );
-  }
-
-  const groundedResponse = buildGroundedResponse(
-    String(question ?? "")
-  );
-
-  const formattedResponse =
-    formatSHELearnResponse(groundedResponse);
-
-  if (formattedResponse) {
-    responseParts.push(formattedResponse);
-  }
-
-  return responseParts.filter(Boolean).join("\n\n");
-}
-
 function createAttachmentAcknowledgement(
   attachmentContext,
   hasUserText
@@ -525,7 +687,7 @@ function createAttachmentAcknowledgement(
       "This version of SHE can recognise the type of attachment, but it cannot yet securely extract or verify the individual values inside the file.",
       hasUserText
         ? "I’ll use the information in your message to guide the response."
-        : "You can type the result names and values you want explained, including the reference ranges shown on the report.",
+        : "You can type the result names, values and reference ranges you want explained.",
     ].join("\n\n");
   }
 
@@ -535,7 +697,7 @@ function createAttachmentAcknowledgement(
       "This version of SHE cannot yet securely read the full contents of the document.",
       hasUserText
         ? "I’ll respond using the details you provided in your message."
-        : "You can paste the section you would like explained, removing personal details such as your name, address and health number.",
+        : "You can paste the section you would like explained after removing personal details.",
     ].join("\n\n");
   }
 
@@ -652,6 +814,17 @@ function formatSHELearnResponse(response) {
 
 function getSuggestions(text = "") {
   const lower = text.toLowerCase();
+
+  if (
+    lower.includes("hi! i’m she") ||
+    lower.includes("what would you like help with")
+  ) {
+    return [
+      "I want to understand some symptoms",
+      "Help me prepare for a GP appointment",
+      "I have a question about my period",
+    ];
+  }
 
   if (
     lower.includes("urgent") ||
