@@ -200,14 +200,11 @@ export default function ChatPage({
 
             {streamingText && (
               <ChatMessage
-                message={{
-                  id: "streaming",
-                  role: "she",
-                  text: streamingText,
-                }}
-                suggestions={[]}
-                chooseSuggestion={chooseSuggestion}
-              />
+  key={entry.id}
+  message={entry}
+  suggestions={[]}
+  chooseSuggestion={chooseSuggestion}
+/>
             )}
 
             <div ref={endRef} />
@@ -271,58 +268,4 @@ function createAttachmentTitle(attachments) {
   }
 
   return `${attachments.length} attachments`;
-}
-
-function getSuggestions(text = "") {
-  const lower = text.toLowerCase();
-
-  if (
-    lower.includes("what would you like help with") ||
-    lower.includes("tell me what has been happening")
-  ) {
-    return [
-      "I want to understand some symptoms",
-      "Help me prepare for a GP appointment",
-      "I have a question about my period",
-    ];
-  }
-
-  if (
-    lower.includes("can you tell me") ||
-    lower.includes("tell me how long")
-  ) {
-    return [
-      "Help me track these symptoms",
-      "Help me prepare for a GP appointment",
-      "Which symptoms need urgent help?",
-    ];
-  }
-
-  if (
-    lower.includes("period") ||
-    lower.includes("menstrual")
-  ) {
-    return [
-      "What symptoms should I track?",
-      "Help me prepare for a GP appointment",
-      "Could this be endometriosis?",
-    ];
-  }
-
-  if (
-    lower.includes("fertility") ||
-    lower.includes("conceive")
-  ) {
-    return [
-      "When should I seek fertility advice?",
-      "What happens during an assessment?",
-      "How should I track my cycle?",
-    ];
-  }
-
-  return [
-    "What should I do next?",
-    "What should I ask my GP?",
-    "Which symptoms should I record?",
-  ];
 }
