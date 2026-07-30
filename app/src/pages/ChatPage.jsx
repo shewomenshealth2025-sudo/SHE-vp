@@ -199,13 +199,17 @@ export default function ChatPage({
             {isThinking && <ThinkingMessage />}
 
             {streamingText && (
-              <ChatMessage
-  key={entry.id}
-  message={entry}
-  suggestions={[]}
-  chooseSuggestion={chooseSuggestion}
-/>
-            )}
+  <ChatMessage
+    key="streaming-response"
+    message={{
+      id: "streaming-response",
+      role: "she",
+      text: streamingText,
+    }}
+    suggestions={[]}
+    chooseSuggestion={chooseSuggestion}
+  />
+)}
 
             <div ref={endRef} />
           </div>
