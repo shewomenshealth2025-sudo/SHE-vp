@@ -11,6 +11,7 @@ import ProductsPage from "./pages/ProductsPage";
 import ServicesPage from "./pages/ServicesPage";
 import SHEIntelligencePage from "./pages/SHEIntelligencePage";
 import ProfilePage from "./pages/ProfilePage";
+import LearnPageV2 from "./pages/LearnPageV2";
 export default function App() {
   const [activeTab, setActiveTab] = useState("chat");
   const [conversation, setConversation] = useState([]);
@@ -79,15 +80,13 @@ export default function App() {
                 saveConversation={saveConversation}
               />
             )}
+{activeTab === "products" && <ProductsPage />}
 
-            {activeTab === "products" && <ProductsPage />}
+{activeTab === "services" && <ServicesPage />}
 
-            {activeTab === "services" && <ServicesPage />}
+{activeTab === "education" && <LearnPageV2 />}
 
-
-            {activeTab === "education" && <SHEIntelligencePage onOpenChat={(prompt) => { if (prompt) window.localStorage.setItem("she-pending-chat-prompt", prompt); setActiveTab("chat"); }} />}
-
-            {activeTab === "profile" && <ProfilePage />}
+{activeTab === "profile" && <ProfilePage />}
           </motion.div>
         </AnimatePresence>
 

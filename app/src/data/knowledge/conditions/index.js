@@ -1,0 +1,1 @@
+export { endometriosis } from "./endometriosis";
