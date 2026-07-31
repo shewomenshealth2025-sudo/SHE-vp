@@ -115,7 +115,7 @@ export default function ChatPage({
         setConversation((current) => {
           const updated = [...current, completedMessage];
 
-          saveConversation?.(conversationTitle, updated);
+          //saveConversation?.(conversationTitle, updated);
 
           return updated;
         });
