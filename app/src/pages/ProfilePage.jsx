@@ -1,1149 +1,430 @@
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import {
   Activity,
-  CalendarDays,
-  Check,
   ChevronRight,
   CirclePlus,
-  Clock3,
   HeartPulse,
-  Lock,
+  LockKeyhole,
   Pill,
-  Plus,
-  ShieldCheck,
-  Sparkles,
   Stethoscope,
   Trash2,
+  UserRound,
   X,
 } from "lucide-react";
 
 const STORAGE_KEY = "she-health-profile";
 
-const emptyProfile = {
-  firstName: "",
-  healthStage: "Not selected",
-  personalisationEnabled: false,
+const EMPTY_PROFILE = {
+  lifeStage: "",
+  personaliseChat: false,
   conditions: [],
   medications: [],
   symptoms: [],
-  timeline: [],
 };
 
-const healthStages = [
-  "Not selected",
-  "Menstrual health",
-  "Trying to conceive",
-  "Pregnant",
-  "Postpartum",
-  "Perimenopause",
-  "Menopause",
-  "Postmenopause",
-];
-
-const commonConditions = [
-  "Endometriosis",
-  "Adenomyosis",
-  "PCOS",
-  "Fibroids",
-  "POTS",
-  "Lupus",
-  "Rheumatoid arthritis",
-  "Hashimoto’s thyroiditis",
-  "Coeliac disease",
-  "Migraine",
-  "ME/CFS",
-  "Iron deficiency",
-  "PMDD",
-  "Hypermobility",
-  "Long COVID",
-];
-
-const commonSymptoms = [
-  "Pelvic pain",
-  "Painful periods",
-  "Heavy bleeding",
-  "Fatigue",
-  "Dizziness",
-  "Heart racing",
-  "Brain fog",
-  "Joint pain",
-  "Headache or migraine",
-  "Bloating",
-  "Sleep problems",
-  "Hot flushes",
-];
+const SECTIONS = {
+  conditions: {
+    title: "Conditions",
+    description:
+      "Add conditions you have been diagnosed with or are currently investigating.",
+    placeholder: "e.g. Endometriosis",
+    icon: Stethoscope,
+  },
+  medications: {
+    title: "Medications",
+    description:
+      "Keep a simple record of current medicines and treatments.",
+    placeholder: "e.g. Levothyroxine",
+    icon: Pill,
+  },
+  symptoms: {
+    title: "Symptoms",
+    description:
+      "Save symptoms you may want to discuss during an appointment.",
+    placeholder: "e.g. Pelvic pain",
+    icon: Activity,
+  },
+};
 
 function loadProfile() {
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
+    const savedProfile = window.localStorage.getItem(STORAGE_KEY);
 
-    if (!stored) return emptyProfile;
-
-    return {
-      ...emptyProfile,
-      ...JSON.parse(stored),
-    };
+    return savedProfile
+      ? { ...EMPTY_PROFILE, ...JSON.parse(savedProfile) }
+      : EMPTY_PROFILE;
   } catch {
-    return emptyProfile;
+    return EMPTY_PROFILE;
   }
 }
 
-function createId(prefix) {
-  return `${prefix}-${Date.now()}-${Math.random()
-    .toString(36)
-    .slice(2, 7)}`;
-}
-
-function formatDate(value) {
-  if (!value) return "";
-
-  const date = new Date(`${value}T12:00:00`);
-
-  if (Number.isNaN(date.getTime())) return value;
-
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(date);
-}
-
-export default function ProfilePage() {
-  const [profile, setProfile] = useState(loadProfile);
-  const [activeModal, setActiveModal] = useState(null);
-
-  useEffect(() => {
-    window.localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(profile),
-    );
-
-    window.localStorage.setItem(
-      "she-chat-personalisation-enabled",
-      JSON.stringify(profile.personalisationEnabled),
-    );
-
-    window.localStorage.setItem(
-      "she-chat-health-context",
-      JSON.stringify({
-        conditions: profile.conditions.map((item) => item.name),
-        medications: profile.medications.map((item) => ({
-          name: item.name,
-          dose: item.dose,
-          frequency: item.frequency,
-        })),
-        symptoms: profile.symptoms.map((item) => ({
-          name: item.name,
-          severity: item.severity,
-        })),
-        healthStage: profile.healthStage,
-      }),
-    );
-  }, [profile]);
-
-  const recentTimeline = useMemo(() => {
-    return [...profile.timeline]
-      .sort((a, b) => {
-        return new Date(b.date) - new Date(a.date);
-      })
-      .slice(0, 5);
-  }, [profile.timeline]);
-
-  function removeItem(section, id) {
-    setProfile((current) => ({
-      ...current,
-      [section]: current[section].filter((item) => item.id !== id),
-    }));
-  }
+function HealthSection({
+  sectionKey,
+  items,
+  isAdding,
+  draft,
+  onStartAdding,
+  onDraftChange,
+  onAdd,
+  onCancel,
+  onRemove,
+}) {
+  const section = SECTIONS[sectionKey];
+  const Icon = section.icon;
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-5 pb-32 pt-8 md:px-8 lg:px-12">
-      <section className="flex flex-col justify-between gap-6 border-b border-stone-100 pb-8 sm:flex-row sm:items-end">
-        <div>
-          <p className="flex items-center gap-2 text-sm font-medium text-[#f43f72]">
-            <HeartPulse size={16} />
-            My Health
-          </p>
-
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-[#241f20] md:text-5xl">
-            Your health, in one place.
-          </h1>
-
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-500 md:text-base">
-            Keep a simple record of the information you may want available
-            for appointments and personalised SHE support.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setActiveModal("profile")}
-          className="flex w-fit items-center gap-2 rounded-full border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-700 shadow-sm transition hover:border-pink-200"
-        >
-          Edit profile
-          <ChevronRight size={16} />
-        </button>
-      </section>
-
-      <section className="mt-7 grid gap-4 sm:grid-cols-3">
-        <SummaryCard
-          icon={Stethoscope}
-          value={profile.conditions.length}
-          label="Conditions"
-        />
-
-        <SummaryCard
-          icon={Pill}
-          value={profile.medications.length}
-          label="Medications"
-        />
-
-        <SummaryCard
-          icon={Activity}
-          value={profile.symptoms.length}
-          label="Symptoms"
-        />
-      </section>
-
-      <section className="mt-8 rounded-[30px] border border-stone-100 bg-white p-6 shadow-sm md:p-8">
-        <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
-          <div>
-            <p className="text-sm font-medium text-[#f43f72]">
-              Health snapshot
-            </p>
-
-            <h2 className="mt-2 text-2xl font-semibold">
-              {profile.firstName
-                ? `${profile.firstName}’s health profile`
-                : "Your health profile"}
-            </h2>
-
-            <p className="mt-2 text-sm text-stone-500">
-              Current stage: {profile.healthStage}
-            </p>
+    <section className="border-t border-[#eee8e7] py-8 first:border-t-0">
+      <div className="flex items-start justify-between gap-6">
+        <div className="flex min-w-0 gap-4">
+          <div className="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-[#fff0f5] text-[#f43f75]">
+            <Icon size={21} strokeWidth={1.8} />
           </div>
 
-          <label className="flex cursor-pointer items-center gap-3 rounded-2xl bg-pink-50 px-4 py-3">
-            <div>
-              <p className="text-sm font-medium text-[#241f20]">
-                Personalise SHE Chat
-              </p>
-
-              <p className="mt-1 text-xs text-stone-500">
-                Use this profile when answering
-              </p>
-            </div>
-
-            <input
-              type="checkbox"
-              checked={profile.personalisationEnabled}
-              onChange={(event) =>
-                setProfile((current) => ({
-                  ...current,
-                  personalisationEnabled: event.target.checked,
-                }))
-              }
-              className="h-5 w-5 accent-[#f43f72]"
-            />
-          </label>
-        </div>
-
-        <div className="mt-6 flex items-start gap-3 rounded-2xl bg-stone-50 px-4 py-3 text-xs leading-5 text-stone-500">
-          <Lock size={16} className="mt-0.5 shrink-0 text-[#f43f72]" />
-          This MVP stores your profile only in this browser. Do not use it
-          as your only copy of important medical information.
-        </div>
-      </section>
-
-      <section className="mt-8 grid gap-6 lg:grid-cols-2">
-        <SimpleSection
-          icon={Stethoscope}
-          title="Conditions"
-          subtitle="Diagnosed or currently being investigated"
-          addLabel="Add condition"
-          onAdd={() => setActiveModal("condition")}
-          emptyText="No conditions added."
-        >
-          {profile.conditions.map((condition) => (
-            <HealthRow
-              key={condition.id}
-              title={condition.name}
-              detail={
-                condition.status === "suspected"
-                  ? "Being investigated"
-                  : "Diagnosed"
-              }
-              onDelete={() =>
-                removeItem("conditions", condition.id)
-              }
-            />
-          ))}
-        </SimpleSection>
-
-        <SimpleSection
-          icon={Pill}
-          title="Medications"
-          subtitle="Current medicines and treatments"
-          addLabel="Add medication"
-          onAdd={() => setActiveModal("medication")}
-          emptyText="No medications added."
-        >
-          {profile.medications.map((medication) => (
-            <HealthRow
-              key={medication.id}
-              title={medication.name}
-              detail={[
-                medication.dose,
-                medication.frequency,
-              ]
-                .filter(Boolean)
-                .join(" · ")}
-              onDelete={() =>
-                removeItem("medications", medication.id)
-              }
-            />
-          ))}
-        </SimpleSection>
-
-        <SimpleSection
-          icon={Activity}
-          title="Current symptoms"
-          subtitle="A light snapshot rather than a daily tracker"
-          addLabel="Add symptom"
-          onAdd={() => setActiveModal("symptom")}
-          emptyText="No symptoms added."
-        >
-          {profile.symptoms.map((symptom) => (
-            <SymptomRow
-              key={symptom.id}
-              symptom={symptom}
-              onDelete={() =>
-                removeItem("symptoms", symptom.id)
-              }
-            />
-          ))}
-        </SimpleSection>
-
-        <SimpleSection
-          icon={CalendarDays}
-          title="Recent timeline"
-          subtitle="Appointments, tests and important changes"
-          addLabel="Add entry"
-          onAdd={() => setActiveModal("timeline")}
-          emptyText="No timeline entries added."
-        >
-          {recentTimeline.map((entry) => (
-            <TimelineRow
-              key={entry.id}
-              entry={entry}
-              onDelete={() =>
-                removeItem("timeline", entry.id)
-              }
-            />
-          ))}
-        </SimpleSection>
-      </section>
-
-      <section className="mt-8 rounded-[30px] bg-[#241f20] p-6 text-white md:p-8">
-        <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
           <div>
-            <p className="flex items-center gap-2 text-sm text-white/65">
-              <ShieldCheck size={16} />
-              Appointment preparation
-            </p>
-
-            <h2 className="mt-2 text-2xl font-semibold">
-              Keep the important details easy to find.
+            <h2 className="text-xl font-semibold text-[#241f20]">
+              {section.title}
             </h2>
 
-            <p className="mt-2 max-w-xl text-sm leading-6 text-white/60">
-              Your conditions, medications and recent symptoms can later
-              be turned into a concise appointment summary.
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-[#746c6e]">
+              {section.description}
             </p>
           </div>
+        </div>
 
+        {!isAdding && (
           <button
             type="button"
-            onClick={() => setActiveModal("summary")}
-            className="flex shrink-0 items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-medium text-[#241f20]"
+            onClick={() => onStartAdding(sectionKey)}
+            className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-[#f7f5f5] text-[#4e4749] transition hover:bg-[#fff0f5] hover:text-[#f43f75]"
+            aria-label={`Add ${section.title.toLowerCase()}`}
           >
-            View summary
-            <ChevronRight size={16} />
+            <CirclePlus size={21} strokeWidth={1.8} />
           </button>
-        </div>
-      </section>
-
-      <AnimatePresence>
-        {activeModal === "profile" && (
-          <ProfileModal
-            profile={profile}
-            save={(values) => {
-              setProfile((current) => ({
-                ...current,
-                ...values,
-              }));
-
-              setActiveModal(null);
-            }}
-            close={() => setActiveModal(null)}
-          />
         )}
-
-        {activeModal === "condition" && (
-          <ConditionModal
-            save={(condition) => {
-              setProfile((current) => ({
-                ...current,
-                conditions: [
-                  ...current.conditions,
-                  {
-                    id: createId("condition"),
-                    ...condition,
-                  },
-                ],
-              }));
-
-              setActiveModal(null);
-            }}
-            close={() => setActiveModal(null)}
-          />
-        )}
-
-        {activeModal === "medication" && (
-          <MedicationModal
-            save={(medication) => {
-              setProfile((current) => ({
-                ...current,
-                medications: [
-                  ...current.medications,
-                  {
-                    id: createId("medication"),
-                    ...medication,
-                  },
-                ],
-              }));
-
-              setActiveModal(null);
-            }}
-            close={() => setActiveModal(null)}
-          />
-        )}
-
-        {activeModal === "symptom" && (
-          <SymptomModal
-            save={(symptom) => {
-              setProfile((current) => ({
-                ...current,
-                symptoms: [
-                  ...current.symptoms,
-                  {
-                    id: createId("symptom"),
-                    ...symptom,
-                  },
-                ],
-              }));
-
-              setActiveModal(null);
-            }}
-            close={() => setActiveModal(null)}
-          />
-        )}
-
-        {activeModal === "timeline" && (
-          <TimelineModal
-            save={(entry) => {
-              setProfile((current) => ({
-                ...current,
-                timeline: [
-                  ...current.timeline,
-                  {
-                    id: createId("timeline"),
-                    ...entry,
-                  },
-                ],
-              }));
-
-              setActiveModal(null);
-            }}
-            close={() => setActiveModal(null)}
-          />
-        )}
-
-        {activeModal === "summary" && (
-          <SummaryModal
-            profile={profile}
-            close={() => setActiveModal(null)}
-          />
-        )}
-      </AnimatePresence>
-    </main>
-  );
-}
-
-function SummaryCard({ icon: Icon, value, label }) {
-  return (
-    <div className="rounded-[24px] border border-stone-100 bg-white p-5 shadow-sm">
-      <div className="flex items-center justify-between">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-pink-50 text-[#f43f72]">
-          <Icon size={19} />
-        </div>
-
-        <p className="text-2xl font-semibold">{value}</p>
       </div>
 
-      <p className="mt-4 text-sm text-stone-500">{label}</p>
-    </div>
-  );
-}
-
-function SimpleSection({
-  icon: Icon,
-  title,
-  subtitle,
-  addLabel,
-  onAdd,
-  emptyText,
-  children,
-}) {
-  const items = Array.isArray(children)
-    ? children.filter(Boolean)
-    : children
-      ? [children]
-      : [];
-
-  return (
-    <section className="rounded-[30px] border border-stone-100 bg-white p-6 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-pink-50 text-[#f43f72]">
-              <Icon size={19} />
-            </div>
-
-            <h2 className="text-xl font-semibold">{title}</h2>
-          </div>
-
-          <p className="mt-3 text-sm text-stone-500">
-            {subtitle}
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={onAdd}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-stone-100 text-stone-600 transition hover:bg-pink-50 hover:text-[#f43f72]"
-          aria-label={addLabel}
-          title={addLabel}
+      {isAdding && (
+        <form
+          className="ml-0 mt-5 flex flex-col gap-3 sm:ml-15 sm:flex-row"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onAdd(sectionKey);
+          }}
         >
-          <Plus size={18} />
-        </button>
-      </div>
+          <input
+            autoFocus
+            type="text"
+            value={draft}
+            onChange={(event) => onDraftChange(event.target.value)}
+            placeholder={section.placeholder}
+            className="min-w-0 flex-1 rounded-xl border border-[#ded7d8] bg-white px-4 py-3 text-[#241f20] outline-none transition placeholder:text-[#aaa1a3] focus:border-[#f43f75] focus:ring-4 focus:ring-[#f43f75]/10"
+          />
 
-      <div className="mt-5 divide-y divide-stone-100">
-        {items.length > 0 ? (
-          items
-        ) : (
-          <div className="py-7 text-center">
-            <p className="text-sm text-stone-400">{emptyText}</p>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={!draft.trim()}
+              className="rounded-xl bg-[#f43f75] px-5 py-3 font-medium text-white transition hover:bg-[#df2f64] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Add
+            </button>
 
             <button
               type="button"
-              onClick={onAdd}
-              className="mt-3 text-sm font-medium text-[#f43f72]"
+              onClick={onCancel}
+              className="rounded-xl border border-[#ded7d8] px-4 py-3 text-[#625a5c] transition hover:bg-[#f8f6f6]"
             >
-              {addLabel}
+              Cancel
             </button>
           </div>
-        )}
-      </div>
+        </form>
+      )}
+
+      {items.length > 0 ? (
+        <div className="ml-0 mt-5 flex flex-wrap gap-2 sm:ml-15">
+          {items.map((item) => (
+            <div
+              key={item}
+              className="group flex items-center gap-2 rounded-full border border-[#eadfe2] bg-[#fffafb] py-2 pl-4 pr-2 text-sm text-[#433c3e]"
+            >
+              <span>{item}</span>
+
+              <button
+                type="button"
+                onClick={() => onRemove(sectionKey, item)}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-[#9b9193] transition hover:bg-white hover:text-[#e11d48]"
+                aria-label={`Remove ${item}`}
+              >
+                <X size={15} />
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        !isAdding && (
+          <button
+            type="button"
+            onClick={() => onStartAdding(sectionKey)}
+            className="ml-0 mt-5 flex items-center gap-2 text-sm font-medium text-[#f43f75] transition hover:text-[#d92f63] sm:ml-15"
+          >
+            Add your first {section.title.toLowerCase()}
+            <ChevronRight size={16} />
+          </button>
+        )
+      )}
     </section>
   );
 }
 
-function HealthRow({ title, detail, onDelete }) {
-  return (
-    <div className="flex items-center justify-between gap-4 py-4">
-      <div>
-        <p className="font-medium text-[#241f20]">{title}</p>
+export default function ProfilePage() {
+  const [profile, setProfile] = useState(loadProfile);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
+  const [draft, setDraft] = useState("");
 
-        {detail && (
-          <p className="mt-1 text-xs text-stone-500">
-            {detail}
-          </p>
-        )}
-      </div>
+  useEffect(() => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+  }, [profile]);
 
-      <button
-        type="button"
-        onClick={onDelete}
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-stone-300 transition hover:bg-red-50 hover:text-red-500"
-        aria-label={`Remove ${title}`}
-      >
-        <Trash2 size={15} />
-      </button>
-    </div>
-  );
-}
-
-function SymptomRow({ symptom, onDelete }) {
-  return (
-    <div className="py-4">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="font-medium">{symptom.name}</p>
-
-          <p className="mt-1 text-xs text-stone-500">
-            {symptom.frequency}
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={onDelete}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-stone-300 transition hover:bg-red-50 hover:text-red-500"
-        >
-          <Trash2 size={15} />
-        </button>
-      </div>
-
-      <div className="mt-3 flex gap-1.5">
-        {[1, 2, 3, 4, 5].map((level) => (
-          <span
-            key={level}
-            className={`h-2 flex-1 rounded-full ${
-              level <= Number(symptom.severity)
-                ? "bg-[#f43f72]"
-                : "bg-stone-100"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function TimelineRow({ entry, onDelete }) {
-  return (
-    <div className="flex items-start justify-between gap-4 py-4">
-      <div className="flex items-start gap-3">
-        <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-50 text-[#f43f72]">
-          <Clock3 size={15} />
-        </span>
-
-        <div>
-          <p className="font-medium">{entry.title}</p>
-
-          <p className="mt-1 text-xs text-stone-500">
-            {formatDate(entry.date)}
-            {entry.type ? ` · ${entry.type}` : ""}
-          </p>
-
-          {entry.notes && (
-            <p className="mt-2 text-sm leading-6 text-stone-500">
-              {entry.notes}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <button
-        type="button"
-        onClick={onDelete}
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-stone-300 transition hover:bg-red-50 hover:text-red-500"
-      >
-        <Trash2 size={15} />
-      </button>
-    </div>
-  );
-}
-
-function ModalShell({ title, subtitle, close, children }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={close}
-      className="fixed inset-0 z-[1000] flex items-end justify-center bg-black/30 backdrop-blur-sm md:items-center md:p-6"
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 35, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 30, scale: 0.98 }}
-        onClick={(event) => event.stopPropagation()}
-        className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-[32px] bg-white p-6 shadow-2xl md:rounded-[32px] md:p-8"
-      >
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-semibold">{title}</h2>
-
-            {subtitle && (
-              <p className="mt-2 text-sm leading-6 text-stone-500">
-                {subtitle}
-              </p>
-            )}
-          </div>
-
-          <button
-            type="button"
-            onClick={close}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-stone-100 text-stone-500"
-          >
-            <X size={17} />
-          </button>
-        </div>
-
-        <div className="mt-7">{children}</div>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-function Field({ label, children }) {
-  return (
-    <label className="block">
-      <span className="text-sm font-medium text-stone-700">
-        {label}
-      </span>
-
-      <div className="mt-2">{children}</div>
-    </label>
-  );
-}
-
-const inputClass =
-  "w-full rounded-2xl border border-stone-200 bg-white px-4 py-3.5 text-sm outline-none transition focus:border-pink-300 focus:ring-4 focus:ring-pink-100";
-
-const primaryButtonClass =
-  "mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#241f20] px-5 py-3.5 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40";
-
-function ProfileModal({ profile, save, close }) {
-  const [firstName, setFirstName] = useState(profile.firstName);
-  const [healthStage, setHealthStage] = useState(
-    profile.healthStage,
+  const totalItems = useMemo(
+    () =>
+      profile.conditions.length +
+      profile.medications.length +
+      profile.symptoms.length,
+    [profile]
   );
 
-  return (
-    <ModalShell
-      title="Edit health profile"
-      subtitle="Only include information you are comfortable storing in this browser."
-      close={close}
-    >
-      <div className="space-y-5">
-        <Field label="First name or preferred name">
-          <input
-            value={firstName}
-            onChange={(event) => setFirstName(event.target.value)}
-            placeholder="Optional"
-            className={inputClass}
-          />
-        </Field>
+  function startAdding(sectionKey) {
+    setActiveSection(sectionKey);
+    setDraft("");
+  }
 
-        <Field label="Current health stage">
-          <select
-            value={healthStage}
-            onChange={(event) => setHealthStage(event.target.value)}
-            className={inputClass}
-          >
-            {healthStages.map((stage) => (
-              <option key={stage}>{stage}</option>
-            ))}
-          </select>
-        </Field>
-      </div>
+  function cancelAdding() {
+    setActiveSection(null);
+    setDraft("");
+  }
 
-      <button
-        type="button"
-        onClick={() =>
-          save({
-            firstName: firstName.trim(),
-            healthStage,
-          })
-        }
-        className={primaryButtonClass}
-      >
-        <Check size={17} />
-        Save profile
-      </button>
-    </ModalShell>
-  );
-}
+  function addItem(sectionKey) {
+    const value = draft.trim();
 
-function ConditionModal({ save, close }) {
-  const [name, setName] = useState("");
-  const [status, setStatus] = useState("diagnosed");
+    if (!value) return;
 
-  return (
-    <ModalShell
-      title="Add a condition"
-      subtitle="Add a diagnosis or something currently being investigated."
-      close={close}
-    >
-      <div className="space-y-5">
-        <Field label="Condition">
-          <input
-            list="she-condition-options"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="For example, POTS"
-            className={inputClass}
-          />
+    setProfile((current) => {
+      const alreadyExists = current[sectionKey].some(
+        (item) => item.toLowerCase() === value.toLowerCase()
+      );
 
-          <datalist id="she-condition-options">
-            {commonConditions.map((condition) => (
-              <option key={condition} value={condition} />
-            ))}
-          </datalist>
-        </Field>
+      if (alreadyExists) return current;
 
-        <Field label="Status">
-          <select
-            value={status}
-            onChange={(event) => setStatus(event.target.value)}
-            className={inputClass}
-          >
-            <option value="diagnosed">Diagnosed</option>
-            <option value="suspected">Being investigated</option>
-          </select>
-        </Field>
-      </div>
+      return {
+        ...current,
+        [sectionKey]: [...current[sectionKey], value],
+      };
+    });
 
-      <button
-        type="button"
-        disabled={!name.trim()}
-        onClick={() =>
-          save({
-            name: name.trim(),
-            status,
-          })
-        }
-        className={primaryButtonClass}
-      >
-        <CirclePlus size={17} />
-        Add condition
-      </button>
-    </ModalShell>
-  );
-}
+    cancelAdding();
+  }
 
-function MedicationModal({ save, close }) {
-  const [name, setName] = useState("");
-  const [dose, setDose] = useState("");
-  const [frequency, setFrequency] = useState("");
+  function removeItem(sectionKey, itemToRemove) {
+    setProfile((current) => ({
+      ...current,
+      [sectionKey]: current[sectionKey].filter(
+        (item) => item !== itemToRemove
+      ),
+    }));
+  }
 
-  return (
-    <ModalShell
-      title="Add medication"
-      subtitle="Record the basic details you may need during an appointment."
-      close={close}
-    >
-      <div className="space-y-5">
-        <Field label="Medication name">
-          <input
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Medication"
-            className={inputClass}
-          />
-        </Field>
+  function clearProfile() {
+    const confirmed = window.confirm(
+      "Remove all information saved in your health profile?"
+    );
 
-        <Field label="Dose">
-          <input
-            value={dose}
-            onChange={(event) => setDose(event.target.value)}
-            placeholder="For example, 10 mg"
-            className={inputClass}
-          />
-        </Field>
+    if (!confirmed) return;
 
-        <Field label="Frequency">
-          <input
-            value={frequency}
-            onChange={(event) => setFrequency(event.target.value)}
-            placeholder="For example, once daily"
-            className={inputClass}
-          />
-        </Field>
-      </div>
-
-      <button
-        type="button"
-        disabled={!name.trim()}
-        onClick={() =>
-          save({
-            name: name.trim(),
-            dose: dose.trim(),
-            frequency: frequency.trim(),
-          })
-        }
-        className={primaryButtonClass}
-      >
-        <CirclePlus size={17} />
-        Add medication
-      </button>
-    </ModalShell>
-  );
-}
-
-function SymptomModal({ save, close }) {
-  const [name, setName] = useState("");
-  const [severity, setSeverity] = useState(3);
-  const [frequency, setFrequency] = useState("Sometimes");
-
-  return (
-    <ModalShell
-      title="Add a symptom"
-      subtitle="Keep this as a simple snapshot. Detailed tracking can be added later."
-      close={close}
-    >
-      <div className="space-y-5">
-        <Field label="Symptom">
-          <input
-            list="she-symptom-options"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="For example, dizziness"
-            className={inputClass}
-          />
-
-          <datalist id="she-symptom-options">
-            {commonSymptoms.map((symptom) => (
-              <option key={symptom} value={symptom} />
-            ))}
-          </datalist>
-        </Field>
-
-        <Field label={`Severity: ${severity} of 5`}>
-          <input
-            type="range"
-            min="1"
-            max="5"
-            value={severity}
-            onChange={(event) =>
-              setSeverity(Number(event.target.value))
-            }
-            className="w-full accent-[#f43f72]"
-          />
-        </Field>
-
-        <Field label="How often?">
-          <select
-            value={frequency}
-            onChange={(event) => setFrequency(event.target.value)}
-            className={inputClass}
-          >
-            <option>Rarely</option>
-            <option>Sometimes</option>
-            <option>Often</option>
-            <option>Most days</option>
-            <option>Daily</option>
-          </select>
-        </Field>
-      </div>
-
-      <button
-        type="button"
-        disabled={!name.trim()}
-        onClick={() =>
-          save({
-            name: name.trim(),
-            severity,
-            frequency,
-          })
-        }
-        className={primaryButtonClass}
-      >
-        <CirclePlus size={17} />
-        Add symptom
-      </button>
-    </ModalShell>
-  );
-}
-
-function TimelineModal({ save, close }) {
-  const [type, setType] = useState("Appointment");
-  const [title, setTitle] = useState("");
-  const [date, setDate] = useState(
-    new Date().toISOString().slice(0, 10),
-  );
-  const [notes, setNotes] = useState("");
-
-  return (
-    <ModalShell
-      title="Add a timeline entry"
-      subtitle="Record an appointment, test, referral or important health change."
-      close={close}
-    >
-      <div className="space-y-5">
-        <Field label="Entry type">
-          <select
-            value={type}
-            onChange={(event) => setType(event.target.value)}
-            className={inputClass}
-          >
-            <option>Appointment</option>
-            <option>Referral</option>
-            <option>Blood test</option>
-            <option>Scan</option>
-            <option>Procedure</option>
-            <option>Medication change</option>
-            <option>Symptom change</option>
-            <option>Other</option>
-          </select>
-        </Field>
-
-        <Field label="Title">
-          <input
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-            placeholder="For example, GP appointment"
-            className={inputClass}
-          />
-        </Field>
-
-        <Field label="Date">
-          <input
-            type="date"
-            value={date}
-            onChange={(event) => setDate(event.target.value)}
-            className={inputClass}
-          />
-        </Field>
-
-        <Field label="Notes">
-          <textarea
-            value={notes}
-            onChange={(event) => setNotes(event.target.value)}
-            placeholder="Optional"
-            rows={3}
-            className={`${inputClass} resize-none`}
-          />
-        </Field>
-      </div>
-
-      <button
-        type="button"
-        disabled={!title.trim() || !date}
-        onClick={() =>
-          save({
-            type,
-            title: title.trim(),
-            date,
-            notes: notes.trim(),
-          })
-        }
-        className={primaryButtonClass}
-      >
-        <CirclePlus size={17} />
-        Add timeline entry
-      </button>
-    </ModalShell>
-  );
-}
-
-function SummaryModal({ profile, close }) {
-  const conditions = profile.conditions
-    .map((item) => item.name)
-    .join(", ");
-
-  const medications = profile.medications
-    .map((item) =>
-      [item.name, item.dose, item.frequency]
-        .filter(Boolean)
-        .join(" — "),
-    )
-    .join("\n");
-
-  const symptoms = profile.symptoms
-    .map(
-      (item) =>
-        `${item.name} — severity ${item.severity}/5, ${item.frequency.toLowerCase()}`,
-    )
-    .join("\n");
-
-  const summaryText = [
-    `Health stage: ${profile.healthStage}`,
-    "",
-    "Conditions:",
-    conditions || "None recorded",
-    "",
-    "Current medications:",
-    medications || "None recorded",
-    "",
-    "Current symptoms:",
-    symptoms || "None recorded",
-  ].join("\n");
-
-  async function copySummary() {
-    try {
-      await navigator.clipboard.writeText(summaryText);
-    } catch {
-      // Clipboard access may be restricted in some previews.
-    }
+    setProfile(EMPTY_PROFILE);
+    cancelAdding();
   }
 
   return (
-    <ModalShell
-      title="Health summary"
-      subtitle="A simple overview to help you prepare for an appointment."
-      close={close}
-    >
-      <div className="space-y-6">
-        <SummaryBlock
-          title="Health stage"
-          value={profile.healthStage}
-        />
+    <main className="min-h-screen bg-[#fffdfc] px-6 py-10 text-[#241f20] md:px-10 lg:px-14">
+      <div className="mx-auto max-w-6xl">
+        <header className="border-b border-[#eee8e7] pb-9">
+          <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
+            <div>
+              <div className="mb-3 flex items-center gap-2 text-[#f43f75]">
+                <HeartPulse size={19} strokeWidth={1.8} />
+                <span className="font-semibold">My Health</span>
+              </div>
 
-        <SummaryBlock
-          title="Conditions"
-          value={conditions || "None recorded"}
-        />
+              <h1 className="max-w-3xl text-4xl font-bold tracking-tight md:text-5xl">
+                A simple place to keep track of what matters to you.
+              </h1>
 
-        <SummaryBlock
-          title="Medications"
-          value={medications || "None recorded"}
-          preserveLines
-        />
+              <p className="mt-4 max-w-2xl text-base leading-7 text-[#746c6e] md:text-lg">
+                Save information you may want available for appointments and
+                personalised SHE support.
+              </p>
+            </div>
 
-        <SummaryBlock
-          title="Current symptoms"
-          value={symptoms || "None recorded"}
-          preserveLines
-        />
+            <button
+              type="button"
+              onClick={() => setEditingProfile((current) => !current)}
+              className="inline-flex w-fit items-center gap-2 rounded-full border border-[#ded7d8] bg-white px-5 py-3 font-medium text-[#40393b] shadow-sm transition hover:border-[#f2b7c9] hover:bg-[#fff8fa]"
+            >
+              <UserRound size={18} />
+              Edit profile
+            </button>
+          </div>
+        </header>
+
+        {editingProfile && (
+          <section className="mt-8 rounded-2xl bg-[#fff4f7] p-6">
+            <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+              <div className="w-full max-w-lg">
+                <label
+                  htmlFor="life-stage"
+                  className="mb-2 block text-sm font-semibold text-[#4b4345]"
+                >
+                  Current life stage
+                </label>
+
+                <select
+                  id="life-stage"
+                  value={profile.lifeStage}
+                  onChange={(event) =>
+                    setProfile((current) => ({
+                      ...current,
+                      lifeStage: event.target.value,
+                    }))
+                  }
+                  className="w-full rounded-xl border border-[#eadce0] bg-white px-4 py-3 outline-none focus:border-[#f43f75] focus:ring-4 focus:ring-[#f43f75]/10"
+                >
+                  <option value="">Not selected</option>
+                  <option value="Menstrual health">Menstrual health</option>
+                  <option value="Trying to conceive">
+                    Trying to conceive
+                  </option>
+                  <option value="Pregnancy">Pregnancy</option>
+                  <option value="Postpartum">Postpartum</option>
+                  <option value="Perimenopause">Perimenopause</option>
+                  <option value="Menopause">Menopause</option>
+                  <option value="General health">General health</option>
+                </select>
+              </div>
+
+              <label className="flex cursor-pointer items-center justify-between gap-5 rounded-xl bg-white px-4 py-3">
+                <div>
+                  <p className="font-medium text-[#332d2f]">
+                    Personalise SHE Chat
+                  </p>
+                  <p className="mt-1 text-sm text-[#81787a]">
+                    Use this profile when answering.
+                  </p>
+                </div>
+
+                <input
+                  type="checkbox"
+                  checked={profile.personaliseChat}
+                  onChange={(event) =>
+                    setProfile((current) => ({
+                      ...current,
+                      personaliseChat: event.target.checked,
+                    }))
+                  }
+                  className="h-5 w-5 accent-[#f43f75]"
+                />
+              </label>
+            </div>
+          </section>
+        )}
+
+        <section className="py-8">
+          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+            <div>
+              <p className="text-sm font-semibold text-[#f43f75]">
+                Health overview
+              </p>
+
+              <p className="mt-2 text-lg text-[#4e4749]">
+                {totalItems === 0
+                  ? "Your profile is ready when you are."
+                  : `${totalItems} health ${
+                      totalItems === 1 ? "item" : "items"
+                    } saved.`}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-[#746c6e]">
+              <span>
+                <strong className="text-[#241f20]">
+                  {profile.conditions.length}
+                </strong>{" "}
+                conditions
+              </span>
+
+              <span className="hidden text-[#d9d1d3] sm:inline">•</span>
+
+              <span>
+                <strong className="text-[#241f20]">
+                  {profile.medications.length}
+                </strong>{" "}
+                medications
+              </span>
+
+              <span className="hidden text-[#d9d1d3] sm:inline">•</span>
+
+              <span>
+                <strong className="text-[#241f20]">
+                  {profile.symptoms.length}
+                </strong>{" "}
+                symptoms
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <div className="rounded-3xl border border-[#eee8e7] bg-white px-6 shadow-[0_10px_40px_rgba(67,46,52,0.04)] md:px-8">
+          {Object.keys(SECTIONS).map((sectionKey) => (
+            <HealthSection
+              key={sectionKey}
+              sectionKey={sectionKey}
+              items={profile[sectionKey]}
+              isAdding={activeSection === sectionKey}
+              draft={draft}
+              onStartAdding={startAdding}
+              onDraftChange={setDraft}
+              onAdd={addItem}
+              onCancel={cancelAdding}
+              onRemove={removeItem}
+            />
+          ))}
+        </div>
+
+        <footer className="mt-7 flex flex-col justify-between gap-4 rounded-2xl bg-[#f8f6f6] px-5 py-4 text-sm text-[#746c6e] sm:flex-row sm:items-center">
+          <div className="flex max-w-3xl items-start gap-3">
+            <LockKeyhole
+              size={17}
+              className="mt-0.5 flex-none text-[#f43f75]"
+            />
+
+            <p>
+              This MVP stores your health profile only in this browser. Do not
+              use it as your only copy of important medical information.
+            </p>
+          </div>
+
+          {totalItems > 0 && (
+            <button
+              type="button"
+              onClick={clearProfile}
+              className="flex w-fit items-center gap-2 font-medium text-[#8a7f82] transition hover:text-[#d92f63]"
+            >
+              <Trash2 size={16} />
+              Clear profile
+            </button>
+          )}
+        </footer>
       </div>
-
-      <button
-        type="button"
-        onClick={copySummary}
-        className={primaryButtonClass}
-      >
-        <Check size={17} />
-        Copy summary
-      </button>
-
-      <p className="mt-4 text-xs leading-5 text-stone-400">
-        Check all information for accuracy before sharing it with a
-        healthcare professional.
-      </p>
-    </ModalShell>
-  );
-}
-
-function SummaryBlock({ title, value, preserveLines = false }) {
-  return (
-    <div>
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-400">
-        {title}
-      </p>
-
-      <p
-        className={`mt-2 text-sm leading-6 text-stone-700 ${
-          preserveLines ? "whitespace-pre-line" : ""
-        }`}
-      >
-        {value}
-      </p>
-    </div>
+    </main>
   );
 }
