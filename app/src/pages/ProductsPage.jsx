@@ -832,15 +832,15 @@ export default function ProductsPage() {
               <>
                 <section>
                   <div className="mx-auto max-w-3xl text-center">
-                  <p className="text-pink-500 text-lg font-semibold">
-  SHE Finds
-</p>
+                  <div className="text-center mb-14">
+  <h1 className="text-5xl font-bold tracking-tight text-pink-500">
+    SHE Finds
+  </h1>
 
-<h1 className="mt-2 text-3xl font-bold text-gray-900">
-  Helping you find the right
-  <br />
-  products for your health.
-</h1>
+  <p className="mt-5 text-xl font-normal text-gray-500">
+    Helping you find the right products for your health.
+  </p>
+</div>
 
                   </div>
 
