@@ -836,8 +836,10 @@ export default function ProductsPage() {
   SHE Finds
 </p>
 
-<h1 className="text-5xl font-bold">
-  Helping you find the right products for your health.
+<h1 className="mt-2 text-3xl font-bold text-gray-900">
+  Helping you find the right
+  <br />
+  products for your health.
 </h1>
 
                   </div>
