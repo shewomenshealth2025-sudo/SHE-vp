@@ -233,39 +233,97 @@ export function buildGroundedResponse(query) {
     });
   }
 
-  return {
-    id: `she-${Date.now()}`,
-    role: "assistant",
-    type: "knowledge",
-    title: isComparisonIntent
-      ? "Here is a grounded comparison from SHE Learn"
-      : isDefinitionIntent
-        ? `Understanding ${primary.title}`
-        : "Several SHE guides may be relevant",
-    introduction: isDefinitionIntent
-      ? primary.summary
-      : "Based on the words and symptoms in your question, these are the strongest matches in the current SHE education library. They are possibilities to explore, not diagnoses.",
-    sections,
-    relatedGuides: matches.map(({ guide, score, matches: terms }) => ({
-      id: guide.id,
-      title: guide.title,
-      subtitle: guide.subtitle || "",
-      category: guide.categoryLabel,
-      summary: guide.summary,
-      readTime: guide.readTime,
-      score,
-      matchedTerms: terms,
+  const conditionNames = matches
+  .slice(0, 4)
+  .map(({ guide }) => guide.title);
+
+const symptomTerms = [
+  ...new Set(
+    matches.flatMap(({ matches: terms = [] }) => terms)
+  ),
+].slice(0, 5);
+
+const formatList = (items) => {
+  if (items.length === 0) return "";
+  if (items.length === 1) return items[0];
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+
+  return `${items.slice(0, -1).join(", ")}, and ${items.at(-1)}`;
+};
+
+const isPainfulPeriodQuery =
+  normalizedQuery.includes("painful period") ||
+  normalizedQuery.includes("period pain") ||
+  normalizedQuery.includes("cramps");
+
+const introduction = isPainfulPeriodQuery
+  ? "Painful periods can have several causes, but severe pain that affects your daily life should not be dismissed."
+  : isDefinitionIntent
+    ? primary.summary
+    : "There are a few possibilities worth considering based on what you’ve described.";
+
+const guidance = isPainfulPeriodQuery
+  ? [
+      conditionNames.length > 0
+        ? `Some possibilities worth reading about include ${formatList(conditionNames)}.`
+        : "",
+      "It may help to track when the pain starts, how long it lasts, how heavy your bleeding is, whether pain relief helps, and whether you also experience pelvic pain, pain during sex, bowel symptoms or fatigue.",
+      "Consider speaking to a GP if the pain is severe, worsening, recurring, or affecting work, study, sleep or daily life.",
+      "Seek urgent medical help if the pain is sudden and severe, you feel faint, you have a fever, you are bleeding very heavily, or pregnancy is possible.",
+    ]
+  : [
+      conditionNames.length > 0
+        ? `Some possibilities worth reading about include ${formatList(conditionNames)}.`
+        : "",
+      symptomTerms.length > 0
+        ? `Related symptoms and patterns include ${formatList(symptomTerms)}.`
+        : "",
+      "Keeping a brief record of when symptoms happen, how severe they are and what makes them better or worse can help when speaking to a healthcare professional.",
+    ];
+
+return {
+  id: `she-${Date.now()}`,
+  role: "assistant",
+  type: "knowledge",
+
+  title: isComparisonIntent
+    ? "Here’s a clearer comparison"
+    : isDefinitionIntent
+      ? `Understanding ${primary.title}`
+      : "Here’s what may be worth considering",
+
+  introduction,
+
+  sections: guidance
+    .filter(Boolean)
+    .map((text) => ({
+      heading: "",
+      body: text,
     })),
-    disclaimer:
-      "This response is grounded in SHE Learn content and provides general educational information. It does not diagnose a condition or replace medical advice.",
-    urgentWarning: urgentWarning?.message || null,
-    confidence:
-      matches[0].score >= 40
-        ? "strong"
-        : matches[0].score >= 20
-          ? "moderate"
-          : "limited",
-  };
+
+  relatedGuides: matches.slice(0, 4).map(({ guide, score, matches: terms }) => ({
+    id: guide.id,
+    title: guide.title,
+    subtitle: guide.subtitle || "",
+    category: guide.categoryLabel,
+    summary: guide.summary,
+    readTime: guide.readTime,
+    score,
+    matchedTerms: terms,
+  })),
+
+  disclaimer:
+    "This response is grounded in SHE Learn content and provides general educational information. It does not diagnose a condition.",
+
+  urgentWarning: urgentWarning?.message || null,
+
+  confidence:
+    matches[0]?.score >= 40
+      ? "strong"
+      : matches[0]?.score >= 20
+        ? "moderate"
+        : "limited",
+};
 }
 
 export function getSuggestedChatPrompts() {
