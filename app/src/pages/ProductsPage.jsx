@@ -832,19 +832,14 @@ export default function ProductsPage() {
               <>
                 <section>
                   <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-sm font-medium text-[#e93368]">
-                      The SHE Score
-                    </p>
+                  <p className="text-pink-500 text-lg font-semibold">
+  SHE Finds
+</p>
 
-                    <h1 className="mt-2 text-2xl font-semibold tracking-tight">
-                      Compare products more clearly
-                    </h1>
+<h1 className="text-5xl font-bold">
+  Helping you find the right products for your health.
+</h1>
 
-                    <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-600">
-                      Products are reviewed across effectiveness, comfort,
-                      ease of use, practicality and accessibility. The SHE
-                      Score is a comparison tool, not a medical endorsement.
-                    </p>
                   </div>
 
                   <div className="mt-8 flex gap-6 overflow-x-auto pb-3">
