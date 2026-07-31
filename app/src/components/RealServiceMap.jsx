@@ -9,6 +9,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import NearbyUpdatesPopup from "./NearbyUpdatesPopup";
 
 function toText(value, fallback = "") {
   if (value === null || value === undefined || value === "") {
@@ -515,23 +516,31 @@ export default function RealServiceMap({
       : [54.5973, -5.9301];
 
   return (
-    <>
+    <div className="she-service-map-wrap">
       <style>{`
         @keyframes sheMarkerPulse {
-          0% {
-            transform: scale(.72);
-            opacity: .36;
-          }
+          0% { transform: scale(.72); opacity: .36; }
+          65% { transform: scale(1.25); opacity: .06; }
+          100% { transform: scale(1.25); opacity: 0; }
+        }
 
-          65% {
-            transform: scale(1.25);
-            opacity: .06;
-          }
+        @keyframes sheNearbyFade {
+          from { opacity: 0; transform: translateY(5px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
 
-          100% {
-            transform: scale(1.25);
-            opacity: 0;
-          }
+        .she-service-map-wrap {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          min-height: 520px;
+          overflow: hidden;
+        }
+
+        .she-service-map-wrap .leaflet-container {
+          width: 100%;
+          height: 100%;
+          min-height: 520px;
         }
 
         .she-map-marker-shell,
@@ -548,18 +557,183 @@ export default function RealServiceMap({
           padding: 9px 11px;
         }
 
-        .leaflet-tooltip-top::before {
-          border-top-color: white;
+        .leaflet-tooltip-top::before { border-top-color: white; }
+        .marker-cluster-small, .marker-cluster-medium, .marker-cluster-large { background: transparent !important; }
+        .marker-cluster div { background: transparent !important; }
+
+        .she-nearby-popup {
+          position: absolute;
+          left: 22px;
+          bottom: 22px;
+          z-index: 1000;
+          width: min(430px, calc(100% - 44px));
+          padding: 18px 18px 16px;
+          background: rgba(255,255,255,.98);
+          border: 1px solid rgba(244,63,114,.15);
+          border-radius: 22px;
+          box-shadow: 0 22px 60px rgba(36,31,32,.16), 0 7px 24px rgba(244,63,114,.13);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
         }
 
-        .marker-cluster-small,
-        .marker-cluster-medium,
-        .marker-cluster-large {
-          background: transparent !important;
+        .she-nearby-close {
+          display: none;
+          position: absolute;
+          top: 7px;
+          right: 11px;
+          border: 0;
+          background: transparent;
+          color: #78716c;
+          font-size: 24px;
+          cursor: pointer;
         }
 
-        .marker-cluster div {
-          background: transparent !important;
+        .she-nearby-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          margin-bottom: 14px;
+        }
+
+        .she-nearby-kicker {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          color: #f43f72;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: .02em;
+          text-transform: uppercase;
+        }
+
+        .she-nearby-count { color: #57534e; font-size: 12px; font-weight: 600; }
+
+        .she-nearby-main {
+          position: relative;
+          display: grid;
+          grid-template-columns: 66px minmax(0,1fr);
+          gap: 15px;
+          align-items: start;
+          animation: sheNearbyFade .25s ease;
+        }
+
+        .she-nearby-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 66px;
+          height: 66px;
+          border-radius: 999px;
+          background: #ffe6ef;
+          color: #f43f72;
+        }
+
+        .she-nearby-content { min-width: 0; }
+        .she-nearby-label { color: #f43f72; font-size: 11px; font-weight: 700; }
+
+        .she-nearby-content h3 {
+          margin: 3px 0 7px;
+          color: #181314;
+          font-size: 19px;
+          line-height: 1.15;
+          letter-spacing: -.02em;
+        }
+
+        .she-nearby-location {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-bottom: 7px;
+          color: #292524;
+          font-size: 13px;
+          font-weight: 600;
+        }
+
+        .she-nearby-content p {
+          margin: 0 0 12px;
+          color: #57534e;
+          font-size: 13px;
+          line-height: 1.42;
+        }
+
+        .she-nearby-details {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          min-height: 40px;
+          padding: 9px 12px;
+          border: 0;
+          border-radius: 11px;
+          background: #ffe5ee;
+          color: #ed376d;
+          font: inherit;
+          font-size: 13px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .she-nearby-details:hover { background: #ffd7e4; }
+
+        .she-nearby-arrow {
+          position: absolute;
+          top: 25px;
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 30px;
+          height: 38px;
+          padding: 0;
+          border: 0;
+          background: transparent;
+          color: #f43f72;
+          opacity: 0;
+          cursor: pointer;
+          transition: opacity .15s ease;
+        }
+
+        .she-nearby-popup:hover .she-nearby-arrow { opacity: 1; }
+        .she-nearby-arrow-left { left: -17px; }
+        .she-nearby-arrow-right { right: -17px; }
+
+        .she-nearby-dots {
+          display: flex;
+          justify-content: center;
+          gap: 7px;
+          margin-top: 14px;
+        }
+
+        .she-nearby-dots button {
+          width: 7px;
+          height: 7px;
+          padding: 0;
+          border: 0;
+          border-radius: 999px;
+          background: #dedbd9;
+          cursor: pointer;
+          transition: width .18s ease, background .18s ease;
+        }
+
+        .she-nearby-dots button.is-active { width: 18px; background: #f43f72; }
+
+        @media (max-width: 700px) {
+          .she-nearby-popup {
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            width: auto;
+            padding: 15px;
+            border-radius: 19px;
+          }
+          .she-nearby-close { display: block; }
+          .she-nearby-header { padding-right: 24px; }
+          .she-nearby-main { grid-template-columns: 54px minmax(0,1fr); gap: 12px; }
+          .she-nearby-icon { width: 54px; height: 54px; }
+          .she-nearby-content h3 { font-size: 17px; }
+          .she-nearby-arrow { display: none; }
         }
       `}</style>
 
@@ -588,6 +762,10 @@ export default function RealServiceMap({
           onSelectService={onSelectService}
         />
       </MapContainer>
-    </>
-  );
-}
+
+      <NearbyUpdatesPopup
+        services={validServices}
+        onSelectService={onSelectService}
+      />
+    </div>
+  );}
