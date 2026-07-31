@@ -185,13 +185,7 @@ export default function ChatPage({
               <ChatMessage
                 key={entry.id}
                 message={entry}
-                suggestions={
-                  entry.role === "she" &&
-                  index === conversation.length - 1 &&
-                  !isBusy
-                    ? getSuggestions(entry.text)
-                    : []
-                }
+                suggestions={[]}
                 chooseSuggestion={chooseSuggestion}
               />
             ))}
