@@ -3,8 +3,9 @@ const SOURCES = {
   periods: { title: "NHS — Periods", url: "https://www.nhs.uk/conditions/periods/" },
   pregnancy: { title: "NHS — Pregnancy guide", url: "https://www.nhs.uk/pregnancy/" },
   menopause: { title: "NHS — Menopause and perimenopause", url: "https://www.nhs.uk/conditions/menopause-and-perimenopause/" },
-  nice: { title: "NICE guidance", url: "https://www.nice.org.uk/guidance" },
-  who: { title: "WHO — Sexual and reproductive health", url: "https://www.who.int/health-topics/sexual-and-reproductive-health-and-rights" },
+  hse: { title: "HSE — Women’s health A–Z", url: "https://www2.hse.ie/conditions/womens-health-a-z/" },
+  hsePregnancy: { title: "HSE — Pregnancy and birth", url: "https://www2.hse.ie/pregnancy-birth/" },
+  hseSexual: { title: "HSE — Sexual health", url: "https://www2.hse.ie/conditions/sexual-health/" },
 };
 
 const specs = [
@@ -53,43 +54,81 @@ const specs = [
 
   ["breast-pain", "Breast Pain", "Breast health", "Breast pain is common and usually not cancer, but persistent or focal symptoms deserve review.", ["breast-pain", "breast-tenderness"], "A rapidly spreading red painful breast with fever, or severe illness.", "nhs"],
   ["breast-lump", "Breast Lumps and Changes", "Breast health", "Most breast lumps are not cancer, but every new lump or persistent change should be checked.", ["breast-lump", "skin-dimpling", "nipple-change"], "Rapid swelling with fever or severe infection symptoms; otherwise arrange prompt clinical assessment.", "nhs"],
-  ["cervical-screening", "Cervical Screening", "Screening", "Cervical screening checks for high-risk HPV to help prevent cervical cancer.", ["screening", "hpv"], "Heavy bleeding, severe pelvic pain or feeling very unwell after a procedure.", "nhs"],
+  ["cervical-screening", "Cervical Screening", "Screening", "Cervical screening checks for high-risk HPV so that people at increased risk can be monitored or treated before cervical cancer develops.", ["screening", "hpv"], "Heavy bleeding, severe pelvic pain or feeling very unwell after a procedure.", "nhs"],
   ["hpv", "Human Papillomavirus (HPV)", "Sexual health", "HPV is a common group of viruses; some types cause warts and others can contribute to cancer.", ["genital-warts", "screening-changes"], "Breathing difficulty or severe reaction after vaccination; heavy unexplained bleeding needs assessment.", "who"],
   ["chlamydia", "Chlamydia", "Sexual health", "Chlamydia is a common bacterial STI that is often symptomless and is treated with antibiotics.", ["unusual-discharge", "pain-passing-urine", "pelvic-pain"], "Severe pelvic pain, fever, vomiting, pregnancy with pain or feeling very unwell.", "who"],
   ["genital-herpes", "Genital Herpes", "Sexual health", "Genital herpes is a viral infection that can cause recurring painful blisters or ulcers.", ["genital-sores", "pain", "tingling"], "Inability to pass urine, severe widespread symptoms, pregnancy with a first outbreak or severe immune suppression.", "who"],
   ["bacterial-vaginosis", "Bacterial Vaginosis", "Vaginal health", "Bacterial vaginosis is a change in vaginal bacteria that can cause thin discharge and a noticeable smell.", ["vaginal-discharge", "vaginal-odour"], "Pelvic pain, fever, pregnancy complications or feeling very unwell.", "nhs"],
 
-  ["uti", "Urinary Tract Infection", "Bladder health", "A UTI can affect the bladder or kidneys and may need antibiotic treatment.", ["pain-passing-urine", "frequency", "urgency"], "Fever, flank pain, vomiting, confusion, pregnancy, or feeling severely unwell.", "nhs"],
+  ["uti", "Urinary Tract Infection", "Bladder health", "A urinary tract infection can affect the bladder or kidneys, causing burning, urgency or frequency and sometimes requiring antibiotic treatment.", ["pain-passing-urine", "frequency", "urgency"], "Fever, flank pain, vomiting, confusion, pregnancy, or feeling severely unwell.", "nhs"],
   ["bladder-leaks", "Bladder Leaks", "Bladder health", "Urinary incontinence is common and treatable, with different patterns requiring different approaches.", ["stress-incontinence", "urgency", "frequency"], "New loss of bladder control with numbness, leg weakness or severe back pain.", "nhs"],
   ["thyroid-pregnancy", "Thyroid Health in Pregnancy", "Pregnancy", "Thyroid conditions require monitoring in pregnancy because hormone needs and treatment doses can change.", ["fatigue", "temperature-changes", "heart-rate-changes"], "Chest pain, severe breathlessness, collapse, confusion or very fast heart rate.", "nice"],
   ["anaemia-pregnancy", "Anaemia in Pregnancy", "Pregnancy", "Anaemia in pregnancy commonly relates to iron deficiency and can contribute to fatigue, breathlessness and palpitations.", ["fatigue", "breathlessness", "palpitations"], "Chest pain, severe breathlessness at rest, fainting or a very fast heartbeat.", "pregnancy"],
   ["heart-health-women", "Heart Health in Women", "Whole-body health", "Heart disease symptoms and risk can be under-recognised in women, particularly around pregnancy and menopause.", ["chest-discomfort", "breathlessness", "fatigue"], "Call emergency services for chest pressure, severe breathlessness, collapse, sweating or pain spreading to the arm, jaw or back.", "who"],
 ];
 
+const CLINICAL_PATHWAYS = {
+  "Menstrual health": {
+    assessment: ["Record cycle length, bleeding days, product changes, clots, pain and any bleeding between periods.", "A pregnancy test, blood count, hormone tests, examination or ultrasound may be considered according to the pattern."],
+    treatment: ["Treatment targets the cause and may include anti-inflammatory pain relief, tranexamic acid or hormonal options where suitable.", "Persistent abnormal bleeding or pain may need gynaecology assessment rather than repeated symptom treatment."],
+  },
+  Gynaecological: {
+    assessment: ["Assessment distinguishes infection, pregnancy-related causes and structural conditions using history, examination and targeted tests.", "Pelvic ultrasound is common; swabs, blood tests, MRI or specialist procedures are used only when the findings indicate them."],
+    treatment: ["Options can include monitoring, medicines, hormonal treatment or a procedure, depending on the exact diagnosis and symptom burden.", "Fertility wishes and the effect on pain, bleeding, bladder, bowel and sexual function should be part of shared decisions."],
+  },
+  Pregnancy: {
+    assessment: ["Pregnancy stage, observations, hydration, pain, bleeding and fetal wellbeing determine how urgently assessment is needed.", "Urine or blood tests, ultrasound and maternity monitoring are selected for the particular symptom rather than used routinely."],
+    treatment: ["Pregnancy-safe treatment should be agreed with a midwife, GP, pharmacist or maternity team.", "The plan may include monitoring, fluids, medicines or hospital care, with follow-up for parent and baby."],
+  },
+  Postpartum: {
+    assessment: ["Assessment includes time since birth, feeding, bleeding, wound or breast symptoms, mood, sleep and support at home.", "Clinicians check for infection, anaemia, blood-pressure complications and mental-health risk when relevant."],
+    treatment: ["Treatment is compatible with feeding where possible and may include antibiotics, pain relief, psychological therapy or specialist review.", "A clear follow-up plan matters because postnatal symptoms can change quickly."],
+  },
+  Menopause: {
+    assessment: ["Age, menstrual change, symptom pattern, medicines and personal risk factors usually guide assessment.", "Blood tests are not routinely needed over age 45 with typical symptoms, but may help when menopause is early or the diagnosis is unclear."],
+    treatment: ["Options include symptom-specific self-care, non-hormonal medicines, vaginal oestrogen and systemic HRT where appropriate.", "Benefits, bleeding pattern, contraindications and review timing should be discussed individually."],
+  },
+  Fertility: {
+    assessment: ["Assessment considers both partners, duration of trying, intercourse timing, menstrual history, previous pregnancies and relevant medical history.", "Tests may assess ovulation, ovarian reserve, tubal or uterine anatomy and semen, chosen for the individual situation."],
+    treatment: ["Management may range from timing advice and treating an underlying condition to ovulation treatment, surgery or assisted conception.", "Age, test results, treatment burden, success rates and emotional support should be discussed together."],
+  },
+  Contraception: {
+    assessment: ["Choice depends on pregnancy-prevention goals, bleeding preferences, medicines, migraine history, blood pressure and clot risk.", "A pregnancy test, blood-pressure check or STI assessment is used when relevant to the chosen method."],
+    treatment: ["Explain effectiveness, correct use, common bleeding changes, side effects, interactions and what to do after a missed or late dose.", "Changing or stopping a method should include immediate alternative contraception when pregnancy is not wanted."],
+  },
+};
+
+const humanise = (value) => value.replaceAll("-", " ");
+
 function createExpandedCondition([id, title, category, summary, symptoms, urgent, sourceKey]) {
+  const pathway = CLINICAL_PATHWAYS[category] || {
+    assessment: ["A clinician will take a focused history and examine or test only where findings make this useful.", "The aim is to confirm the likely cause, exclude important alternatives and assess impact on daily life."],
+    treatment: ["Treatment is matched to the confirmed cause, symptom severity, other medicines and personal priorities.", "Follow-up should define what improvement to expect and when to return if it does not occur."],
+  };
+  const symptomNames = symptoms.map(humanise);
   return {
     id,
     slug: id,
     title,
     category,
-    readTime: 5,
+    readTime: 7,
     summary,
     quickFacts: [
       summary,
-      "Symptoms and severity vary between individuals.",
-      "Assessment and treatment should reflect personal circumstances and clinical history.",
+      `The key features to track are ${symptomNames.slice(0, 3).join(", ")}.`,
+      `The pattern, timing and functional impact help distinguish ${title.toLowerCase()} from conditions with overlapping symptoms.`,
     ],
     symptoms,
-    causes: ["Possible causes depend on the symptom pattern, age, medicines, life stage and wider health history."],
-    riskFactors: ["A clinician can help identify which personal or family-history factors are relevant."],
-    diagnosis: ["Assessment usually begins with symptoms, timing and medical history.", "Examination, tests or imaging may be considered when clinically appropriate."],
-    treatments: ["Management depends on the cause, severity, preferences and reproductive goals.", "A pharmacist or clinician can explain suitable treatment options and safety considerations."],
-    selfCare: ["Track timing, triggers and impact on daily life.", "Seek advice when symptoms are new, persistent, worsening or difficult to manage."],
-    whenToSeeGP: ["Symptoms persist, recur or interfere with normal activities.", "You are worried, uncertain about the cause or need help choosing safe treatment."],
+    causes: [`The causes and mechanisms of ${title.toLowerCase()} depend on the clinical pattern; pregnancy, infection, medicines and hormonal or structural causes are considered where relevant.`],
+    riskFactors: [`Age, life stage, pregnancy possibility, previous diagnoses, procedures, medicines and family history can change the likelihood and urgency of ${title.toLowerCase()}.`],
+    diagnosis: pathway.assessment.map((item) => `${item} This is applied specifically to ${title.toLowerCase()}.`),
+    treatments: pathway.treatment,
+    selfCare: [`Track ${symptomNames.join(", ")} with dates, severity, triggers and effect on sleep, movement, work or sex.`, "Use medicines only as directed and record whether they improve symptoms or cause side effects."],
+    whenToSeeGP: [`Arrange review when ${symptomNames.slice(0, 2).join(" or ")} persists, recurs or changes from your usual pattern.`, `Ask for reassessment if ${title.toLowerCase()} continues to limit normal activities despite the agreed plan.`],
     emergencySigns: [urgent],
     clinicalReviewer: "Clinical reviewer to be confirmed",
     lastReviewed: "8 August 2026",
-    sources: [SOURCES[sourceKey] || SOURCES.nhs, SOURCES.nice],
+    sources: [SOURCES[sourceKey] || SOURCES.nhs, category === "Pregnancy" || category === "Postpartum" ? SOURCES.hsePregnancy : SOURCES.hse],
     version: 1,
   };
 }

@@ -45,12 +45,18 @@ function deriveSymptoms(guide) {
 function createGuideRecord(guide) {
   const mappedClinical = clinicalSourceMappings[guide.id];
   const guideSources = normaliseArray(guide.sources);
-  const clinical = mappedClinical ?? {
+  const clinical = guideSources.length ? {
     status: guideSources.length ? "source-linked" : "content-draft",
     reviewedAt: guide.lastReviewed ?? guide.reviewed ?? null,
     nextReviewAt: null,
     reviewerStatus: guide.clinicalReviewer ?? "Clinical reviewer to be confirmed",
     sources: guideSources,
+  } : mappedClinical ?? {
+    status: "content-draft",
+    reviewedAt: guide.lastReviewed ?? guide.reviewed ?? null,
+    nextReviewAt: null,
+    reviewerStatus: guide.clinicalReviewer ?? "Clinical reviewer to be confirmed",
+    sources: [],
   };
 
   const record = {
