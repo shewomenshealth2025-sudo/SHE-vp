@@ -389,13 +389,44 @@ function selectionDescription(selection) {
   );
 }
 
+function ProductImage({ product, className = "", compact = false }) {
+  if (product.image) {
+    return (
+      <img
+        src={product.image}
+        alt={product.name}
+        className={className}
+      />
+    );
+  }
+
+  return (
+    <div
+      className={`${className} flex flex-col items-center justify-center bg-gradient-to-br from-[#fff8fa] via-white to-[#f5edf1] px-4 text-center`}
+      role="img"
+      aria-label={`${product.brand} ${product.name}`}
+    >
+      <span className={`${compact ? "text-[9px]" : "text-xs"} font-semibold uppercase tracking-[0.18em] text-[#d92f62]`}>
+        {product.brand}
+      </span>
+      {!compact && (
+        <span className="mt-3 max-w-[14rem] text-lg font-semibold leading-snug text-[#2a2225]">
+          {product.name}
+        </span>
+      )}
+      <span className={`${compact ? "mt-1 text-[8px]" : "mt-4 text-[10px]"} font-medium uppercase tracking-[0.14em] text-stone-400`}>
+        Verified image coming soon
+      </span>
+    </div>
+  );
+}
+
 function ProductCard({ product, saved, comparing, onSave, onCompare, onOpen }) {
   return (
     <article className="group overflow-hidden border border-stone-200 bg-white transition hover:border-[#efbdd0] hover:shadow-[0_12px_30px_rgba(52,35,41,0.06)]">
       <div className="relative aspect-square overflow-hidden bg-[#f8f5f6]">
-        <img
-          src={product.image}
-          alt={product.name}
+        <ProductImage
+          product={product}
           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
         />
 
@@ -529,9 +560,8 @@ function ProductModal({ product, saved, onSave, onClose }) {
 
         <div className="grid gap-9 p-6 md:grid-cols-2 md:p-9">
           <div className="aspect-square overflow-hidden bg-stone-100">
-            <img
-              src={product.image}
-              alt={product.name}
+            <ProductImage
+              product={product}
               className="h-full w-full object-cover"
             />
           </div>
@@ -829,7 +859,7 @@ function CompareModal({ products: items, onClose, onOpen }) {
           <div className={`grid min-w-[680px] gap-4 ${items.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
             {items.map((product) => (
               <article key={product.id} className="rounded-2xl border border-stone-200 p-5">
-                <img src={product.image} alt="" className="aspect-square w-full rounded-xl bg-stone-100 object-cover" />
+                <ProductImage product={product} className="aspect-square w-full rounded-xl bg-stone-100 object-cover" />
                 <p className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{product.brand}</p>
                 <h3 className="mt-2 text-lg font-semibold">{product.name}</h3>
                 <p className="mt-3 text-2xl font-semibold">{money.format(product.price)}</p>
@@ -1058,7 +1088,7 @@ export default function ProductsPage() {
                       </div>
                       {trendingProducts[0] && (
                         <button type="button" onClick={() => setSelectedProduct(trendingProducts[0])} className="mt-5 flex w-full items-center gap-5 text-left">
-                          <img src={trendingProducts[0].image} alt="" className="h-24 w-24 rounded-2xl bg-stone-100 object-cover" />
+                          <ProductImage product={trendingProducts[0]} compact className="h-24 w-24 shrink-0 rounded-2xl bg-stone-100 object-cover" />
                           <span>
                             <span className="block text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{trendingProducts[0].brand}</span>
                             <span className="mt-2 block font-semibold">{trendingProducts[0].name}</span>

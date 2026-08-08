@@ -2,25 +2,25 @@ import { productInternetImages } from "./productInternetImages.js";
 import { periodCarePack1 } from "./packs/periodCarePack1.js";
 const categoryImages = {
   "Period care":
-    "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80",
+    null,
   "Pelvic pain":
-    "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80",
+    null,
   Fertility:
-    "https://images.unsplash.com/photo-1531988042231-d39a9cc12a9a?auto=format&fit=crop&w=1000&q=80",
+    null,
   Pregnancy:
-    "https://images.unsplash.com/photo-1532330384785-f94c3dc79872?auto=format&fit=crop&w=1000&q=80",
+    null,
   Postpartum:
-    "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=1000&q=80",
+    null,
   Menopause:
-    "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80",
+    null,
   "Bladder health":
-    "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=1000&q=80",
+    null,
   "Intimate care":
-    "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=1000&q=80",
+    null,
   Supplements:
-    "https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=1000&q=80",
+    null,
   "Everyday health":
-    "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80",
+    null,
 };
 
 const categoryIcons = {
@@ -4811,7 +4811,47 @@ for (const product of products) {
   if (productInternetImages[product.id]) {
     product.image = productInternetImages[product.id];
   }
+
+  // Never ship generic stock photography as if it were a product packshot.
+  // The UI renders an explicit branded fallback until a verified image is added.
+  if (product.image?.includes("images.unsplash.com")) {
+    product.image = null;
+  }
 }
+
+const duplicateProductAliases = new Map([
+  ["period-pack1-beyou-patches", "beyou-monthly-patches"],
+  ["period-pack1-mooncup-original", "moon-cup"],
+  ["period-pack1-saalt-soft-cup", "saalt-soft-cup"],
+  ["period-pack1-saalt-disc", "saalt-disc"],
+  ["period-pack1-nixit-disc", "nixit-disc"],
+  ["period-pack1-wuka-medium", "wuka-medium-flow"],
+  ["period-pack1-modibodi-classic", "modibodi-classic"],
+  ["period-pack1-modibodi-swim", "period-swimwear"],
+  ["period-pack1-beurer-em50", "beurer-em50"],
+  ["period-pack1-myoovi-kit", "myoovi-kit"],
+  ["vaginal-moisturiser", "yes-vm-moisturiser"],
+  ["pelvic-floor-device", "elvie-trainer"],
+  ["water-based-lubricant", "yes-wb-lubricant"],
+  ["bv-gel", "balance-activ-gel"],
+  ["menopause-stage-test", "clearblue-menopause-stage"],
+]);
+
+const seenProductKeys = new Set();
+const uniqueProducts = products.filter((product) => {
+  const canonicalId = duplicateProductAliases.get(product.id) || product.id;
+  const exactNameKey = `${product.brand} ${product.name}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+  const keys = [`id:${canonicalId}`, `name:${exactNameKey}`];
+
+  if (keys.some((key) => seenProductKeys.has(key))) return false;
+  keys.forEach((key) => seenProductKeys.add(key));
+  return true;
+});
+
+products.splice(0, products.length, ...uniqueProducts);
 
 export const productCategories = [
   {
