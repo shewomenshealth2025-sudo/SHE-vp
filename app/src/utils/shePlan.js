@@ -9,7 +9,7 @@ export const JOURNEYS = {
     description: "Make sense of bleeding, pain and the impact on your day.",
     learnQuery: "heavy painful periods",
     productQuery: "heavy period pain relief",
-    serviceQuery: "periods pelvic pain",
+    serviceQuery: "pelvic pain",
     questions: [
       { id: "symptoms", label: "What has been happening?", hint: "For example: flooding, clots, pain, bleeding through products or missed work.", type: "textarea" },
       { id: "duration", label: "How long has this pattern been happening?", type: "select", options: ["This is the first time", "Less than 3 months", "3–6 months", "Longer than 6 months"] },
@@ -25,7 +25,7 @@ export const JOURNEYS = {
     description: "Capture what changed, when it began and what may be relevant.",
     learnQuery: "irregular periods cycle changes",
     productQuery: "cycle tracking pregnancy tests",
-    serviceQuery: "menstrual health contraception",
+    serviceQuery: "menstrual",
     questions: [
       { id: "symptoms", label: "What changed?", hint: "For example: timing, skipped periods, bleeding between periods, flow, pain or new symptoms.", type: "textarea" },
       { id: "duration", label: "When did you first notice the change?", type: "select", options: ["This cycle", "Within the last 3 months", "3–6 months ago", "More than 6 months ago"] },
@@ -41,7 +41,7 @@ export const JOURNEYS = {
     description: "Organise a concern and find the safest appropriate next step.",
     learnQuery: "pregnancy postpartum warning signs",
     productQuery: "pregnancy postpartum recovery",
-    serviceQuery: "maternity pregnancy postpartum",
+    serviceQuery: "maternity",
     questions: [
       { id: "cycleContext", label: "Which stage best describes you?", type: "select", options: ["Pregnant — under 20 weeks", "Pregnant — 20 weeks or more", "Up to 6 weeks after birth", "More than 6 weeks after birth", "Not sure / pregnancy possible"] },
       { id: "symptoms", label: "What is concerning you?", hint: "Describe the symptom, where it is, and anything that happened before it began.", type: "textarea" },
@@ -55,10 +55,23 @@ export const JOURNEYS = {
 export function readPlans() {
   try {
     const value = JSON.parse(window.localStorage.getItem(SHE_PLAN_KEY) || "[]");
-    return Array.isArray(value) ? value : [];
+    return Array.isArray(value) ? value.map(normalisePlanLinks) : [];
   } catch {
     return [];
   }
+}
+
+function normalisePlanLinks(plan) {
+  const journey = JOURNEYS[plan?.journeyId];
+  if (!journey) return plan;
+  return {
+    ...plan,
+    links: {
+      learn: `/learn?q=${encodeURIComponent(journey.learnQuery)}`,
+      products: `/products?q=${encodeURIComponent(journey.productQuery)}`,
+      services: `/services?q=${encodeURIComponent(journey.serviceQuery)}&view=list`,
+    },
+  };
 }
 
 export function savePlan(plan) {
