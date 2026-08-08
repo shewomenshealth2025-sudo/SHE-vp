@@ -16,6 +16,11 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { products } from "../data/products";
+import {
+  PRODUCT_REVIEWS_KEY,
+  addCommunityMetrics,
+  readProductReviews,
+} from "../utils/productReviews";
 
 const money = new Intl.NumberFormat("en-GB", {
   style: "currency",
@@ -520,7 +525,7 @@ function ProductCard({ product, saved, comparing, onSave, onCompare, onOpen }) {
   );
 }
 
-function ProductModal({ product, saved, onSave, onClose }) {
+function ProductModal({ product, saved, onSave, onClose, onReview }) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
@@ -597,6 +602,9 @@ function ProductModal({ product, saved, onSave, onClose }) {
                 value and product transparency. A score is guidance, not a medical
                 endorsement.
               </p>
+              <p className="mt-2 text-xs leading-5 text-stone-500">
+                Community ratings can adjust the score slightly; evidence and safety remain the strongest factors.
+              </p>
             </div>
 
             <p className="mt-6 text-base leading-7 text-stone-600">
@@ -627,6 +635,8 @@ function ProductModal({ product, saved, onSave, onClose }) {
               <Info title="Safety" text={product.safety} />
             </div>
 
+            <ProductReviewPanel product={product} onReview={onReview} />
+
             <div className="mt-8">
               <h2 className="font-semibold">Where to buy</h2>
 
@@ -652,6 +662,103 @@ function ProductModal({ product, saved, onSave, onClose }) {
         </div>
       </div>
     </div>
+  );
+}
+
+function ProductReviewPanel({ product, onReview }) {
+  const existing = product.userReview;
+  const [rating, setRating] = useState(existing?.rating || 0);
+  const [hoveredRating, setHoveredRating] = useState(0);
+  const [comment, setComment] = useState(existing?.comment || "");
+  const [submitted, setSubmitted] = useState(false);
+
+  function submitReview(event) {
+    event.preventDefault();
+    if (!rating) return;
+
+    onReview(product.id, {
+      rating,
+      comment: comment.trim().slice(0, 600),
+      createdAt: new Date().toISOString(),
+    });
+    setSubmitted(true);
+  }
+
+  return (
+    <section className="mt-9 border-t border-stone-200 pt-8">
+      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#d92f62]">Community reviews</p>
+      <h2 className="mt-2 text-2xl font-semibold">{existing ? "Update your review" : "Rate this product"}</h2>
+      <p className="mt-2 text-sm leading-6 text-stone-500">
+        Share your experience to help other users. Your rating contributes modestly to the SHE Score.
+      </p>
+
+      <form onSubmit={submitReview} className="mt-5">
+        <fieldset>
+          <legend className="text-sm font-semibold">Your rating out of 5</legend>
+          <div className="mt-3 flex gap-1" onMouseLeave={() => setHoveredRating(0)}>
+            {[1, 2, 3, 4, 5].map((value) => {
+              const active = value <= (hoveredRating || rating);
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onMouseEnter={() => setHoveredRating(value)}
+                  onFocus={() => setHoveredRating(value)}
+                  onBlur={() => setHoveredRating(0)}
+                  onClick={() => setRating(value)}
+                  className="rounded-lg p-1 text-amber-400 transition hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+                  aria-label={`${value} out of 5 stars`}
+                >
+                  <Star size={30} className={active ? "fill-current" : "text-stone-300"} />
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
+
+        <label className="mt-5 block text-sm font-semibold" htmlFor={`review-${product.id}`}>
+          Your review <span className="font-normal text-stone-400">(optional)</span>
+        </label>
+        <textarea
+          id={`review-${product.id}`}
+          value={comment}
+          onChange={(event) => setComment(event.target.value.slice(0, 600))}
+          rows={4}
+          placeholder="What worked well? What should someone know before buying it?"
+          className="mt-2 w-full resize-none rounded-2xl border border-stone-200 p-4 text-sm leading-6 outline-none transition focus:border-[#f43f72] focus:ring-2 focus:ring-pink-100"
+        />
+        <div className="mt-2 flex justify-between text-xs text-stone-400">
+          <span>Do not include private medical information.</span>
+          <span>{comment.length}/600</span>
+        </div>
+
+        <button
+          type="submit"
+          disabled={!rating}
+          className="mt-5 w-full rounded-2xl bg-[#241f20] px-5 py-3.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          {existing ? "Update review" : "Publish review"}
+        </button>
+
+        {submitted && (
+          <p className="mt-3 rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700" role="status">
+            Your review has been saved and the community rating has been updated.
+          </p>
+        )}
+      </form>
+
+      {existing?.comment && (
+        <article className="mt-6 rounded-2xl bg-stone-50 p-5">
+          <div className="flex items-center gap-2 text-sm font-semibold">
+            <span>Your review</span>
+            <span className="flex items-center gap-1 text-amber-500">
+              <Star size={14} className="fill-current" /> {existing.rating}/5
+            </span>
+          </div>
+          <p className="mt-3 text-sm leading-6 text-stone-600">{existing.comment}</p>
+        </article>
+      )}
+    </section>
   );
 }
 
@@ -894,6 +1001,7 @@ export default function ProductsPage() {
   const [reusableOnly, setReusableOnly] = useState(false);
   const [compareIds, setCompareIds] = useState([]);
   const [compareOpen, setCompareOpen] = useState(false);
+  const [productReviews, setProductReviews] = useState(readProductReviews);
 
   useEffect(() => {
     localStorage.setItem(
@@ -902,20 +1010,29 @@ export default function ProductsPage() {
     );
   }, [savedIds]);
 
+  useEffect(() => {
+    localStorage.setItem(PRODUCT_REVIEWS_KEY, JSON.stringify(productReviews));
+  }, [productReviews]);
+
+  const reviewedProducts = useMemo(
+    () => products.map((product) => addCommunityMetrics(product, productReviews[product.id])),
+    [productReviews],
+  );
+
   const brandOptions = useMemo(
     () => [
       "All brands",
       ...Array.from(
-        new Set(products.map((product) => product.brand)),
+        new Set(reviewedProducts.map((product) => product.brand)),
       ).sort(),
     ],
-    [],
+    [reviewedProducts],
   );
 
   const filteredProducts = useMemo(() => {
     const term = search.trim().toLowerCase();
 
-    const result = products.filter((product) => {
+    const result = reviewedProducts.filter((product) => {
       const matchesCategory = matchesSelection(product, selection);
       const matchesSearch =
         !term || productText(product).includes(term);
@@ -958,32 +1075,41 @@ export default function ProductsPage() {
     selectedBrand,
     selection,
     sort,
+    reviewedProducts,
   ]);
 
   const trendingProducts = useMemo(
-    () => [...products].sort((a, b) => Number(b.popular) - Number(a.popular) || b.reviews - a.reviews).slice(0, 6),
-    [],
+    () => [...reviewedProducts].sort((a, b) => Number(b.popular) - Number(a.popular) || b.reviews - a.reviews).slice(0, 6),
+    [reviewedProducts],
   );
 
   const newProducts = useMemo(
-    () => products.filter((product) => product.newProduct).sort((a, b) => b.score - a.score).slice(0, 6),
-    [],
+    () => reviewedProducts.filter((product) => product.newProduct).sort((a, b) => b.score - a.score).slice(0, 6),
+    [reviewedProducts],
   );
 
   const underTwenty = useMemo(
-    () => products.filter((product) => product.price <= 20 && product.score >= 7.5).sort((a, b) => b.score - a.score).slice(0, 6),
-    [],
+    () => reviewedProducts.filter((product) => product.price <= 20 && product.score >= 7.5).sort((a, b) => b.score - a.score).slice(0, 6),
+    [reviewedProducts],
   );
 
   const savedProducts = useMemo(
-    () => products.filter((product) => savedIds.includes(product.id)),
-    [savedIds],
+    () => reviewedProducts.filter((product) => savedIds.includes(product.id)),
+    [reviewedProducts, savedIds],
   );
 
   const comparedProducts = useMemo(
-    () => products.filter((product) => compareIds.includes(product.id)),
-    [compareIds],
+    () => reviewedProducts.filter((product) => compareIds.includes(product.id)),
+    [reviewedProducts, compareIds],
   );
+
+  const activeProduct = selectedProduct
+    ? reviewedProducts.find((product) => product.id === selectedProduct.id) || selectedProduct
+    : null;
+
+  function saveReview(productId, review) {
+    setProductReviews((current) => ({ ...current, [productId]: review }));
+  }
 
   function toggleSaved(id) {
     setSavedIds((current) =>
@@ -1375,11 +1501,12 @@ export default function ProductsPage() {
         </div>
       )}
 
-      {selectedProduct && (
+      {activeProduct && (
         <ProductModal
-          product={selectedProduct}
-          saved={savedIds.includes(selectedProduct.id)}
+          product={activeProduct}
+          saved={savedIds.includes(activeProduct.id)}
           onSave={toggleSaved}
+          onReview={saveReview}
           onClose={() => setSelectedProduct(null)}
         />
       )}
