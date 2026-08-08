@@ -13,6 +13,8 @@ import {
   MapPin,
   Navigation,
   LoaderCircle,
+  List,
+  Map,
   Phone,
   Search,
   Stethoscope,
@@ -221,6 +223,24 @@ function searchTextForService(service) {
     .toLowerCase();
 }
 
+function getCoordinates(service) {
+  const coordinates = Array.isArray(service.coordinates) ? service.coordinates : [];
+  const latitude = Number.parseFloat(service.latitude ?? service.lat ?? service.location?.latitude ?? service.location?.lat ?? coordinates[0]);
+  const longitude = Number.parseFloat(service.longitude ?? service.lng ?? service.lon ?? service.location?.longitude ?? service.location?.lng ?? coordinates[1]);
+  return { latitude, longitude };
+}
+
+function distanceFromUser(service, userLocation) {
+  if (!userLocation) return null;
+  const { latitude, longitude } = getCoordinates(service);
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+  const toRadians = (value) => value * Math.PI / 180;
+  const latitudeDelta = toRadians(latitude - userLocation.latitude);
+  const longitudeDelta = toRadians(longitude - userLocation.longitude);
+  const a = Math.sin(latitudeDelta / 2) ** 2 + Math.cos(toRadians(userLocation.latitude)) * Math.cos(toRadians(latitude)) * Math.sin(longitudeDelta / 2) ** 2;
+  return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 export default function ServicesPage() {
   const [query, setQuery] = useState("");
   const [selectedType, setSelectedType] = useState("All");
@@ -232,11 +252,13 @@ export default function ServicesPage() {
   const [locationStatus, setLocationStatus] = useState("idle");
   const [showLocationConsent, setShowLocationConsent] = useState(false);
   const [savedIds, setSavedIds] = useState(readSavedServices);
+  const [viewMode, setViewMode] = useState("map");
+  const [visibleListCount, setVisibleListCount] = useState(30);
 
   const filteredServices = useMemo(() => {
     const search = normalise(query);
 
-    return services.filter((service) => {
+    const matches = services.filter((service) => {
       const matchesType =
         selectedType === "All" ||
         normalise(getType(service)) === normalise(selectedType);
@@ -255,7 +277,10 @@ export default function ServicesPage() {
 
       return matchesType && matchesTopic && matchesSearch;
     });
-  }, [query, selectedType, selectedTopic]);
+
+    if (!userLocation) return matches;
+    return [...matches].sort((left, right) => (distanceFromUser(left, userLocation) ?? Infinity) - (distanceFromUser(right, userLocation) ?? Infinity));
+  }, [query, selectedType, selectedTopic, userLocation]);
 
   function toggleSaved(service) {
     const id = service.id ?? service.name;
@@ -320,21 +345,22 @@ export default function ServicesPage() {
     setSelectedType("All");
     setSelectedTopic("All topics");
     setSelectedService(null);
+    setVisibleListCount(30);
   }
 
   return (
-    <main className="relative h-[calc(100dvh-72px)] min-h-[560px] overflow-hidden bg-stone-100 pb-20 lg:h-screen lg:min-h-[680px] lg:pb-0">
-      <div className="absolute inset-0">
+    <main className={viewMode === "map" ? "relative h-[calc(100dvh-72px)] min-h-[560px] overflow-hidden bg-stone-100 pb-20 lg:h-screen lg:min-h-[680px] lg:pb-0" : "min-h-screen bg-[#fffdfc] pb-28 lg:pb-12"}>
+      {viewMode === "map" && <div className="absolute inset-0">
         <RealServiceMap
           services={filteredServices}
           selectedService={selectedService}
           userLocation={userLocation}
           onSelectService={setSelectedService}
         />
-      </div>
+      </div>}
 
       {/* Search and filters */}
-      <section className="pointer-events-none absolute inset-x-0 top-0 z-[500] p-4 md:p-6">
+      <section className={viewMode === "map" ? "pointer-events-none absolute inset-x-0 top-0 z-[500] p-4 md:p-6" : "sticky top-0 z-[500] border-b border-stone-200 bg-[#fffdfc]/95 p-4 backdrop-blur-xl md:p-6"}>
         <div className="pointer-events-auto mx-auto max-w-7xl rounded-[28px] border border-white/70 bg-white/95 p-3 shadow-xl shadow-stone-900/10 backdrop-blur-xl md:p-4">
           <p className="mb-2 px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#f43f72]">
             Services · SHE Map
@@ -367,9 +393,14 @@ export default function ServicesPage() {
               )}
             </label>
 
-            <div className="hidden shrink-0 items-center gap-2 rounded-2xl bg-pink-50 px-4 py-3 text-sm font-medium text-[#f43f72] sm:flex">
+            <div className="hidden shrink-0 items-center gap-2 rounded-2xl bg-pink-50 px-4 py-3 text-sm font-medium text-[#f43f72] md:flex">
               <MapPin size={17} />
               {filteredServices.length} locations
+            </div>
+
+            <div className="flex shrink-0 rounded-2xl border border-stone-200 bg-stone-50 p-1" role="group" aria-label="Choose services view">
+              <ViewToggle icon={Map} label="Map" active={viewMode === "map"} onClick={() => setViewMode("map")} />
+              <ViewToggle icon={List} label="List" active={viewMode === "list"} onClick={() => { setViewMode("list"); setSelectedService(null); }} />
             </div>
           </div>
 
@@ -407,8 +438,22 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      {viewMode === "list" && (
+        <ServiceList
+          services={filteredServices}
+          visibleCount={visibleListCount}
+          userLocation={userLocation}
+          savedIds={savedIds}
+          onLocate={requestLocation}
+          locationStatus={locationStatus}
+          onSave={toggleSaved}
+          onOpen={setProfileService}
+          onLoadMore={() => setVisibleListCount((count) => count + 30)}
+        />
+      )}
+
       {/* Empty state */}
-      {filteredServices.length === 0 && (
+      {viewMode === "map" && filteredServices.length === 0 && (
         <div className="absolute inset-0 z-[450] flex items-center justify-center bg-white/55 p-5 backdrop-blur-sm">
           <div className="max-w-md rounded-[30px] border border-white bg-white p-8 text-center shadow-2xl">
             <Search
@@ -437,7 +482,7 @@ export default function ServicesPage() {
       )}
 
       {/* Women’s health map controls */}
-      <div className="absolute bottom-24 right-4 z-[500] flex flex-col items-end gap-3 md:bottom-6 md:right-6">
+      {viewMode === "map" && <div className="absolute bottom-24 right-4 z-[500] flex flex-col items-end gap-3 md:bottom-6 md:right-6">
         <button
           type="button"
           onClick={requestLocation}
@@ -471,10 +516,10 @@ export default function ServicesPage() {
             <LegendItem colour="#3b82f6" label="Diagnostics" />
           </div>
         </div>
-      </div>
+      </div>}
 
       {locationStatus === "error" && (
-        <div className="absolute bottom-24 right-4 z-[550] max-w-xs rounded-2xl bg-[#241f20] px-4 py-3 text-xs leading-5 text-white shadow-xl md:right-6">
+        <div className={viewMode === "map" ? "absolute bottom-24 right-4 z-[550] max-w-xs rounded-2xl bg-[#241f20] px-4 py-3 text-xs leading-5 text-white shadow-xl md:right-6" : "fixed bottom-24 right-4 z-[550] max-w-xs rounded-2xl bg-[#241f20] px-4 py-3 text-xs leading-5 text-white shadow-xl md:bottom-6 md:right-6"}>
           We couldn’t access your location. Check your browser location permissions and try again.
         </div>
       )}
@@ -533,7 +578,7 @@ export default function ServicesPage() {
 
       {/* Selected marker card */}
       <AnimatePresence>
-        {selectedService && (
+        {viewMode === "map" && selectedService && (
           <SelectedServiceCard
             service={selectedService}
             saved={isSaved(selectedService)}
@@ -545,7 +590,7 @@ export default function ServicesPage() {
       </AnimatePresence>
 
       {/* Map helper */}
-      {!selectedService && filteredServices.length > 0 && (
+      {viewMode === "map" && !selectedService && filteredServices.length > 0 && (
         <div className="pointer-events-none absolute bottom-24 left-1/2 z-[450] hidden -translate-x-1/2 sm:block md:bottom-6">
           <div className="rounded-full bg-[#241f20]/90 px-5 py-3 text-xs font-medium text-white shadow-xl backdrop-blur-md">
             Select a map marker to view the service
@@ -564,6 +609,70 @@ export default function ServicesPage() {
         )}
       </AnimatePresence>
     </main>
+  );
+}
+
+function ViewToggle({ icon: Icon, label, active, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`flex h-10 items-center gap-2 rounded-xl px-3 text-sm font-semibold transition ${active ? "bg-white text-[#e93368] shadow-sm" : "text-stone-500 hover:text-stone-800"}`}
+    >
+      <Icon size={16} />
+      <span className="hidden sm:inline">{label}</span>
+    </button>
+  );
+}
+
+function ServiceList({ services, visibleCount, userLocation, savedIds, onLocate, locationStatus, onSave, onOpen, onLoadMore }) {
+  const visibleServices = services.slice(0, visibleCount);
+
+  return (
+    <section className="mx-auto max-w-7xl px-5 py-8 md:px-8" aria-labelledby="services-list-title">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-sm font-semibold text-[#e93368]">Services directory</p>
+          <h1 id="services-list-title" className="mt-1 text-3xl font-bold tracking-tight text-[#241f20]">Compare services in a list</h1>
+          <p className="mt-2 text-sm leading-6 text-stone-600">Showing {Math.min(visibleCount, services.length)} of {services.length} matching locations{userLocation ? ", nearest first" : ""}.</p>
+        </div>
+        <button type="button" onClick={onLocate} disabled={locationStatus === "loading"} className="flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#f43f72] px-5 py-3 text-sm font-semibold text-white disabled:opacity-60">
+          {locationStatus === "loading" ? <LoaderCircle size={18} className="animate-spin" /> : <Navigation size={18} />}
+          {userLocation ? "Update location" : "Locate me"}
+        </button>
+      </div>
+
+      {visibleServices.length ? (
+        <div className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {visibleServices.map((service) => {
+            const id = service.id ?? service.name;
+            const distance = distanceFromUser(service, userLocation);
+            const saved = savedIds.includes(id);
+            return (
+              <article key={id} className="flex flex-col rounded-3xl border border-stone-200 bg-white p-5 shadow-sm transition hover:border-pink-200 hover:shadow-md">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-wrap gap-2">
+                    <span className="rounded-full bg-pink-50 px-3 py-1.5 text-xs font-medium text-[#e93368]">{getType(service)}</span>
+                    <span className="rounded-full bg-stone-100 px-3 py-1.5 text-xs text-stone-600">{getTopic(service)}</span>
+                  </div>
+                  <button type="button" onClick={() => onSave(service)} aria-label={`${saved ? "Remove" : "Save"} ${service.name}`} aria-pressed={saved} className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${saved ? "bg-[#f43f72] text-white" : "bg-stone-100 text-stone-500"}`}><Bookmark size={17} fill={saved ? "currentColor" : "none"} /></button>
+                </div>
+                <h2 className="mt-4 text-xl font-semibold leading-snug text-[#241f20]">{service.name}</h2>
+                <p className="mt-2 line-clamp-3 text-sm leading-6 text-stone-600">{getSpeciality(service)}</p>
+                <div className="mt-4 flex items-start gap-2 text-sm leading-6 text-stone-500"><MapPin size={16} className="mt-1 shrink-0 text-[#f43f72]" /><span>{getLocation(service)}{distance !== null ? ` · ${distance.toFixed(distance < 10 ? 1 : 0)} km away` : ""}</span></div>
+                <div className="mt-auto pt-3"><ServiceContacts service={service} compact /></div>
+                <button type="button" onClick={() => onOpen(service)} className="mt-4 flex w-full items-center justify-between rounded-2xl bg-[#241f20] px-5 py-3.5 text-sm font-semibold text-white">View full profile <ChevronRight size={17} /></button>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="mt-8 rounded-3xl border border-stone-200 bg-white p-10 text-center"><Search size={30} className="mx-auto text-[#f43f72]" /><h2 className="mt-4 text-xl font-semibold">No matching services</h2><p className="mt-2 text-sm text-stone-500">Try a broader search or clear one of the filters above.</p></div>
+      )}
+
+      {visibleCount < services.length && <div className="mt-10 text-center"><button type="button" onClick={onLoadMore} className="rounded-2xl bg-[#241f20] px-6 py-3 text-sm font-semibold text-white">Load 30 more services</button><p className="mt-3 text-xs text-stone-500">{services.length - visibleServices.length} locations remaining</p></div>}
+    </section>
   );
 }
 
