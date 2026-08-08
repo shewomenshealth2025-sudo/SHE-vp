@@ -50,7 +50,7 @@ export const learnCategories = [
   {
     id: "hormonal",
     name: "Hormonal & Endocrine Health",
-    description: "PCOS, thyroid health and hormonal conditions.",
+    description: "PMOS (PCOS), thyroid health and hormonal conditions.",
     icon: "Sparkles",
   },
   {
@@ -162,17 +162,17 @@ export const learnGuides = [
   },
   {
     id: "pcos",
-    title: "Polycystic Ovary Syndrome",
+    title: "Polyendocrine Metabolic Ovarian Syndrome (PMOS; PCOS)",
     category: "hormonal",
     categoryLabel: "Hormonal & Endocrine Health",
     summary:
-      "A practical introduction to PCOS symptoms, assessment, metabolic health and treatment choices.",
+      "A practical introduction to PMOS (PCOS) symptoms, assessment, metabolic health and treatment choices.",
     readTime: 8,
     level: "Beginner",
     featured: true,
     popular: true,
     tags: [
-      "PCOS",
+      "PMOS (PCOS)",
       "irregular periods",
       "acne",
       "hair growth",
@@ -180,7 +180,7 @@ export const learnGuides = [
       "insulin",
     ],
     overview:
-      "Polycystic ovary syndrome, commonly called PCOS, is a hormonal condition that can affect periods, ovulation, skin, hair and metabolic health.",
+      "Polyendocrine metabolic ovarian syndrome, commonly called PMOS (PCOS), is a hormonal condition that can affect periods, ovulation, skin, hair and metabolic health.",
     symptoms: [
       "Irregular, infrequent or absent periods",
       "Difficulty predicting ovulation",
@@ -205,14 +205,14 @@ export const learnGuides = [
       "Long-term care may include metabolic monitoring and support with nutrition, movement and sleep.",
     ],
     livingWith: [
-      "PCOS can affect periods, fertility, skin, hair and emotional wellbeing differently in each person.",
+      "PMOS (PCOS) can affect periods, fertility, skin, hair and emotional wellbeing differently in each person.",
       "A regular review can help ensure metabolic health is not overlooked.",
       "Tracking cycle length and symptoms can be useful even when periods are unpredictable.",
       "Treatment may need to change as priorities shift across life stages.",
     ],
 
     keyPoints: [
-      "Not everyone with PCOS has ovarian cysts.",
+      "Not everyone with PMOS (PCOS) has ovarian cysts.",
       "Symptoms and treatment needs differ between individuals.",
       "Assessment can include symptom history, blood tests and sometimes ultrasound.",
       "Care may address periods, fertility, skin symptoms and long-term metabolic health.",
@@ -223,7 +223,7 @@ export const learnGuides = [
       "You are trying to conceive and your cycles are irregular.",
     ],
     questions: [
-      "What criteria are being used to assess me for PCOS?",
+      "What criteria are being used to assess me for PMOS (PCOS)?",
       "Should my metabolic health be checked?",
       "What are my options for managing my main symptoms?",
     ],

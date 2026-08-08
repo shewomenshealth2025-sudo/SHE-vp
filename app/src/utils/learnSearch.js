@@ -60,8 +60,8 @@ const PHRASE_EXPANSIONS = {
   "dry eyes": ["Sjögren", "autoimmune"],
   "dry mouth": ["Sjögren", "autoimmune"],
   "cold all the time": ["thyroid", "Hashimoto", "iron deficiency"],
-  "trying to conceive": ["fertility", "PCOS", "ovulation"],
-  "irregular cycle": ["irregular periods", "PCOS", "perimenopause"],
+  "trying to conceive": ["fertility", "PMOS (PCOS)", "ovulation"],
+  "irregular cycle": ["irregular periods", "PMOS (PCOS)", "perimenopause"],
 };
 
 const SYNONYM_GROUPS = [

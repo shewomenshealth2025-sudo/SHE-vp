@@ -13,6 +13,12 @@ const createCondition = ({
   selfCare = [],
   whenToSeeGP = [],
   emergencySigns = [],
+  clinicalReviewer = "Clinical reviewer to be confirmed",
+  lastReviewed = "8 August 2026",
+  sources = [
+    { title: "NHS Health A to Z", url: "https://www.nhs.uk/conditions/" },
+    { title: "NICE guidance", url: "https://www.nice.org.uk/guidance" },
+  ],
 }) => ({
   id,
   slug: id,
@@ -35,21 +41,23 @@ const createCondition = ({
   relatedTreatments: [],
   relatedServices: [],
   relatedProducts: [],
-  sources: [],
-  reviewed: "",
+  sources,
+  clinicalReviewer,
+  lastReviewed,
+  reviewed: lastReviewed,
   version: 1,
 });
 
 export const pcos = createCondition({
   id: "pcos",
-  title: "Polycystic Ovary Syndrome",
+  title: "Polyendocrine Metabolic Ovarian Syndrome (PMOS; PCOS)",
   category: "Hormonal health",
   readTime: 7,
   summary:
-    "Polycystic ovary syndrome, often called PCOS, is a hormonal condition that can affect periods, ovulation, skin, hair, fertility and metabolism.",
+    "Polyendocrine metabolic ovarian syndrome, often called PMOS (PCOS), is a hormonal condition that can affect periods, ovulation, skin, hair, fertility and metabolism.",
   quickFacts: [
     "Symptoms can differ significantly between individuals.",
-    "PCOS may affect ovulation and menstrual cycles.",
+    "PMOS (PCOS) may affect ovulation and menstrual cycles.",
     "Management depends on symptoms and personal health goals.",
   ],
   symptoms: [

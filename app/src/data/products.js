@@ -563,7 +563,7 @@ export const products = [
     evidence:
       "Luteinising-hormone tests can help identify a hormone surge before ovulation.",
     safety:
-      "PCOS and some medicines can make results harder to interpret.",
+      "PMOS (PCOS) and some medicines can make results harder to interpret.",
     pros: ["Low cost per test", "Large pack"],
     cons: ["Line interpretation", "More manual"],
     retailers: ["Amazon"],
@@ -2770,15 +2770,15 @@ const catalogueExpansionSpecs = [
     "score": 7.7,
     "rating": 4.4,
     "reviews": 1704,
-    "badge": "PCOS supplement",
-    "description": "A powdered inositol supplement marketed for people managing PCOS-related concerns.",
+    "badge": "PMOS (PCOS) supplement",
+    "description": "A powdered inositol supplement marketed for people managing PMOS (PCOS)-related concerns.",
     "suitableFor": "People researching inositol powder as one possible option and who can safely use this type of product.",
     "notFor": "Anyone with symptoms requiring urgent assessment, a known contraindication, or uncertainty about whether the product is suitable.",
     "howToUse": "Read and follow the manufacturer’s complete instructions. For medicines, tests and internal devices, seek pharmacist or clinical advice when unsure.",
     "evidence": "Evidence and usefulness vary by product type. SHE presents this as general comparison information rather than a medical endorsement or guarantee of benefit.",
     "safety": "Stop use if the product causes pain, irritation or an unexpected reaction. New, severe, persistent or worsening symptoms should be assessed by a qualified healthcare professional.",
     "pros": [
-      "PCOS supplement",
+      "PMOS (PCOS) supplement",
       "Relevant to a clearly defined health or wellbeing need",
       "Included for comparison within the wider SHE directory"
     ],
