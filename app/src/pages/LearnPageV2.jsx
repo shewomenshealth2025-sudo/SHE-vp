@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { getAllConditions, getCondition, searchKnowledge } from "../data/knowledge";
@@ -9,25 +9,24 @@ import ConditionCard from "../components/knowledge/ConditionCard";
 import ConditionViewer from "../components/knowledge/ConditionViewer";
 
 export default function LearnPageV2() {
-  const [selectedCondition, setSelectedCondition] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("q") || "";
+  const selectedCondition = getCondition(searchParams.get("article"));
 
   const conditions = getAllConditions();
   const results = useMemo(() => query.trim() ? searchKnowledge(query) : [], [query]);
 
   function updateQuery(value) {
-    setSelectedCondition(null);
     setSearchParams(value.trim() ? { q: value } : {}, { replace: true });
   }
 
   function openCondition(condition) {
-    setSelectedCondition(condition);
+    setSearchParams({ article: condition.id });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function closeCondition() {
-    setSelectedCondition(null);
+    setSearchParams({});
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 

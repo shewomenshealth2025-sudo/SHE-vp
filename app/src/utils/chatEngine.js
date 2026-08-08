@@ -233,6 +233,9 @@ export function generateSHEReply({
       return createConversationalHealthReply(originalMessage, groundedQuery, conversation);
 
     case "health_question":
+      if (/^(what is|what are|define|explain)\b/.test(normalised)) {
+        return createCompactDefinitionReply(groundedQuery);
+      }
       return replyWithGroundedAnswer(groundedQuery);
 
     case "vague":
@@ -263,8 +266,43 @@ export function generateSHEMessage(options) {
   return generateSHEReply(options).text;
 }
 
-function reply(text, suggestions = []) {
-  return { text, suggestions };
+function reply(text, suggestions = [], metadata = {}) {
+  return { text, suggestions, ...metadata };
+}
+
+function createCompactDefinitionReply(query) {
+  try {
+    const response = buildGroundedResponse(query);
+    const guide = response.relatedGuides?.[0];
+    const relevantSections = response.sections || [];
+    const causes = relevantSections.find((section) => /cause|mechanism/i.test(section.title || ""))?.items || [];
+    const consequences = relevantSections.find((section) => /involve|symptom|pattern/i.test(section.title || ""))?.items || [];
+
+    if (!response.introduction || !guide) return replyWithGroundedAnswer(query);
+
+    const blocks = [
+      response.title || guide.title,
+      `Definition\n${response.introduction}`,
+    ];
+
+    if (causes.length) {
+      blocks.push(`Cause\n${causes.slice(0, 2).join(" ")}`);
+    }
+
+    if (consequences.length) {
+      blocks.push(`What it can lead to\n${consequences.slice(0, 3).join(", ")}.`);
+    }
+
+    blocks.push("That’s the short version. You can open the full SHE Learn article for symptoms, assessment, treatment and sources.");
+
+    return reply(
+      blocks.join("\n\n"),
+      ["What causes it?", "How is it diagnosed?", "What can help?"],
+      { article: { id: guide.id, title: guide.title } }
+    );
+  } catch {
+    return replyWithGroundedAnswer(query);
+  }
 }
 
 function createConversationalHealthReply(message, groundedQuery, conversation) {

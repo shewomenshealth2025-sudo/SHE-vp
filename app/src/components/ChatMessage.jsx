@@ -4,6 +4,7 @@ import {
   FileText,
   ThumbsDown,
   ThumbsUp,
+  ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -114,6 +115,19 @@ export default function ChatMessage({
                 </button>
               ))}
             </div>
+          )}
+
+          {message.article && (
+            <a
+              href={`/learn?article=${encodeURIComponent(message.article.id)}`}
+              className="mt-5 flex w-full items-center justify-between rounded-2xl bg-[#241f20] px-5 py-4 text-sm font-semibold text-white transition hover:bg-[#3a3234]"
+            >
+              <span>
+                <span className="block text-[10px] uppercase tracking-[0.14em] text-white/60">SHE Learn</span>
+                <span className="mt-1 block">Read the full article</span>
+              </span>
+              <ArrowRight size={18} />
+            </a>
           )}
 
           <div className="mt-5 rounded-2xl bg-pink-50 px-4 py-3 text-xs leading-5 text-stone-500">
