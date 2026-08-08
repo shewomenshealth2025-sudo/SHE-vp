@@ -1,9 +1,15 @@
+import { readFileSync } from "node:fs";
 import { communitySupportServices } from "../src/data/services/communitySupport.generated.js";
 import { niFamilySupportServices } from "../src/data/services/niFamilySupport.js";
 
 const errors = [];
 const ids = new Set();
 const services = [...communitySupportServices, ...niFamilySupportServices];
+const mapSource = readFileSync(new URL("../src/components/RealServiceMap.jsx", import.meta.url), "utf8");
+
+if (!mapSource.includes('querySelectorAll(".she-cluster-shell, .marker-cluster")')) {
+  errors.push("Custom map clusters must receive descriptive accessibility labels.");
+}
 
 if (services.length !== 100) {
   errors.push(`Expected 100 new services; found ${services.length}.`);
