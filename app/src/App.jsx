@@ -54,9 +54,10 @@ export default function App() {
 
   function navigate(tab, options = {}) {
     const path = tabPaths[tab] || "/";
-    const query = options.search?.trim()
-      ? `?q=${encodeURIComponent(options.search.trim())}`
-      : "";
+    const params = new URLSearchParams();
+    if (options.search?.trim()) params.set("q", options.search.trim());
+    if (options.view) params.set("view", options.view);
+    const query = params.size ? `?${params.toString()}` : "";
     routeNavigate(`${path}${query}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
