@@ -57,53 +57,81 @@ export function getConditionsForSymptom(symptomId) {
 
 export function searchKnowledge(query) {
   if (!query?.trim()) return [];
+  const phrase = normaliseSearch(query);
+  const tokens = tokeniseSearch(query);
+  const direct = conditions
+    .map((condition) => scoreCondition(condition, phrase, tokens))
+    .filter((result) => result.score > 0);
 
-  const search = query.toLowerCase().trim();
+  const resultsById = new Map(direct.map((result) => [result.id, result]));
 
-  const results = [];
-
-  // Search Conditions
-  conditions.forEach(condition => {
-    const searchable = [
-      condition.title,
-      condition.summary,
-      ...(condition.quickFacts || [])
-    ]
-      .join(" ")
-      .toLowerCase();
-
-    if (searchable.includes(search)) {
-      results.push({
+  direct.slice(0, 12).forEach((result) => {
+    (result.data.relatedConditions || []).forEach((relatedId) => {
+      if (resultsById.has(relatedId)) return;
+      const related = conditionMap[relatedId];
+      if (!related) return;
+      resultsById.set(relatedId, {
         type: "condition",
-        id: condition.id,
-        title: condition.title,
-        summary: condition.summary,
-        data: condition,
+        id: related.id,
+        title: related.title,
+        summary: related.summary,
+        data: related,
+        score: Math.max(1, result.score * 0.12),
+        matchedIn: [`Related to ${result.title}`],
+        relationOnly: true,
       });
-    }
+    });
   });
 
-  // Search Symptoms
-  symptoms.forEach(symptom => {
-    const searchable = [
-      symptom.title,
-      symptom.summary,
-    ]
-      .join(" ")
-      .toLowerCase();
-
-    if (searchable.includes(search)) {
-      results.push({
-        type: "symptom",
-        id: symptom.id,
-        title: symptom.title,
-        summary: symptom.summary,
-        data: symptom,
-      });
-    }
-  });
-
-  return results.sort((a, b) =>
-    a.title.localeCompare(b.title)
+  return [...resultsById.values()].sort((a, b) =>
+    b.score - a.score || a.title.localeCompare(b.title)
   );
+}
+
+const SEARCH_STOP_WORDS = new Set(["a", "an", "and", "are", "for", "how", "i", "in", "is", "it", "of", "on", "the", "to", "what", "with"]);
+
+function normaliseSearch(value = "") {
+  return value.toLowerCase().replace(/[’']/g, "").replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function tokeniseSearch(value) {
+  return normaliseSearch(value).split(" ").filter((token) => (token.length > 2 || /^\d+$/.test(token)) && !SEARCH_STOP_WORDS.has(token));
+}
+
+function fieldText(items) {
+  return normaliseSearch((items || []).join(" ").replaceAll("-", " "));
+}
+
+function scoreCondition(condition, phrase, tokens) {
+  const fields = {
+    title: normaliseSearch(condition.title),
+    category: normaliseSearch(condition.category),
+    summary: normaliseSearch(condition.summary),
+    symptoms: fieldText(condition.symptoms),
+    facts: fieldText(condition.quickFacts),
+    causes: fieldText(condition.causes),
+    risks: fieldText(condition.riskFactors),
+    assessment: fieldText(condition.diagnosis),
+    treatment: fieldText(condition.treatments),
+    selfCare: fieldText(condition.selfCare),
+  };
+  let score = 0;
+  const matchedIn = new Set();
+  const add = (field, label, weight) => {
+    if (fields[field].includes(phrase)) { score += weight * 2; matchedIn.add(label); }
+    tokens.forEach((token) => {
+      if (fields[field].includes(token)) { score += weight; matchedIn.add(label); }
+    });
+  };
+  add("title", "Title", 18);
+  add("symptoms", "Symptoms", 10);
+  add("category", "Category", 8);
+  add("summary", "Overview", 7);
+  add("facts", "Key facts", 5);
+  add("causes", "Possible causes", 4);
+  add("risks", "Risk factors", 4);
+  add("assessment", "Assessment", 3);
+  add("treatment", "Treatment", 3);
+  add("selfCare", "Self-care", 2);
+  return { type: "condition", id: condition.id, title: condition.title, summary: condition.summary, data: condition, score, matchedIn: [...matchedIn], relationOnly: false };
 }

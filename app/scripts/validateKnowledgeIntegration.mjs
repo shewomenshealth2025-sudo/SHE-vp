@@ -24,6 +24,7 @@ try {
   const database = await server.ssrLoadModule("/src/data/knowledge/database.js");
   const productData = await server.ssrLoadModule("/src/data/products.js");
   const chat = await server.ssrLoadModule("/src/utils/chatEngine.js");
+  const learnQueries = await server.ssrLoadModule("/src/data/knowledge/queries.js");
 
   const guides = knowledge.knowledgeGuides;
   const conditions = database.conditions;
@@ -106,6 +107,13 @@ try {
   const followUpAnswer = chat.generateSHEMessage({ message: "What causes it?", conversation: followUpConversation });
   assert(followUpAnswer.includes("Possible causes and mechanisms"), "Chat must understand conversational follow-ups");
   assert(followUpAnswer.includes("muscular wall of the womb"), "Follow-up answers must retain the previous topic");
+
+  const potsSearch = learnQueries.searchKnowledge("POTS");
+  assert(potsSearch[0]?.id === "pots", "Learn search must rank an exact condition first");
+  assert(potsSearch.some((result) => result.id === "dysautonomia"), "Learn search must include related articles");
+  const cycleSearch = learnQueries.searchKnowledge("cycle stage");
+  assert(cycleSearch.some((result) => result.id === "follicular-phase"), "Learn search must search across article content");
+  assert(cycleSearch.some((result) => result.id === "luteal-phase"), "Learn search must return all relevant cycle-stage articles");
 
   console.log(`Knowledge integration valid: ${guides.length} unified guides, ${guides.reduce((sum, guide) => sum + guide.relatedGuideIds.length, 0)} relationships.`);
 } finally {
