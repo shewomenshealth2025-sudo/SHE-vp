@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "oxlint",
     "test:knowledge": "node scripts/validateKnowledgeIntegration.mjs",
+    "test:chat": "node scripts/validateConversationalChat.mjs",
     "test:services": "node scripts/validateServices.mjs",
     "preview": "vite preview"
   },

@@ -1,4 +1,4 @@
-import { buildGroundedResponse } from "./chatKnowledge";
+import { buildGroundedResponse } from "./chatKnowledge.js";
 
 const GREETINGS = [
   "hi",
@@ -52,6 +52,24 @@ const NEGATIVE_REPLIES = [
   "i don't understand",
   "thats wrong",
   "that's wrong",
+];
+
+const CASUAL_CHECK_INS = [
+  "how are you",
+  "how are you doing",
+  "hows it going",
+  "how's it going",
+];
+
+const EMOTIONAL_PATTERNS = [
+  "im scared",
+  "i'm scared",
+  "im worried",
+  "i'm worried",
+  "im anxious",
+  "i'm anxious",
+  "this is worrying me",
+  "i feel overwhelmed",
 ];
 
 const HEALTH_TERMS = [
@@ -137,7 +155,7 @@ const EMERGENCY_PATTERNS = [
   "sudden severe pain",
 ];
 
-export function generateSHEMessage({
+export function generateSHEReply({
   message,
   attachments = [],
   conversation = [],
@@ -147,72 +165,155 @@ export function generateSHEMessage({
   const groundedQuery = resolveConversationQuery(originalMessage, conversation);
 
   if (attachments.length > 0) {
-    return createAttachmentResponse({
+    return reply(createAttachmentResponse({
       message: originalMessage,
       normalised,
       attachments,
-    });
+    }), attachmentSuggestions(attachments));
+  }
+
+  if (CASUAL_CHECK_INS.includes(normalised)) {
+    return reply(
+      "I’m here and ready to help. How are you doing — is there something on your mind, or are we just having a chat?",
+      ["I have a health question", "I want to talk something through"]
+    );
+  }
+
+  if (containsAny(normalised, EMOTIONAL_PATTERNS)) {
+    return reply(
+      "I’m sorry — that sounds unsettling. We can take it one step at a time. What is worrying you most right now: the symptom itself, what it might mean, or getting the right help?",
+      ["The symptom itself", "What it might mean", "Getting medical help"]
+    );
   }
 
   const intent = detectIntent(normalised);
 
   switch (intent) {
     case "empty":
-      return "What would you like help with today?";
+      return reply("What would you like help with today?");
 
     case "emergency":
-      return createEmergencyResponse();
+      return reply(createEmergencyResponse(), ["Find urgent care", "What should I tell them?"]);
 
     case "greeting":
-      return [
-        "Hi! I’m SHE.",
-        "What would you like help with today?",
-      ].join("\n\n");
+      return reply(
+        "Hi! I’m SHE. How are you doing today — what would you like to talk about?",
+        ["I have a health question", "Help me understand symptoms", "Help me prepare for an appointment"]
+      );
 
     case "thanks":
-      return "You’re very welcome. Is there anything else you’d like help with?";
+      return reply("You’re very welcome. Is there anything else you’d like to talk through?");
 
     case "goodbye":
-      return "Take care. You can come back whenever you need help finding your next step.";
+      return reply("Take care. You can come back whenever you want to talk something through.");
 
     case "positive":
-      return "I’m glad that helped. What would you like to look at next?";
+      return reply("I’m glad that helped. Would you like to go deeper, look at next steps, or talk about something else?", ["Explain it more simply", "What should I do next?", "Something else"]);
 
     case "negative":
-      return [
+      return reply([
         "I’m sorry that wasn’t helpful.",
         "Tell me what felt unclear or what you were hoping to understand, and I’ll try a different approach.",
-      ].join("\n\n");
+      ].join("\n\n"), ["Explain it more simply", "Give me practical next steps", "I meant something different"]);
 
     case "identity":
-      return [
+      return reply([
         "I’m SHE, a women’s health navigation assistant.",
         "I can help you understand health information, prepare questions for a clinician and think through appropriate next steps.",
         "I can’t diagnose a condition or replace professional medical care.",
-      ].join("\n\n");
+      ].join("\n\n"));
 
     case "help":
-      return [
+      return reply([
         "Of course. Tell me what has been happening in your own words.",
         "You can include your symptoms, how long they have been happening and what concerns you most.",
-      ].join("\n\n");
+      ].join("\n\n"));
 
     case "symptom_statement":
-      return createGroundedHealthResponse(groundedQuery);
+      return createConversationalHealthReply(originalMessage, groundedQuery, conversation);
 
     case "health_question":
-      return createGroundedHealthResponse(groundedQuery);
+      return replyWithGroundedAnswer(groundedQuery);
 
     case "vague":
       return groundedQuery !== originalMessage
-        ? createGroundedHealthResponse(groundedQuery)
+        ? replyWithGroundedAnswer(groundedQuery)
         : ["why", "how", "what", "maybe", "worried"].includes(normalised)
-          ? createClarifyingResponse(normalised, conversation)
-          : createGroundedHealthResponse(originalMessage);
+          ? reply(createClarifyingResponse(normalised, conversation))
+          : replyWithGroundedAnswer(originalMessage);
 
     default:
-      return createGroundedHealthResponse(groundedQuery);
+      return createGeneralConversationReply(originalMessage, groundedQuery, conversation);
   }
+}
+
+export function generateSHEMessage(options) {
+  const message = String(options?.message ?? "").trim();
+  const normalised = normaliseText(message);
+  const intent = detectIntent(normalised);
+
+  // Backwards-compatible grounded answer API used by the knowledge validation
+  // and any non-conversational consumers. The chat UI uses generateSHEReply.
+  if (["symptom_statement", "health_question", "vague", "general"].includes(intent)) {
+    return createGroundedHealthResponse(
+      resolveConversationQuery(message, options?.conversation || [])
+    );
+  }
+
+  return generateSHEReply(options).text;
+}
+
+function reply(text, suggestions = []) {
+  return { text, suggestions };
+}
+
+function createConversationalHealthReply(message, groundedQuery, conversation) {
+  const combinedContext = collectRecentUserContext(conversation);
+  const missing = missingSymptomContext(combinedContext || message);
+
+  if (missing.length >= 2 && !hasPriorClarification(conversation)) {
+    const questions = missing.slice(0, 3);
+    return reply(
+      [
+        compassionateAcknowledgement(message),
+        "I don’t want to jump to a conclusion from that alone. A few details would help me understand the pattern:",
+        questions.map((question) => `• ${question}`).join("\n"),
+        "Answer however feels natural — you don’t need to use medical language.",
+      ].join("\n\n"),
+      questions.map(shortSuggestionForQuestion).filter(Boolean).slice(0, 3)
+    );
+  }
+
+  return replyWithGroundedAnswer(groundedQuery, compassionateAcknowledgement(message));
+}
+
+function replyWithGroundedAnswer(query, acknowledgement = "") {
+  const answer = createGroundedHealthResponse(query);
+  const naturalAnswer = acknowledgement
+    ? `${acknowledgement}\n\n${answer}`
+    : answer;
+
+  return reply(naturalAnswer, suggestionsForQuery(query));
+}
+
+function createGeneralConversationReply(message, groundedQuery, conversation) {
+  const text = normaliseText(message);
+
+  if (/^(i feel|ive been feeling|i've been feeling|today i feel)/.test(text)) {
+    return reply(
+      "I’m listening. What has been making you feel that way? You can give me the long version.",
+      ["It’s mainly my health", "It’s stress or wellbeing", "I’m not sure"]
+    );
+  }
+
+  if (conversation.length > 1 && groundedQuery !== message) {
+    return replyWithGroundedAnswer(groundedQuery);
+  }
+
+  return reply(
+    "I’m with you, but I’m not completely sure what you mean yet. Tell me a little more in your own words, and I’ll respond to the full picture rather than guessing.",
+    ["It’s about my health", "I’m describing how I feel", "I have a general question"]
+  );
 }
 
 function detectIntent(text) {
@@ -335,6 +436,9 @@ function isSymptomStatement(text) {
     "im having",
     "i'm having",
     "i feel",
+    "i keep",
+    "i get",
+    "i notice",
     "ive been",
     "i've been",
     "my period",
@@ -360,14 +464,85 @@ function resolveConversationQuery(message, conversation = []) {
     return message;
   }
 
-  const previousUserMessage = [...conversation]
+  const recentUserMessages = [...conversation]
     .slice(0, -1)
-    .reverse()
-    .find((entry) => entry.role === "user" && entry.text?.trim());
+    .filter((entry) => entry.role === "user" && entry.text?.trim())
+    .slice(-3)
+    .map((entry) => entry.text.trim());
 
-  return previousUserMessage
-    ? `${previousUserMessage.text}. Follow-up question: ${message}`
+  return recentUserMessages.length
+    ? `${recentUserMessages.join(". ")}. Follow-up: ${message}`
     : message;
+}
+
+function collectRecentUserContext(conversation = []) {
+  return conversation
+    .filter((entry) => entry.role === "user" && entry.text?.trim())
+    .slice(-4)
+    .map((entry) => entry.text.trim())
+    .join(". ");
+}
+
+function hasPriorClarification(conversation = []) {
+  return conversation
+    .filter((entry) => entry.role === "she" || entry.role === "assistant")
+    .slice(-2)
+    .some((entry) => /few details would help|how long|how severe|where (?:is|do)/i.test(entry.text || ""));
+}
+
+function missingSymptomContext(value) {
+  const text = normaliseText(value);
+  const questions = [];
+  const hasDuration = /\b(today|yesterday|days?|weeks?|months?|years?|since|started|recently|always)\b/.test(text);
+  const hasSeverity = /\b(mild|moderate|severe|bad|awful|unbearable|\d+\/10|stops me|affects|worse|better)\b/.test(text);
+  const hasPattern = /\b(constant|comes and goes|sometimes|daily|night|morning|after|before|during|around|period|cycle|standing|eating|exercise|sex)\b/.test(text);
+  const hasAssociated = /\b(and|also|with|without|bleeding|fever|faint|dizzy|discharge|nausea|bowel|bladder|breathless|pregnan)\b/.test(text);
+
+  if (!hasDuration) questions.push("When did it start, and has it changed over time?");
+  if (!hasSeverity) questions.push("How intense is it, and does it interrupt sleep, work or normal activities?");
+  if (!hasPattern) questions.push("Is it constant or does it follow a pattern — for example around periods, meals, standing, sex or activity?");
+  if (!hasAssociated) questions.push("Have you noticed anything else alongside it, such as bleeding, fever, faintness, discharge, bowel or bladder changes?");
+
+  return questions;
+}
+
+function compassionateAcknowledgement(message) {
+  const text = normaliseText(message);
+  if (/\b(year|month|long time|keeps|every|constant)\b/.test(text)) {
+    return "That sounds frustrating, especially if it has been affecting you repeatedly.";
+  }
+  if (/\b(pain|bleeding|faint|dizzy|exhausted|tired|worried|scared)\b/.test(text)) {
+    return "I’m sorry you’re dealing with that. Let’s slow it down and look at the pattern properly.";
+  }
+  return "Thanks for explaining that — I’m following you.";
+}
+
+function shortSuggestionForQuestion(question) {
+  if (question.startsWith("When")) return "It started recently";
+  if (question.startsWith("How intense")) return "It affects daily life";
+  if (question.startsWith("Is it constant")) return "It follows a pattern";
+  if (question.startsWith("Have you noticed")) return "There are other symptoms";
+  return "Tell you more";
+}
+
+function suggestionsForQuery(query) {
+  const text = normaliseText(query);
+  if (/\bwhat is|define|explain\b/.test(text)) {
+    return ["What causes it?", "What are the symptoms?", "How is it diagnosed?"];
+  }
+  if (/\b(cause|risk)\b/.test(text)) {
+    return ["How is it assessed?", "What can help?", "When should I see a GP?"];
+  }
+  if (/\b(treat|manage|help|next step)\b/.test(text)) {
+    return ["What should I ask my GP?", "What should I track?", "When is it urgent?"];
+  }
+  return ["What could be relevant?", "What should I track?", "When should I seek help?"];
+}
+
+function attachmentSuggestions(attachments) {
+  return attachments.some((attachment) => String(attachment.type || "").startsWith("image/"))
+    ? ["I’ll describe what I can see", "I have a question about it"]
+    : ["I’ll paste the relevant text", "Help me understand a result"];
 }
 
 function createSymptomFollowUp(text) {

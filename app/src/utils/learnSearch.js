@@ -1,4 +1,4 @@
-import { learnGuides } from "../knowledge/knowledgeBase";
+import { learnGuides } from "../knowledge/knowledgeBase.js";
 
 const STOP_WORDS = new Set([
   "a",
