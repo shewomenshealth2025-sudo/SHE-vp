@@ -52,8 +52,12 @@ export default function App() {
     return () => window.clearTimeout(id);
   }, []);
 
-  function navigate(tab) {
-    routeNavigate(tabPaths[tab] || "/");
+  function navigate(tab, options = {}) {
+    const path = tabPaths[tab] || "/";
+    const query = options.search?.trim()
+      ? `?q=${encodeURIComponent(options.search.trim())}`
+      : "";
+    routeNavigate(`${path}${query}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
