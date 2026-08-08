@@ -1,19 +1,21 @@
 import {
   ArrowLeft,
   ArrowRight,
-  Check,
-  ChevronDown,
   ChevronRight,
+  CircleDollarSign,
   ExternalLink,
   Heart,
   Menu,
   Search,
+  ShieldCheck,
   SlidersHorizontal,
+  Sparkles,
   Star,
+  TrendingUp,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { products, productCount } from "../data/products";
+import { products } from "../data/products";
 
 const money = new Intl.NumberFormat("en-GB", {
   style: "currency",
@@ -272,15 +274,6 @@ const categoryDirectory = [
   },
 ];
 
-const featuredCategoryLinks = [
-  { label: "Period care", categories: ["Period care"] },
-  { label: "Pelvic pain", categories: ["Pelvic pain"] },
-  { label: "Fertility", categories: ["Fertility"] },
-  { label: "Pregnancy", categories: ["Pregnancy"] },
-  { label: "Postpartum", categories: ["Postpartum"] },
-  { label: "Menopause", categories: ["Menopause"] },
-];
-
 function getSaved() {
   try {
     return JSON.parse(localStorage.getItem("she-saved-products") || "[]");
@@ -396,7 +389,7 @@ function selectionDescription(selection) {
   );
 }
 
-function ProductCard({ product, saved, onSave, onOpen }) {
+function ProductCard({ product, saved, comparing, onSave, onCompare, onOpen }) {
   return (
     <article className="group overflow-hidden border border-stone-200 bg-white transition hover:border-[#efbdd0] hover:shadow-[0_12px_30px_rgba(52,35,41,0.06)]">
       <div className="relative aspect-square overflow-hidden bg-[#f8f5f6]">
@@ -459,19 +452,38 @@ function ProductCard({ product, saved, onSave, onOpen }) {
             </p>
           </div>
 
-          <span className="rounded-full bg-[#fff0f5] px-3 py-1.5 text-xs font-semibold text-[#e93368]">
-            SHE {product.score.toFixed(1)}
-          </span>
+          <button
+            type="button"
+            onClick={() => onOpen(product)}
+            className="rounded-full bg-[#fff0f5] px-3 py-1.5 text-xs font-semibold text-[#e93368]"
+            aria-label={`Why ${product.name} has a SHE Score of ${product.score.toFixed(1)}`}
+          >
+            SHE Score {product.score.toFixed(1)}
+          </button>
         </div>
 
-        <button
-          type="button"
-          onClick={() => onOpen(product)}
-          className="mt-5 flex w-full items-center justify-center gap-2 bg-[#211d1f] px-4 py-3 text-sm font-medium text-white transition hover:bg-black"
-        >
-          View product
-          <ArrowRight size={15} />
-        </button>
+        <div className="mt-5 grid grid-cols-[1fr_auto] gap-2">
+          <button
+            type="button"
+            onClick={() => onOpen(product)}
+            className="flex items-center justify-center gap-2 bg-[#211d1f] px-4 py-3 text-sm font-medium text-white transition hover:bg-black"
+          >
+            View product
+            <ArrowRight size={15} />
+          </button>
+          <button
+            type="button"
+            onClick={() => onCompare(product.id)}
+            className={`border px-3 text-sm font-medium transition ${
+              comparing
+                ? "border-[#f43f72] bg-[#fff0f5] text-[#e93368]"
+                : "border-stone-300 text-stone-600 hover:border-[#f43f72]"
+            }`}
+            aria-label={`${comparing ? "Remove" : "Add"} ${product.name} ${comparing ? "from" : "to"} comparison`}
+          >
+            Compare
+          </button>
+        </div>
       </div>
     </article>
   );
@@ -545,6 +557,18 @@ function ProductModal({ product, saved, onSave, onClose }) {
               </span>
             </div>
 
+            <div className="mt-5 rounded-2xl border border-[#f7d7e2] bg-[#fff8fa] p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-[#d92f62]">
+                <ShieldCheck size={17} />
+                Why this SHE Score?
+              </div>
+              <p className="mt-2 text-sm leading-6 text-stone-600">
+                SHE considers evidence relevance, safety information, user feedback,
+                value and product transparency. A score is guidance, not a medical
+                endorsement.
+              </p>
+            </div>
+
             <p className="mt-6 text-base leading-7 text-stone-600">
               {product.description}
             </p>
@@ -575,6 +599,11 @@ function ProductModal({ product, saved, onSave, onClose }) {
 
             <div className="mt-8">
               <h2 className="font-semibold">Where to buy</h2>
+
+              <p className="mt-2 text-xs leading-5 text-stone-500">
+                Some retailer links may be affiliate links. This never changes a
+                product’s SHE Score or the price you pay.
+              </p>
 
               <div className="mt-3 space-y-2">
                 {product.retailers.map((retailer) => (
@@ -676,6 +705,150 @@ function CategoryDirectory({
   );
 }
 
+const healthNeedCollections = [
+  {
+    label: "Manage painful periods",
+    description: "Heat, TENS and everyday comfort options",
+    categories: ["Pelvic pain"],
+    tone: "bg-[#fff0f5]",
+  },
+  {
+    label: "Build your period routine",
+    description: "Reusable and disposable care for every flow",
+    categories: ["Period care"],
+    tone: "bg-[#f8f1ff]",
+  },
+  {
+    label: "Trying to conceive",
+    description: "Cycle tracking, tests and conception support",
+    categories: ["Fertility"],
+    tone: "bg-[#eef8f5]",
+  },
+  {
+    label: "Pregnancy essentials",
+    description: "Carefully selected support for each trimester",
+    categories: ["Pregnancy"],
+    tone: "bg-[#fff7ec]",
+  },
+  {
+    label: "Post-birth recovery",
+    description: "Comfort, feeding and recovery products",
+    categories: ["Postpartum"],
+    tone: "bg-[#f2f6ff]",
+  },
+  {
+    label: "Navigate menopause",
+    description: "Cooling, sleep and intimate-health support",
+    categories: ["Menopause"],
+    tone: "bg-[#f7f3ee]",
+  },
+];
+
+function CuratedRail({ eyebrow, title, description, products: items, savedIds, compareIds, onSave, onCompare, onOpen }) {
+  if (!items.length) return null;
+
+  return (
+    <section className="mt-14">
+      <div className="max-w-2xl">
+        <p className="text-sm font-semibold text-[#e93368]">{eyebrow}</p>
+        <h2 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h2>
+        {description && <p className="mt-2 text-sm leading-6 text-stone-500">{description}</p>}
+      </div>
+
+      <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        {items.slice(0, 6).map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            saved={savedIds.includes(product.id)}
+            comparing={compareIds.includes(product.id)}
+            onSave={onSave}
+            onCompare={onCompare}
+            onOpen={onOpen}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CompareBar({ products: items, onRemove, onClear, onCompare }) {
+  if (!items.length) return null;
+
+  return (
+    <div className="fixed inset-x-0 bottom-16 z-40 px-4 lg:bottom-5 lg:left-72">
+      <div className="mx-auto flex max-w-4xl flex-col gap-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-[0_20px_60px_rgba(44,30,36,0.18)] sm:flex-row sm:items-center">
+        <div className="flex-1">
+          <p className="text-sm font-semibold">Compare products ({items.length}/3)</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {items.map((product) => (
+              <button
+                key={product.id}
+                type="button"
+                onClick={() => onRemove(product.id)}
+                className="flex items-center gap-2 rounded-full bg-[#fff0f5] px-3 py-1.5 text-xs text-[#d92f62]"
+              >
+                {product.name}
+                <X size={13} />
+              </button>
+            ))}
+          </div>
+        </div>
+        <button type="button" onClick={onClear} className="text-sm font-medium text-stone-500">
+          Clear
+        </button>
+        <button
+          type="button"
+          disabled={items.length < 2}
+          onClick={onCompare}
+          className="rounded-xl bg-[#211d1f] px-5 py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-stone-300"
+        >
+          Compare now
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function CompareModal({ products: items, onClose, onOpen }) {
+  if (items.length < 2) return null;
+
+  return (
+    <div className="fixed inset-0 z-[1200] overflow-y-auto bg-black/45 p-4 backdrop-blur-sm sm:p-8">
+      <div className="mx-auto max-w-5xl rounded-3xl bg-white p-5 shadow-2xl sm:p-8">
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <p className="text-sm font-semibold text-[#e93368]">Side by side</p>
+            <h2 className="mt-1 text-2xl font-semibold sm:text-3xl">Compare your finds</h2>
+            <p className="mt-2 text-sm text-stone-500">Scores guide discovery and are not medical endorsements.</p>
+          </div>
+          <button type="button" onClick={onClose} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-stone-100" aria-label="Close comparison"><X size={18} /></button>
+        </div>
+
+        <div className="mt-7 overflow-x-auto">
+          <div className={`grid min-w-[680px] gap-4 ${items.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
+            {items.map((product) => (
+              <article key={product.id} className="rounded-2xl border border-stone-200 p-5">
+                <img src={product.image} alt="" className="aspect-square w-full rounded-xl bg-stone-100 object-cover" />
+                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{product.brand}</p>
+                <h3 className="mt-2 text-lg font-semibold">{product.name}</h3>
+                <p className="mt-3 text-2xl font-semibold">{money.format(product.price)}</p>
+                <dl className="mt-5 space-y-3 border-t border-stone-100 pt-5 text-sm">
+                  <div className="flex justify-between gap-4"><dt className="text-stone-500">SHE Score</dt><dd className="font-semibold text-[#d92f62]">{product.score.toFixed(1)}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-stone-500">User rating</dt><dd className="font-semibold">{product.rating.toFixed(1)} / 5</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-stone-500">Reviews</dt><dd className="font-semibold">{product.reviews.toLocaleString("en-GB")}</dd></div>
+                  <div className="flex justify-between gap-4"><dt className="text-stone-500">Reusable</dt><dd className="font-semibold">{product.reusable ? "Yes" : "No"}</dd></div>
+                </dl>
+                <button type="button" onClick={() => onOpen(product)} className="mt-6 w-full rounded-xl bg-[#211d1f] px-4 py-3 text-sm font-medium text-white">View full details</button>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ProductsPage() {
   const [search, setSearch] = useState("");
   const [selection, setSelection] = useState(null);
@@ -689,6 +862,8 @@ export default function ProductsPage() {
   const [maximumPrice, setMaximumPrice] = useState(300);
   const [minimumScore, setMinimumScore] = useState(0);
   const [reusableOnly, setReusableOnly] = useState(false);
+  const [compareIds, setCompareIds] = useState([]);
+  const [compareOpen, setCompareOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(
@@ -755,13 +930,30 @@ export default function ProductsPage() {
     sort,
   ]);
 
-  const featuredProducts = useMemo(() => {
-    const selected = products
-      .filter((product) => product.featured || product.popular)
-      .sort((a, b) => b.score - a.score);
+  const trendingProducts = useMemo(
+    () => [...products].sort((a, b) => Number(b.popular) - Number(a.popular) || b.reviews - a.reviews).slice(0, 6),
+    [],
+  );
 
-    return selected.slice(0, 6);
-  }, []);
+  const newProducts = useMemo(
+    () => products.filter((product) => product.newProduct).sort((a, b) => b.score - a.score).slice(0, 6),
+    [],
+  );
+
+  const underTwenty = useMemo(
+    () => products.filter((product) => product.price <= 20 && product.score >= 7.5).sort((a, b) => b.score - a.score).slice(0, 6),
+    [],
+  );
+
+  const savedProducts = useMemo(
+    () => products.filter((product) => savedIds.includes(product.id)),
+    [savedIds],
+  );
+
+  const comparedProducts = useMemo(
+    () => products.filter((product) => compareIds.includes(product.id)),
+    [compareIds],
+  );
 
   function toggleSaved(id) {
     setSavedIds((current) =>
@@ -769,6 +961,14 @@ export default function ProductsPage() {
         ? current.filter((item) => item !== id)
         : [...current, id],
     );
+  }
+
+  function toggleCompare(id) {
+    setCompareIds((current) => {
+      if (current.includes(id)) return current.filter((item) => item !== id);
+      if (current.length >= 3) return [...current.slice(1), id];
+      return [...current, id];
+    });
   }
 
   function chooseCategory(item) {
@@ -815,99 +1015,113 @@ export default function ProductsPage() {
       </div>
 
       <main className="mx-auto max-w-[1500px] px-5 pb-24 sm:px-8 lg:px-10">
-        <div className="grid gap-10 lg:grid-cols-[235px_minmax(0,1fr)]">
-          <aside className="hidden border-r border-stone-200 pr-7 pt-8 lg:block">
-            <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2">
-              <h2 className="text-base font-semibold">Categories</h2>
-
-              <CategoryDirectory
-                selected={selection}
-                onSelect={chooseCategory}
-              />
-            </div>
-          </aside>
-
-          <div className="min-w-0 pt-8">
+        <div className="min-w-0 pt-8">
             {!selection && !search.trim() && (
               <>
-                <section>
-                  <div className="mx-auto max-w-3xl text-center">
-                  <div className="text-center mb-14">
-  <h1 className="text-5xl font-bold tracking-tight text-pink-500">
-    SHE Finds
-  </h1>
-
-  <p className="mt-5 text-xl font-normal text-gray-500">
-    Helping you find the right products for your health.
-  </p>
-</div>
-
-                  </div>
-
-                  <div className="mt-8 flex gap-6 overflow-x-auto pb-3">
-                    {featuredCategoryLinks.map((item) => {
-                      const match = products.find((product) =>
-                        item.categories.includes(product.category),
-                      );
-
-                      return (
+                <section className="overflow-hidden rounded-[28px] bg-[#fff0f5] px-6 py-10 sm:px-10 sm:py-12">
+                  <div className="grid items-center gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+                    <div>
+                      <div className="flex items-center gap-2 text-sm font-semibold text-[#d92f62]">
+                        <Sparkles size={17} />
+                        Curated for women’s health
+                      </div>
+                      <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-[#211d1f] sm:text-6xl">
+                        Find what works for you.
+                      </h1>
+                      <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 sm:text-lg">
+                        Compare products, understand the evidence and shop by what
+                        you need—not by confusing supermarket aisles.
+                      </p>
+                      <div className="mt-7 flex flex-wrap gap-3">
                         <button
-                          key={item.label}
                           type="button"
-                          onClick={() => chooseCategory(item)}
-                          className="group min-w-[115px] text-center"
+                          onClick={() => document.getElementById("shop-by-need")?.scrollIntoView({ behavior: "smooth" })}
+                          className="rounded-xl bg-[#211d1f] px-5 py-3 text-sm font-semibold text-white"
                         >
-                          <div className="mx-auto h-20 w-20 overflow-hidden rounded-full bg-[#fff0f5]">
-                            {match?.image ? (
-                              <img
-                                src={match.image}
-                                alt=""
-                                className="h-full w-full object-cover transition group-hover:scale-105"
-                              />
-                            ) : (
-                              <div className="flex h-full items-center justify-center text-[#f43f72]">
-                                <Heart size={22} />
-                              </div>
-                            )}
-                          </div>
-
-                          <p className="mt-3 text-sm font-medium">
-                            {item.label}
-                          </p>
+                          Shop by need
                         </button>
-                      );
-                    })}
+                        <button
+                          type="button"
+                          onClick={() => setMobileCategoriesOpen(true)}
+                          className="rounded-xl border border-[#e7afc1] bg-white px-5 py-3 text-sm font-semibold text-[#d92f62]"
+                        >
+                          Browse all categories
+                        </button>
+                      </div>
+                    </div>
+                    <div className="rounded-3xl bg-white p-6 shadow-[0_18px_45px_rgba(136,54,82,0.10)]">
+                      <div className="flex items-center justify-between">
+                        <span className="rounded-full bg-[#fff0f5] px-3 py-1 text-xs font-semibold text-[#d92f62]">
+                          Today’s find
+                        </span>
+                        <TrendingUp size={20} className="text-[#e93368]" />
+                      </div>
+                      {trendingProducts[0] && (
+                        <button type="button" onClick={() => setSelectedProduct(trendingProducts[0])} className="mt-5 flex w-full items-center gap-5 text-left">
+                          <img src={trendingProducts[0].image} alt="" className="h-24 w-24 rounded-2xl bg-stone-100 object-cover" />
+                          <span>
+                            <span className="block text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{trendingProducts[0].brand}</span>
+                            <span className="mt-2 block font-semibold">{trendingProducts[0].name}</span>
+                            <span className="mt-2 block text-sm font-semibold text-[#d92f62]">SHE Score {trendingProducts[0].score.toFixed(1)}</span>
+                          </span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </section>
 
-                <section className="mt-12">
-                  <div className="flex items-end justify-between gap-5">
-                    <div>
-                      <p className="text-sm font-medium text-[#e93368]">
-                        Featured
-                      </p>
-                      <h2 className="mt-1 text-2xl font-semibold">
-                        SHE recommended
-                      </h2>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                    {featuredProducts.map((product) => (
-                      <ProductCard
-                        key={product.id}
-                        product={product}
-                        saved={savedIds.includes(product.id)}
-                        onSave={toggleSaved}
-                        onOpen={setSelectedProduct}
-                      />
+                <section id="shop-by-need" className="mt-14">
+                  <p className="text-sm font-semibold text-[#e93368]">Start with you</p>
+                  <h2 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">Shop by health need</h2>
+                  <p className="mt-2 text-sm leading-6 text-stone-500">Skip the jargon and browse around what you’re actually experiencing or planning for.</p>
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    {healthNeedCollections.map((item) => (
+                      <button key={item.label} type="button" onClick={() => chooseCategory(item)} className={`${item.tone} group rounded-2xl p-6 text-left transition hover:-translate-y-0.5 hover:shadow-md`}>
+                        <div className="flex items-start justify-between gap-5">
+                          <div>
+                            <h3 className="text-lg font-semibold">{item.label}</h3>
+                            <p className="mt-2 text-sm leading-6 text-stone-600">{item.description}</p>
+                          </div>
+                          <ArrowRight size={19} className="mt-1 shrink-0 transition group-hover:translate-x-1" />
+                        </div>
+                      </button>
                     ))}
                   </div>
+                </section>
+
+                {savedProducts.length > 0 && (
+                  <CuratedRail eyebrow="Saved by you" title="Pick up where you left off" products={savedProducts} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />
+                )}
+
+                <CuratedRail eyebrow="Popular now" title="Trending on SHE" description="Products women are saving, reviewing and comparing right now." products={trendingProducts} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />
+
+                <section className="mt-14 grid gap-5 lg:grid-cols-3">
+                  <div className="rounded-2xl bg-[#211d1f] p-7 text-white lg:col-span-2">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-[#ff9dbc]"><ShieldCheck size={18} /> Independent by design</div>
+                    <h2 className="mt-4 text-2xl font-semibold">What the SHE Score means</h2>
+                    <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-300">We look at evidence relevance, safety, user feedback, value and transparency. Sponsored placement never changes a score.</p>
+                    <button type="button" className="mt-5 text-sm font-semibold text-white underline decoration-[#ff7fa8] underline-offset-4">How scoring works</button>
+                  </div>
+                  <div className="rounded-2xl border border-stone-200 p-7">
+                    <CircleDollarSign size={23} className="text-[#e93368]" />
+                    <h2 className="mt-4 text-xl font-semibold">Clear about affiliate links</h2>
+                    <p className="mt-3 text-sm leading-6 text-stone-500">SHE may earn a commission from some purchases, at no extra cost to you. Recommendations remain independently scored.</p>
+                  </div>
+                </section>
+
+                <CuratedRail eyebrow="Smart value" title="Highly rated under £20" description="Useful options that score well without stretching your budget." products={underTwenty} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />
+
+                {newProducts.length > 0 && <CuratedRail eyebrow="Just added" title="New and noteworthy" products={newProducts} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />}
+
+                <section className="mt-16 rounded-3xl border border-[#f2d0dc] bg-[#fff9fb] px-6 py-10 text-center sm:px-10">
+                  <h2 className="text-2xl font-semibold">Looking for something specific?</h2>
+                  <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-stone-500">Browse the full women’s-health directory, then narrow it by brand, price, SHE Score or reusable options.</p>
+                  <button type="button" onClick={() => setMobileCategoriesOpen(true)} className="mt-6 rounded-xl bg-[#211d1f] px-6 py-3 text-sm font-semibold text-white">Browse the full catalogue</button>
                 </section>
               </>
             )}
 
-            <section className={selection || search.trim() ? "" : "mt-14"}>
+            {(selection || search.trim()) && <section>
               <div className="border-b border-stone-200 pb-6">
                 <div className="flex flex-wrap items-center gap-1.5 text-xs text-stone-400">
                   <button
@@ -1073,7 +1287,9 @@ export default function ProductsPage() {
                           key={product.id}
                           product={product}
                           saved={savedIds.includes(product.id)}
+                          comparing={compareIds.includes(product.id)}
                           onSave={toggleSaved}
+                          onCompare={toggleCompare}
                           onOpen={setSelectedProduct}
                         />
                       ))}
@@ -1105,13 +1321,12 @@ export default function ProductsPage() {
                   </p>
                 </div>
               )}
-            </section>
-          </div>
+            </section>}
         </div>
       </main>
 
       {mobileCategoriesOpen && (
-        <div className="fixed inset-0 z-[1100] lg:hidden">
+        <div className="fixed inset-0 z-[1100]">
           <button
             type="button"
             className="absolute inset-0 bg-black/35"
@@ -1136,6 +1351,24 @@ export default function ProductsPage() {
           saved={savedIds.includes(selectedProduct.id)}
           onSave={toggleSaved}
           onClose={() => setSelectedProduct(null)}
+        />
+      )}
+
+      <CompareBar
+        products={comparedProducts}
+        onRemove={toggleCompare}
+        onClear={() => setCompareIds([])}
+        onCompare={() => setCompareOpen(true)}
+      />
+
+      {compareOpen && (
+        <CompareModal
+          products={comparedProducts}
+          onClose={() => setCompareOpen(false)}
+          onOpen={(product) => {
+            setCompareOpen(false);
+            setSelectedProduct(product);
+          }}
         />
       )}
     </div>

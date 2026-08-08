@@ -494,8 +494,8 @@ export const products = [
 
   createProduct({
     id: "portable-heat-belt",
-    brand: "SHE Edit",
-    name: "Rechargeable Heat Belt",
+    brand: "Beurer",
+    name: "HK 72 Battery Heat Belt",
     category: "Pelvic pain",
     price: 29.99,
     score: 8.4,
@@ -1367,8 +1367,8 @@ export const products = [
 
   createProduct({
     id: "hot-water-bottle",
-    brand: "SHE Edit",
-    name: "Long Hot-Water Bottle",
+    brand: "YuYu",
+    name: "Original Long Hot-Water Bottle",
     category: "Pelvic pain",
     price: 14.99,
     score: 8.6,
@@ -1724,8 +1724,8 @@ export const products = [
 
   createProduct({
     id: "compression-socks",
-    brand: "SHE Edit",
-    name: "Graduated Compression Socks",
+    brand: "Scholl",
+    name: "Flight Socks for Women",
     category: "Everyday health",
     price: 16.99,
     score: 8.0,
@@ -2210,8 +2210,8 @@ export const products = [
 
   createProduct({
     id: "cooling-blanket",
-    brand: "SHE Edit",
-    name: "Breathable Cooling Blanket",
+    brand: "Dreamland",
+    name: "Snowed In Cooling Blanket",
     category: "Menopause",
     price: 34.99,
     score: 7.8,
@@ -2236,8 +2236,8 @@ export const products = [
 
   createProduct({
     id: "vagifem-organiser",
-    brand: "SHE Edit",
-    name: "Weekly Medication Organiser",
+    brand: "TabTime",
+    name: "Weekly Pill and Tablet Wallet",
     category: "Menopause",
     price: 6.99,
     score: 8.0,
@@ -2343,8 +2343,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "everyday-tshirt-bra",
     "image": "/products/generated/everyday-tshirt-bra.svg",
-    "brand": "SHE Fit",
-    "name": "Everyday T-Shirt Bra",
+    "brand": "Marks & Spencer",
+    "name": "Body Soft Wired T-Shirt Bra",
     "category": "Everyday health",
     "price": 24.0,
     "score": 8.3,
@@ -2378,8 +2378,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "full-cup-support-bra",
     "image": "/products/generated/full-cup-support-bra.svg",
-    "brand": "SHE Fit",
-    "name": "Full-Cup Support Bra",
+    "brand": "Panache",
+    "name": "Envy Full-Cup Bra",
     "category": "Everyday health",
     "price": 29.0,
     "score": 8.5,
@@ -2413,8 +2413,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "wirefree-comfort-bra",
     "image": "/products/generated/wirefree-comfort-bra.svg",
-    "brand": "SHE Fit",
-    "name": "Wire-Free Comfort Bra",
+    "brand": "Sloggi",
+    "name": "Zero Feel Soft Bra",
     "category": "Everyday health",
     "price": 22.0,
     "score": 8.2,
@@ -2448,8 +2448,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "high-impact-sports-bra",
     "image": "/products/generated/high-impact-sports-bra.svg",
-    "brand": "SHE Active",
-    "name": "High-Impact Sports Bra",
+    "brand": "Shock Absorber",
+    "name": "Ultimate Run Sports Bra",
     "category": "Everyday health",
     "price": 34.0,
     "score": 8.6,
@@ -2483,8 +2483,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "low-impact-yoga-bra",
     "image": "/products/generated/low-impact-yoga-bra.svg",
-    "brand": "SHE Active",
-    "name": "Low-Impact Yoga Bra",
+    "brand": "Lululemon",
+    "name": "Like a Cloud Sports Bra",
     "category": "Everyday health",
     "price": 21.0,
     "score": 8.0,
@@ -2588,8 +2588,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "post-surgery-support-bra",
     "image": "/products/generated/post-surgery-support-bra.svg",
-    "brand": "SHE Recovery",
-    "name": "Post-Surgery Support Bra",
+    "brand": "Macom",
+    "name": "Signature Post-Surgery Bra",
     "category": "Everyday health",
     "price": 38.0,
     "score": 8.4,
@@ -2623,8 +2623,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "bra-fitting-tape-kit",
     "image": "/products/generated/bra-fitting-tape-kit.svg",
-    "brand": "SHE Fit",
-    "name": "Bra Fitting Tape and Guide",
+    "brand": "Nudea",
+    "name": "Fit Tape Bra Measuring Tape",
     "category": "Everyday health",
     "price": 7.5,
     "score": 7.9,
@@ -2728,8 +2728,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "pcos-symptom-journal",
     "image": "/products/generated/pcos-symptom-journal.svg",
-    "brand": "SHE Edit",
-    "name": "PCOS Symptom and Cycle Journal",
+    "brand": "Clever Fox",
+    "name": "12-Month Medical Planner",
     "category": "Everyday health",
     "price": 12.99,
     "score": 8.1,
@@ -2833,8 +2833,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "hormone-tracking-ring",
     "image": "/products/generated/hormone-tracking-ring.svg",
-    "brand": "SHE Track",
-    "name": "Cycle Tracking Smart Ring",
+    "brand": "Oura",
+    "name": "Ring 4",
     "category": "Everyday health",
     "price": 199.0,
     "score": 7.9,
@@ -2903,8 +2903,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "insulin-resistance-meal-planner",
     "image": "/products/generated/insulin-resistance-meal-planner.svg",
-    "brand": "SHE Edit",
-    "name": "Balanced Meal Planner",
+    "brand": "Papier",
+    "name": "12-Week Wellness Journal",
     "category": "Everyday health",
     "price": 10.99,
     "score": 7.6,
@@ -3568,8 +3568,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "postpartum-hair-serum",
     "image": "/products/generated/postpartum-hair-serum.svg",
-    "brand": "SHE Recovery",
-    "name": "Postpartum Scalp Serum",
+    "brand": "The Ordinary",
+    "name": "Multi-Peptide Serum for Hair Density",
     "category": "Postpartum",
     "price": 18.0,
     "score": 7.4,
@@ -3778,8 +3778,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "postnatal-reflection-journal",
     "image": "/products/generated/postnatal-reflection-journal.svg",
-    "brand": "SHE Recovery",
-    "name": "Postnatal Wellbeing Journal",
+    "brand": "MAMA",
+    "name": "Postnatal Reflection Journal",
     "category": "Postpartum",
     "price": 12.99,
     "score": 8.0,
@@ -4128,8 +4128,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "postpartum-resistance-band",
     "image": "/products/generated/postpartum-resistance-band.svg",
-    "brand": "SHE Recovery",
-    "name": "Postpartum Resistance Band Set",
+    "brand": "TheraBand",
+    "name": "Latex-Free Resistance Band Set",
     "category": "Postpartum",
     "price": 18.99,
     "score": 7.8,
@@ -4408,8 +4408,8 @@ const catalogueExpansionSpecs = [
   {
     "id": "postpartum-compression-shorts",
     "image": "/products/generated/postpartum-compression-shorts.svg",
-    "brand": "SHE Recovery",
-    "name": "Postpartum Support Shorts",
+    "brand": "Belly Bandit",
+    "name": "Mother Tucker Biker Shorts",
     "category": "Postpartum",
     "price": 34.0,
     "score": 7.9,
@@ -4804,6 +4804,12 @@ products.push(
 for (const product of periodCarePack1) {
   if (!products.some((existing) => existing.id === product.id)) {
     products.push(product);
+  }
+}
+
+for (const product of products) {
+  if (productInternetImages[product.id]) {
+    product.image = productInternetImages[product.id];
   }
 }
 
