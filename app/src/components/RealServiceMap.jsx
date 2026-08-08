@@ -456,7 +456,7 @@ function ClusteredMarkers({
     clusterRef.current = cluster;
 
     const labelClusters = () => {
-      map.getContainer().querySelectorAll(".marker-cluster").forEach((element) => {
+      map.getContainer().querySelectorAll(".she-cluster-shell, .marker-cluster").forEach((element) => {
         const count = element.textContent?.trim() || "Multiple";
         element.setAttribute("role", "button");
         element.setAttribute("tabindex", "0");
