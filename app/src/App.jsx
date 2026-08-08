@@ -1,24 +1,59 @@
-import { useState } from "react";
-import { BookOpen, MapPin, ShoppingBag, User } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { lazy, Suspense, useEffect, useState } from "react";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Header from "./components/Header";
 import BottomNavigation from "./components/BottomNavigation";
 import DesktopSidebar from "./components/DesktopSidebar";
 import ChatPage from "./pages/ChatPage";
-import PlaceholderPage from "./pages/PlaceholderPage";
-import ProductsPage from "./pages/ProductsPage";
 
-import ServicesPage from "./pages/ServicesPage";
-import SHEIntelligencePage from "./pages/SHEIntelligencePage";
-import ProfilePage from "./pages/ProfilePage";
-import LearnPageV2 from "./pages/LearnPageV2";
+const loadProducts = () => import("./pages/ProductsPage");
+const loadServices = () => import("./pages/ServicesPage");
+const loadLearn = () => import("./pages/LearnPageV2");
+const loadProfile = () => import("./pages/ProfilePage");
+
+const ProductsPage = lazy(loadProducts);
+const ServicesPage = lazy(loadServices);
+const LearnPage = lazy(loadLearn);
+const ProfilePage = lazy(loadProfile);
+
+const tabPaths = {
+  chat: "/",
+  products: "/products",
+  services: "/services",
+  education: "/learn",
+  profile: "/profile",
+};
+
+const pathTabs = Object.fromEntries(
+  Object.entries(tabPaths).map(([tab, path]) => [path, tab]),
+);
+
 export default function App() {
-  const [activeTab, setActiveTab] = useState("chat");
+  const location = useLocation();
+  const routeNavigate = useNavigate();
+  const activeTab = pathTabs[location.pathname] || "chat";
   const [conversation, setConversation] = useState([]);
-  const [recentChats, setRecentChats] = useState([]);
+  const [recentChats, setRecentChats] = useState(readRecentChats);
+
+  useEffect(() => {
+    window.localStorage.setItem("she-recent-chats", JSON.stringify(recentChats));
+  }, [recentChats]);
+
+  useEffect(() => {
+    const preload = () => {
+      void Promise.all([loadProducts(), loadServices(), loadLearn(), loadProfile()]);
+    };
+
+    if ("requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(preload, { timeout: 1800 });
+      return () => window.cancelIdleCallback(id);
+    }
+
+    const id = window.setTimeout(preload, 250);
+    return () => window.clearTimeout(id);
+  }, []);
 
   function navigate(tab) {
-    setActiveTab(tab);
+    routeNavigate(tabPaths[tab] || "/");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -31,10 +66,7 @@ export default function App() {
     setRecentChats((current) => {
       const newChatEntry = {
         id: Date.now(),
-        title:
-          question.length > 34
-            ? `${question.slice(0, 34)}...`
-            : question,
+        title: question.length > 34 ? `${question.slice(0, 34)}...` : question,
         messages,
       };
 
@@ -65,30 +97,26 @@ export default function App() {
           <Header onProfile={() => navigate("profile")} />
         </div>
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22 }}
-          >
-            {activeTab === "chat" && (
-              <ChatPage
-                conversation={conversation}
-                setConversation={setConversation}
-                saveConversation={saveConversation}
-              />
-            )}
-{activeTab === "products" && <ProductsPage />}
-
-{activeTab === "services" && <ServicesPage />}
-
-{activeTab === "education" && <LearnPageV2 />}
-
-{activeTab === "profile" && <ProfilePage />}
-          </motion.div>
-        </AnimatePresence>
+        <Suspense fallback={<RouteLoading activeTab={activeTab} />}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ChatPage
+                  conversation={conversation}
+                  setConversation={setConversation}
+                  saveConversation={saveConversation}
+                  navigate={navigate}
+                />
+              }
+            />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/learn" element={<LearnPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
 
         <div className="lg:hidden">
           <BottomNavigation activeTab={activeTab} navigate={navigate} />
@@ -96,4 +124,37 @@ export default function App() {
       </div>
     </div>
   );
+}
+
+function RouteLoading({ activeTab }) {
+  const labels = {
+    products: "products",
+    services: "services",
+    education: "health guides",
+    profile: "your profile",
+  };
+
+  return (
+    <main className="mx-auto max-w-6xl px-5 py-8 md:px-8 lg:px-12" aria-live="polite">
+      <p className="text-sm font-medium text-[#e93368]">Loading {labels[activeTab] || "SHE"}…</p>
+      <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {[0, 1, 2, 3, 4, 5].map((item) => (
+          <div key={item} className="animate-pulse rounded-2xl border border-stone-100 bg-white p-5">
+            <div className="aspect-[4/3] rounded-xl bg-stone-100" />
+            <div className="mt-5 h-4 w-1/3 rounded bg-stone-100" />
+            <div className="mt-3 h-6 w-4/5 rounded bg-stone-100" />
+            <div className="mt-3 h-4 w-full rounded bg-stone-100" />
+          </div>
+        ))}
+      </div>
+    </main>
+  );
+}
+
+function readRecentChats() {
+  try {
+    return JSON.parse(window.localStorage.getItem("she-recent-chats") || "[]");
+  } catch {
+    return [];
+  }
 }

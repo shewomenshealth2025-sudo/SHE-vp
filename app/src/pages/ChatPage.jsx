@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import ChatComposer from "../components/ChatComposer";
 import ChatMessage from "../components/ChatMessage";
 import { generateSHEMessage } from "../utils/chatEngine";
+import { ArrowRight, Lightbulb, Newspaper, TrendingUp } from "lucide-react";
 
 export default function ChatPage({
   conversation,
   setConversation,
   saveConversation,
+  navigate,
 }) {
   const [message, setMessage] = useState("");
   const [attachments, setAttachments] = useState([]);
@@ -115,7 +117,7 @@ export default function ChatPage({
         setConversation((current) => {
           const updated = [...current, completedMessage];
 
-          //saveConversation?.(conversationTitle, updated);
+          saveConversation?.(conversationTitle, updated);
 
           return updated;
         });
@@ -142,7 +144,7 @@ export default function ChatPage({
   return (
     <main className="mx-auto w-full max-w-6xl px-5 pb-32 pt-4 md:px-8 lg:px-12">
       {!hasConversation && !streamingText && (
-        <section className="flex min-h-[calc(100vh-8rem)] items-center justify-center py-10">
+        <section className="py-10 md:py-16">
           <div className="w-full">
             <div className="text-center">
               <h2 className="mx-auto max-w-3xl text-4xl font-semibold leading-tight tracking-tight md:text-6xl">
@@ -164,6 +166,36 @@ export default function ChatPage({
                 setAttachments={setAttachments}
               />
             </div>
+
+            <div className="mx-auto mt-12 grid max-w-5xl gap-4 md:grid-cols-3">
+              <HomeFeatureCard
+                icon={TrendingUp}
+                eyebrow="Trending on SHE"
+                title="What women are comparing now"
+                description="Discover popular period care, fertility and everyday health products."
+                action="Explore products"
+                onClick={() => navigate("products")}
+                tone="bg-[#fff0f5]"
+              />
+              <HomeFeatureCard
+                icon={Newspaper}
+                eyebrow="SHE News"
+                title="The health stories worth knowing"
+                description="Clear, practical context on women’s health research and care."
+                action="Read SHE Learn"
+                onClick={() => navigate("education")}
+                tone="bg-[#f4f1ff]"
+              />
+              <HomeFeatureCard
+                icon={Lightbulb}
+                eyebrow="Daily tip"
+                title="Write down when symptoms change"
+                description="Timing, triggers and patterns can make health conversations more useful."
+                action="Ask SHE about tracking"
+                onClick={() => chooseSuggestion("How should I track my symptoms before an appointment?")}
+                tone="bg-[#eef8f5]"
+              />
+            </div>
           </div>
         </section>
       )}
@@ -181,7 +213,7 @@ export default function ChatPage({
           </div>
 
           <div className="space-y-6">
-            {conversation.map((entry, index) => (
+            {conversation.map((entry) => (
               <ChatMessage
                 key={entry.id}
                 message={entry}
@@ -222,6 +254,27 @@ export default function ChatPage({
         </section>
       )}
     </main>
+  );
+}
+
+function HomeFeatureCard({ icon: Icon, eyebrow, title, description, action, onClick, tone }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`${tone} group rounded-2xl p-6 text-left transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f43f72]/40`}
+    >
+      <div className="flex items-center gap-2 text-sm font-semibold text-[#d92f62]">
+        <Icon size={18} />
+        {eyebrow}
+      </div>
+      <h3 className="mt-4 text-xl font-semibold leading-snug">{title}</h3>
+      <p className="mt-3 text-sm leading-6 text-stone-600">{description}</p>
+      <span className="mt-5 flex items-center gap-2 text-sm font-semibold text-[#d92f62]">
+        {action}
+        <ArrowRight size={16} className="transition group-hover:translate-x-1" />
+      </span>
+    </button>
   );
 }
 
