@@ -50,18 +50,12 @@ export default function DesktopSidebar({
         New chat
       </button>
 
-      <div className="mt-7">
+      {recentChats.length > 0 && <div className="mt-7">
         <p className="px-3 text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
           Recent
         </p>
 
         <div className="mt-2 space-y-1">
-          {recentChats.length === 0 && (
-            <p className="px-3 py-3 text-sm leading-6 text-stone-400">
-              Your recent conversations will appear here.
-            </p>
-          )}
-
           {recentChats.map((chat) => (
             <button
               key={chat.id}
@@ -74,7 +68,7 @@ export default function DesktopSidebar({
             </button>
           ))}
         </div>
-      </div>
+      </div>}
 
       <div className="mt-7 border-t border-pink-100 pt-5">
         <p className="px-3 text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
