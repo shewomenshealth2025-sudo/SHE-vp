@@ -5,6 +5,7 @@ import {
   ThumbsDown,
   ThumbsUp,
   ArrowRight,
+  ClipboardList,
 } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -20,6 +21,7 @@ export default function ChatMessage({
   message,
   suggestions,
   chooseSuggestion,
+  onStartJourney,
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -128,6 +130,13 @@ export default function ChatMessage({
               </span>
               <ArrowRight size={18} />
             </a>
+          )}
+
+          {message.journeyId && (
+            <button type="button" onClick={() => onStartJourney?.(message.journeyId)} className="mt-5 flex w-full items-center justify-between rounded-2xl border border-[#f0cad7] bg-[#fff5f8] px-5 py-4 text-left text-sm font-semibold text-[#c92758]">
+              <span className="flex items-center gap-3"><ClipboardList size={19} /><span><span className="block text-[10px] uppercase tracking-[0.14em] text-[#c92758]/65">Personalised next step</span><span className="mt-1 block">Create my SHE Plan</span></span></span>
+              <ArrowRight size={18} />
+            </button>
           )}
 
           <div className="mt-5 rounded-2xl bg-pink-50 px-4 py-3 text-xs leading-5 text-stone-500">
