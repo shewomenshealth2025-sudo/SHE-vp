@@ -1112,10 +1112,16 @@ export default function ProductsPage() {
                 <CuratedRail eyebrow="Smart value" title="Highly rated under £20" description="Useful options that score well without stretching your budget." products={underTwenty} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />
 
                 {newProducts.length > 0 && <CuratedRail eyebrow="Just added" title="New and noteworthy" products={newProducts} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />}
+
+                <section className="mt-16 rounded-3xl border border-[#f2d0dc] bg-[#fff9fb] px-6 py-10 text-center sm:px-10">
+                  <h2 className="text-2xl font-semibold">Looking for something specific?</h2>
+                  <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-stone-500">Browse the full women’s-health directory, then narrow it by brand, price, SHE Score or reusable options.</p>
+                  <button type="button" onClick={() => setMobileCategoriesOpen(true)} className="mt-6 rounded-xl bg-[#211d1f] px-6 py-3 text-sm font-semibold text-white">Browse the full catalogue</button>
+                </section>
               </>
             )}
 
-            <section className={selection || search.trim() ? "" : "mt-14"}>
+            {(selection || search.trim()) && <section>
               <div className="border-b border-stone-200 pb-6">
                 <div className="flex flex-wrap items-center gap-1.5 text-xs text-stone-400">
                   <button
@@ -1315,7 +1321,7 @@ export default function ProductsPage() {
                   </p>
                 </div>
               )}
-            </section>
+            </section>}
         </div>
       </main>
 
