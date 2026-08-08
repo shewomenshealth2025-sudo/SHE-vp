@@ -15,8 +15,8 @@ export default function DesktopSidebar({
   openRecentChat,
 }) {
   const links = [
-    { id: "products", label: "Products", icon: ShoppingBag },
-    { id: "services", label: "Services", icon: MapPin },
+    { id: "products", label: "Products", brand: "SHE Finds", icon: ShoppingBag },
+    { id: "services", label: "Services", brand: "SHE Map", icon: MapPin },
     { id: "education", label: "Learn", icon: BookOpen },
     { id: "profile", label: "Profile", icon: User },
   ];
@@ -76,7 +76,7 @@ export default function DesktopSidebar({
         </p>
 
         <div className="mt-2 space-y-1">
-          {links.map(({ id, label, icon: Icon }) => (
+          {links.map(({ id, label, brand, icon: Icon }) => (
             <button
               key={id}
               type="button"
@@ -88,7 +88,14 @@ export default function DesktopSidebar({
               }`}
             >
               <Icon size={18} />
-              {label}
+              <span className="min-w-0 text-left">
+                <span className="block">{label}</span>
+                {brand && (
+                  <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.12em] text-[#f43f72]/70">
+                    {brand}
+                  </span>
+                )}
+              </span>
             </button>
           ))}
         </div>

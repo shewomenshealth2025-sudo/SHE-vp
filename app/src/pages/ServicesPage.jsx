@@ -230,6 +230,7 @@ export default function ServicesPage() {
   const [profileService, setProfileService] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [locationStatus, setLocationStatus] = useState("idle");
+  const [showLocationConsent, setShowLocationConsent] = useState(false);
   const [savedIds, setSavedIds] = useState(readSavedServices);
 
   const filteredServices = useMemo(() => {
@@ -305,6 +306,15 @@ export default function ServicesPage() {
     );
   }
 
+  function requestLocation() {
+    if (locationStatus === "success") {
+      locateUser();
+      return;
+    }
+
+    setShowLocationConsent(true);
+  }
+
   function resetFilters() {
     setQuery("");
     setSelectedType("All");
@@ -326,6 +336,9 @@ export default function ServicesPage() {
       {/* Search and filters */}
       <section className="pointer-events-none absolute inset-x-0 top-0 z-[500] p-4 md:p-6">
         <div className="pointer-events-auto mx-auto max-w-7xl rounded-[28px] border border-white/70 bg-white/95 p-3 shadow-xl shadow-stone-900/10 backdrop-blur-xl md:p-4">
+          <p className="mb-2 px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#f43f72]">
+            Services · SHE Map
+          </p>
           <div className="flex items-center gap-3">
             <label className="flex min-w-0 flex-1 items-center gap-3 rounded-2xl bg-stone-50 px-4 py-3.5 focus-within:bg-white focus-within:ring-2 focus-within:ring-pink-100">
               <Search
@@ -427,9 +440,9 @@ export default function ServicesPage() {
       <div className="absolute bottom-24 right-4 z-[500] flex flex-col items-end gap-3 md:bottom-6 md:right-6">
         <button
           type="button"
-          onClick={locateUser}
+          onClick={requestLocation}
           disabled={locationStatus === "loading"}
-          className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-white/80 bg-white/95 text-[#f43f72] shadow-xl backdrop-blur-xl transition hover:scale-105 disabled:opacity-60"
+          className="pointer-events-auto flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-pink-100 bg-[#f43f72] px-4 py-3 text-sm font-semibold text-white shadow-xl shadow-pink-950/15 transition hover:scale-[1.02] hover:bg-[#e93368] disabled:opacity-60"
           aria-label="Locate me"
           title="Locate me"
         >
@@ -439,8 +452,9 @@ export default function ServicesPage() {
               className="animate-spin"
             />
           ) : (
-            <Navigation size={20} />
+            <Navigation size={19} />
           )}
+          <span>{locationStatus === "success" ? "Update location" : "Locate me"}</span>
         </button>
 
         <div className="pointer-events-auto hidden rounded-2xl border border-white/80 bg-white/95 p-3 shadow-xl backdrop-blur-xl lg:block">
@@ -464,6 +478,58 @@ export default function ServicesPage() {
           We couldn’t access your location. Check your browser location permissions and try again.
         </div>
       )}
+
+      <AnimatePresence>
+        {showLocationConsent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[1400] flex items-end justify-center bg-black/35 p-4 backdrop-blur-sm sm:items-center"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="location-consent-title"
+            onClick={() => setShowLocationConsent(false)}
+          >
+            <motion.section
+              initial={{ y: 24, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 24, opacity: 0 }}
+              onClick={(event) => event.stopPropagation()}
+              className="w-full max-w-md rounded-[28px] bg-white p-6 shadow-2xl sm:p-8"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-pink-50 text-[#f43f72]">
+                <Navigation size={22} />
+              </div>
+              <h2 id="location-consent-title" className="mt-5 text-2xl font-semibold">
+                Find services near you?
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-stone-600">
+                Allow SHE Map to use your current location to centre the map and show nearby services. Your location is used in this browser and is not saved to your profile or shared with service providers.
+              </p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => setShowLocationConsent(false)}
+                  className="rounded-2xl border border-stone-200 px-5 py-3.5 text-sm font-semibold text-stone-600"
+                >
+                  Not now
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowLocationConsent(false);
+                    locateUser();
+                  }}
+                  className="rounded-2xl bg-[#f43f72] px-5 py-3.5 text-sm font-semibold text-white"
+                >
+                  Allow location
+                </button>
+              </div>
+            </motion.section>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Selected marker card */}
       <AnimatePresence>

@@ -1053,7 +1053,7 @@ export default function ProductsPage() {
                     <div>
                       <div className="flex items-center gap-2 text-sm font-semibold text-[#d92f62]">
                         <Sparkles size={17} />
-                        Curated for women’s health
+                        Products · SHE Finds
                       </div>
                       <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-[#211d1f] sm:text-6xl">
                         Find what works for you.
