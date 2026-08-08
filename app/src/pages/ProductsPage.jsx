@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { products } from "../data/products";
 import {
   PRODUCT_REVIEWS_KEY,
@@ -28,6 +29,39 @@ const money = new Intl.NumberFormat("en-GB", {
   currency: "GBP",
   minimumFractionDigits: 2,
 });
+
+const ENGAGEMENT_KEY = "she-product-engagement-v1";
+
+function readEngagement() {
+  try {
+    return JSON.parse(localStorage.getItem(ENGAGEMENT_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function readHealthProfile() {
+  try {
+    return JSON.parse(localStorage.getItem("she-health-profile") || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function recommendationScore(product, profile) {
+  const interests = [
+    profile.lifeStage,
+    ...(profile.conditions || []),
+    ...(profile.symptoms || []),
+  ].filter(Boolean).map((value) => String(value).toLowerCase());
+
+  if (!interests.length) return 0;
+  const searchable = productText(product);
+  return interests.reduce((score, interest) => {
+    const terms = interest.split(/\s+/).filter((term) => term.length > 3);
+    return score + terms.filter((term) => searchable.includes(term)).length;
+  }, 0);
+}
 
 const categoryDirectory = [
   {
@@ -978,7 +1012,8 @@ function CompareModal({ products: items, onClose, onOpen }) {
 }
 
 export default function ProductsPage() {
-  const [search, setSearch] = useState("");
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get("q") || "");
   const [selection, setSelection] = useState(null);
   const [sort, setSort] = useState("Recommended");
   const [savedIds, setSavedIds] = useState(getSaved);
@@ -993,6 +1028,8 @@ export default function ProductsPage() {
   const [compareIds, setCompareIds] = useState([]);
   const [compareOpen, setCompareOpen] = useState(false);
   const [productReviews, setProductReviews] = useState(readProductReviews);
+  const [engagement, setEngagement] = useState(readEngagement);
+  const healthProfile = useMemo(readHealthProfile, []);
 
   useEffect(() => {
     localStorage.setItem(
@@ -1004,6 +1041,10 @@ export default function ProductsPage() {
   useEffect(() => {
     localStorage.setItem(PRODUCT_REVIEWS_KEY, JSON.stringify(productReviews));
   }, [productReviews]);
+
+  useEffect(() => {
+    localStorage.setItem(ENGAGEMENT_KEY, JSON.stringify(engagement));
+  }, [engagement]);
 
   const reviewedProducts = useMemo(
     () => products.map((product) => addCommunityMetrics(product, productReviews[product.id])),
@@ -1069,25 +1110,38 @@ export default function ProductsPage() {
     reviewedProducts,
   ]);
 
-  const trendingProducts = useMemo(
-    () => [...reviewedProducts].sort((a, b) => Number(b.popular) - Number(a.popular) || b.reviews - a.reviews).slice(0, 6),
-    [reviewedProducts],
-  );
-
-  const newProducts = useMemo(
-    () => reviewedProducts.filter((product) => product.newProduct).sort((a, b) => b.score - a.score).slice(0, 6),
-    [reviewedProducts],
-  );
-
-  const underTwenty = useMemo(
-    () => reviewedProducts.filter((product) => product.price <= 20 && product.score >= 7.5).sort((a, b) => b.score - a.score).slice(0, 6),
-    [reviewedProducts],
-  );
-
   const savedProducts = useMemo(
-    () => reviewedProducts.filter((product) => savedIds.includes(product.id)),
+    () => reviewedProducts.filter((product) => savedIds.includes(product.id)).slice(0, 6),
     [reviewedProducts, savedIds],
   );
+
+  const collections = useMemo(() => {
+    const used = new Set(savedProducts.map((product) => product.id));
+    const take = (candidates, count = 6) => {
+      const result = candidates.filter((product) => !used.has(product.id)).slice(0, count);
+      result.forEach((product) => used.add(product.id));
+      return result;
+    };
+    const activity = (product) => {
+      const item = engagement[product.id] || {};
+      return (item.views || 0) + (item.saves || 0) * 3 + (item.compares || 0) * 2;
+    };
+
+    const recommended = take(
+      reviewedProducts
+        .map((product) => ({ product, match: recommendationScore(product, healthProfile) }))
+        .filter(({ match }) => match > 0)
+        .sort((a, b) => b.match - a.match || b.product.score - a.product.score)
+        .map(({ product }) => product),
+    );
+    const trendingPool = take([...reviewedProducts].sort((a, b) => activity(b) - activity(a) || Number(b.popular) - Number(a.popular) || b.reviews - a.reviews), 7);
+    const [todayFind, ...trending] = trendingPool;
+    const bestRated = take([...reviewedProducts].sort((a, b) => b.rating - a.rating || b.reviews - a.reviews));
+    const underTwenty = take(reviewedProducts.filter((product) => product.price < 20).sort((a, b) => b.score - a.score || a.price - b.price));
+    const newlyAdded = take(reviewedProducts.filter((product) => product.newProduct).sort((a, b) => b.score - a.score));
+
+    return { recommended, todayFind, trending, bestRated, underTwenty, newlyAdded };
+  }, [engagement, healthProfile, reviewedProducts, savedProducts]);
 
   const comparedProducts = useMemo(
     () => reviewedProducts.filter((product) => compareIds.includes(product.id)),
@@ -1108,6 +1162,7 @@ export default function ProductsPage() {
         ? current.filter((item) => item !== id)
         : [...current, id],
     );
+    recordEngagement(id, "saves");
   }
 
   function toggleCompare(id) {
@@ -1116,6 +1171,23 @@ export default function ProductsPage() {
       if (current.length >= 3) return [...current.slice(1), id];
       return [...current, id];
     });
+    recordEngagement(id, "compares");
+  }
+
+  function recordEngagement(id, field) {
+    setEngagement((current) => ({
+      ...current,
+      [id]: {
+        ...(current[id] || {}),
+        [field]: (current[id]?.[field] || 0) + 1,
+        lastActivityAt: new Date().toISOString(),
+      },
+    }));
+  }
+
+  function openProduct(product) {
+    recordEngagement(product.id, "views");
+    setSelectedProduct(product);
   }
 
   function chooseCategory(item) {
@@ -1203,13 +1275,13 @@ export default function ProductsPage() {
                         </span>
                         <TrendingUp size={20} className="text-[#e93368]" />
                       </div>
-                      {trendingProducts[0] && (
-                        <button type="button" onClick={() => setSelectedProduct(trendingProducts[0])} className="mt-5 flex w-full items-center gap-5 text-left">
-                          <ProductImage product={trendingProducts[0]} compact className="h-24 w-24 shrink-0 rounded-2xl bg-stone-100 object-cover" />
+                      {collections.todayFind && (
+                        <button type="button" onClick={() => openProduct(collections.todayFind)} className="mt-5 flex w-full items-center gap-5 text-left">
+                          <ProductImage product={collections.todayFind} compact className="h-24 w-24 shrink-0 rounded-2xl bg-stone-100 object-cover" />
                           <span>
-                            <span className="block text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{trendingProducts[0].brand}</span>
-                            <span className="mt-2 block font-semibold">{trendingProducts[0].name}</span>
-                            <span className="mt-2 block text-sm font-semibold text-[#d92f62]">SHE Score {trendingProducts[0].score.toFixed(1)}</span>
+                            <span className="block text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{collections.todayFind.brand}</span>
+                            <span className="mt-2 block font-semibold">{collections.todayFind.name}</span>
+                            <span className="mt-2 block text-sm font-semibold text-[#d92f62]">SHE Score {collections.todayFind.score.toFixed(1)}</span>
                           </span>
                         </button>
                       )}
@@ -1237,10 +1309,14 @@ export default function ProductsPage() {
                 </section>
 
                 {savedProducts.length > 0 && (
-                  <CuratedRail eyebrow="Saved by you" title="Pick up where you left off" products={savedProducts} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />
+                  <CuratedRail eyebrow="Saved by you" title="Pick up where you left off" products={savedProducts} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={openProduct} />
                 )}
 
-                <CuratedRail eyebrow="Popular now" title="Trending on SHE" description="Popular catalogue products, ranked using retailer review volume and SHE’s editorial selection—not live SHE community activity." products={trendingProducts} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />
+                {collections.recommended.length > 0 && <CuratedRail eyebrow="Matched to My Health" title="Recommended for you" description="Products matched to the health needs and life stage you chose in My Health. Recommendations are guidance, not medical advice." products={collections.recommended} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={openProduct} />}
+
+                <CuratedRail eyebrow="Popular now" title="Trending on SHE" description="Ranked using recent activity on this device, retailer engagement and SHE’s editorial signals." products={collections.trending} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={openProduct} />
+
+                <CuratedRail eyebrow="Strong retailer feedback" title="Best rated" description="The highest verified retailer ratings, with review volume used to break ties." products={collections.bestRated} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={openProduct} />
 
                 <section className="mt-14 grid gap-5 lg:grid-cols-3">
                   <div className="rounded-2xl bg-[#211d1f] p-7 text-white lg:col-span-2">
@@ -1256,9 +1332,9 @@ export default function ProductsPage() {
                   </div>
                 </section>
 
-                <CuratedRail eyebrow="Smart value" title="Highly rated under £20" description="Useful options that score well without stretching your budget." products={underTwenty} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />
+                <CuratedRail eyebrow="Smart value" title="Under £20" description="Products currently listed below £20, ordered by SHE Score and price." products={collections.underTwenty} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={openProduct} />
 
-                {newProducts.length > 0 && <CuratedRail eyebrow="Just added" title="New and noteworthy" products={newProducts} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />}
+                {collections.newlyAdded.length > 0 && <CuratedRail eyebrow="Just added" title="New to SHE Finds" description="Recently added catalogue products that have not appeared in another collection this visit." products={collections.newlyAdded} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={openProduct} />}
 
                 <section className="mt-16 rounded-3xl border border-[#f2d0dc] bg-[#fff9fb] px-6 py-10 text-center sm:px-10">
                   <h2 className="text-2xl font-semibold">Looking for something specific?</h2>
@@ -1437,7 +1513,7 @@ export default function ProductsPage() {
                           comparing={compareIds.includes(product.id)}
                           onSave={toggleSaved}
                           onCompare={toggleCompare}
-                          onOpen={setSelectedProduct}
+                          onOpen={openProduct}
                         />
                       ))}
                   </div>
@@ -1515,7 +1591,7 @@ export default function ProductsPage() {
           onClose={() => setCompareOpen(false)}
           onOpen={(product) => {
             setCompareOpen(false);
-            setSelectedProduct(product);
+            openProduct(product);
           }}
         />
       )}
