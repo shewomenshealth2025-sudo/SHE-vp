@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -185,7 +185,7 @@ function createMarkerIcon(service, selected = false) {
     iconAnchor: selected ? [27, 57] : [22, 48],
     popupAnchor: [0, selected ? -54 : -45],
     html: `
-      <div class="${selected ? "she-map-marker-selected" : ""}" style="
+      <div aria-hidden="true" class="${selected ? "she-map-marker-selected" : ""}" style="
         position:relative;
         width:${selected ? 48 : 40}px;
         height:${selected ? 48 : 40}px;
@@ -238,7 +238,7 @@ function createUserIcon() {
     iconSize: [36, 36],
     iconAnchor: [18, 18],
     html: `
-      <div style="
+      <div aria-hidden="true" style="
         position:relative;
         width:36px;
         height:36px;
@@ -354,7 +354,7 @@ function ClusteredMarkers({
           className: "she-cluster-shell",
           iconSize: [48, 48],
           html: `
-            <div style="
+            <div aria-hidden="true" style="
               width:48px;
               height:48px;
               border-radius:999px;
@@ -390,6 +390,16 @@ function ClusteredMarkers({
           serviceId === selectedId,
         ),
         riseOnHover: true,
+        keyboard: true,
+        title: `${service.name}, ${getServiceLocation(service)}`,
+        alt: `Map marker for ${service.name}`,
+      });
+
+      marker.on("add", () => {
+        const element = marker.getElement();
+        if (!element) return;
+        element.setAttribute("role", "button");
+        element.setAttribute("aria-label", `${service.name}. ${getServiceType(service)}. ${getServiceLocation(service)}. Activate to view service details.`);
       });
 
       const theme = getMarkerTheme(service);
@@ -445,6 +455,17 @@ function ClusteredMarkers({
     map.addLayer(cluster);
     clusterRef.current = cluster;
 
+    const labelClusters = () => {
+      map.getContainer().querySelectorAll(".marker-cluster").forEach((element) => {
+        const count = element.textContent?.trim() || "Multiple";
+        element.setAttribute("role", "button");
+        element.setAttribute("tabindex", "0");
+        element.setAttribute("aria-label", `${count} services grouped in this area. Activate to zoom in.`);
+      });
+    };
+    window.requestAnimationFrame(labelClusters);
+    cluster.on("animationend spiderfied unspiderfied", labelClusters);
+
     return () => {
       if (clusterRef.current) {
         map.removeLayer(clusterRef.current);
@@ -479,6 +500,13 @@ function ClusteredMarkers({
       offset: [0, -16],
     });
 
+    marker.on("add", () => {
+      const element = marker.getElement();
+      if (!element) return;
+      element.setAttribute("role", "img");
+      element.setAttribute("aria-label", "Your approximate current location on the map");
+    });
+
     marker.addTo(map);
     userMarkerRef.current = marker;
 
@@ -499,6 +527,7 @@ export default function RealServiceMap({
   userLocation = null,
   onSelectService,
 }) {
+  const [tileErrorCount, setTileErrorCount] = useState(0);
   const validServices = useMemo(() => {
     return services.filter((service) => {
       const { lat, lng } = getCoordinates(service);
@@ -548,6 +577,12 @@ export default function RealServiceMap({
         .she-user-location-shell {
           background: transparent !important;
           border: 0 !important;
+        }
+
+        .she-map-marker-shell:focus-visible,
+        .marker-cluster:focus-visible {
+          outline: 4px solid #241f20 !important;
+          outline-offset: 3px;
         }
 
         .leaflet-tooltip {
@@ -748,6 +783,8 @@ export default function RealServiceMap({
         <TileLayer
           attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          crossOrigin
+          eventHandlers={{ tileerror: () => setTileErrorCount((count) => count + 1) }}
         />
 
         <MapController
@@ -763,6 +800,13 @@ export default function RealServiceMap({
           onSelectService={onSelectService}
         />
       </MapContainer>
+
+      {tileErrorCount >= 3 && (
+        <div className="pointer-events-none absolute left-1/2 top-1/2 z-[900] w-[min(340px,calc(100%-32px))] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white/95 p-5 text-center shadow-2xl" role="status">
+          <p className="font-semibold text-stone-900">The map background is having trouble loading</p>
+          <p className="mt-2 text-sm leading-6 text-stone-600">Service markers may still appear. Use the List view above for a faster, fully accessible directory.</p>
+        </div>
+      )}
 
       <NearbyUpdatesPopup
         services={validServices}
