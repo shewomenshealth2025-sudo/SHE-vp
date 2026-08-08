@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import ChatComposer from "../components/ChatComposer";
 import ChatMessage from "../components/ChatMessage";
 import { generateSHEReply } from "../utils/chatEngine";
-import { ArrowRight, ChevronLeft, ChevronRight, Lightbulb, Newspaper, TrendingUp } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Lightbulb, Newspaper, Search, Sparkles, TrendingUp } from "lucide-react";
 
 const trendingProducts = [
   { brand: "BeYou", name: "Monthly Patches", image: "https://img.ananinja.com/media/bra-public-files/services-admin/files/dc51349f-8725-4d8d-8351-c0ea6005feb1" },
@@ -49,6 +49,7 @@ export default function ChatPage({
   const [attachments, setAttachments] = useState([]);
   const [isThinking, setIsThinking] = useState(false);
   const [streamingText, setStreamingText] = useState("");
+  const [productSearch, setProductSearch] = useState("");
 
   const endRef = useRef(null);
   const streamIntervalRef = useRef(null);
@@ -181,6 +182,11 @@ export default function ChatPage({
     }, 50);
   }
 
+  function searchProducts(event) {
+    event.preventDefault();
+    navigate("products", { search: productSearch });
+  }
+
   return (
     <main className="mx-auto w-full max-w-6xl px-5 pb-52 pt-4 md:px-8 lg:px-12">
       {!hasConversation && !streamingText && (
@@ -206,6 +212,23 @@ export default function ChatPage({
                 setAttachments={setAttachments}
               />
             </div>
+
+            <form onSubmit={searchProducts} className="mx-auto mt-5 flex w-full max-w-2xl flex-col gap-3 rounded-2xl border border-[#f4cad8] bg-[#fff7fa] p-3 sm:flex-row sm:items-center">
+              <div className="flex min-w-0 flex-1 items-center gap-3 px-2">
+                <Sparkles size={17} className="shrink-0 text-[#e93368]" />
+                <label htmlFor="homepage-product-search" className="sr-only">Search SHE Finds products</label>
+                <input
+                  id="homepage-product-search"
+                  value={productSearch}
+                  onChange={(event) => setProductSearch(event.target.value)}
+                  placeholder="Search SHE Finds — period care, fertility, menopause…"
+                  className="h-11 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-stone-400"
+                />
+              </div>
+              <button type="submit" className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#211d1f] px-5 text-sm font-semibold text-white">
+                <Search size={16} /> {productSearch.trim() ? "Search products" : "Explore SHE Finds"}
+              </button>
+            </form>
 
             <div className="mx-auto mt-12 grid max-w-5xl gap-4 md:grid-cols-3">
               <TrendingCarousel items={trendingProducts} onOpen={() => navigate("products")} />
