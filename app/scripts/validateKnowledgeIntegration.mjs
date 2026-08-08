@@ -31,8 +31,8 @@ try {
   const productIds = new Set(productData.products.map((product) => product.id));
   const ids = new Set(guides.map((guide) => guide.id));
 
-  assert(guides.length === 269, `Expected 269 Chat guides, received ${guides.length}`);
-  assert(conditions.length === 269, `Expected 269 Learn conditions, received ${conditions.length}`);
+  assert(guides.length === 300, `Expected 300 Chat guides, received ${guides.length}`);
+  assert(conditions.length === 300, `Expected 300 Learn conditions, received ${conditions.length}`);
   assert(ids.size === guides.length, "Guide IDs must be unique");
   assert(conditions.every((condition) => ids.has(condition.id)), "Learn and Chat IDs must match");
   assert(guides.every((guide) => guide.evidence?.sources?.length > 0), "Every guide needs sources");
@@ -80,6 +80,10 @@ try {
     ["what is happening at 20 weeks pregnant", "pregnancy-week-20"],
     ["first period menarche puberty", "menarche"],
     ["follicular phase before ovulation", "follicular-phase"],
+    ["hair shedding after giving birth", "postpartum-hair-loss"],
+    ["white nipple spot burning when feeding", "milk-bleb"],
+    ["period has not started delayed puberty", "delayed-puberty"],
+    ["what happens at 2 weeks pregnant", "pregnancy-week-2"],
   ];
 
   for (const [query, expectedId] of retrievalCases) {
