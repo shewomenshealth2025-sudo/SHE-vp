@@ -42,7 +42,7 @@ const fallbackSources = [
   { title: "NICE guidance", url: "https://www.nice.org.uk/guidance" },
 ];
 
-export default function ConditionViewer({ condition, onBack }) {
+export default function ConditionViewer({ condition, onBack, onSelectRelated }) {
   if (!condition) return null;
 
   return (
@@ -135,6 +135,18 @@ export default function ConditionViewer({ condition, onBack }) {
           })}
         </ul>
       </Section>
+
+      {condition.relatedConditions?.length > 0 && (
+        <Section title="Related guides">
+          <div className="flex flex-wrap gap-3">
+            {condition.relatedConditions.map((id) => (
+              <button key={id} type="button" onClick={() => onSelectRelated?.(id)} className="rounded-full border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-medium text-pink-800 transition hover:bg-pink-100">
+                {formatId(id)}
+              </button>
+            ))}
+          </div>
+        </Section>
+      )}
 
       <div className="mt-8 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-sm leading-6 text-gray-600">
         This information is for education and does not replace advice from a

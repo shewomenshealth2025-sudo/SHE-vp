@@ -23,7 +23,7 @@ import {
 import { pelvicPain } from "./symptoms";
 import { expandedConditions } from "./conditions/expandedConditions";
 
-export const conditions = [
+const baseConditions = [
   endometriosis,
   pcos,
   adenomyosis,
@@ -45,6 +45,31 @@ export const conditions = [
   coeliacDisease,
   ...expandedConditions,
 ];
+
+function relationshipScore(left, right) {
+  if (left.id === right.id) return -1;
+  const leftSymptoms = new Set((left.symptoms || []).map((item) => item.toLowerCase()));
+  const sharedSymptoms = (right.symptoms || []).filter((item) => leftSymptoms.has(item.toLowerCase())).length;
+  const sameFamily = categoryFamily(left.category) === categoryFamily(right.category) ? 1 : 0;
+  return (left.category === right.category ? 3 : sameFamily) + sharedSymptoms * 2;
+}
+
+function categoryFamily(category = "") {
+  const value = category.toLowerCase();
+  if (/menstrual|gynaec|pelvic|fertility|contracep|sexual|vaginal|screen/.test(value)) return "reproductive";
+  if (/pregnan|postpartum|menopause/.test(value)) return "life-stage";
+  return "whole-health";
+}
+
+export const conditions = baseConditions.map((condition) => ({
+  ...condition,
+  relatedConditions: baseConditions
+    .map((candidate) => ({ id: candidate.id, score: relationshipScore(condition, candidate) }))
+    .filter((candidate) => candidate.score > 0)
+    .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id))
+    .slice(0, 5)
+    .map((candidate) => candidate.id),
+}));
 
 export const symptoms = [
   pelvicPain,
