@@ -1,24 +1,24 @@
 const categoryImages = {
   "Period care":
-    "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1000&q=80",
+    null,
   "Pelvic pain":
-    "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=1000&q=80",
+    null,
   Fertility:
-    "https://images.unsplash.com/photo-1531988042231-d39a9cc12a9a?auto=format&fit=crop&w=1000&q=80",
+    null,
   Pregnancy:
-    "https://images.unsplash.com/photo-1532330384785-f94c3dc79872?auto=format&fit=crop&w=1000&q=80",
+    null,
   Postpartum:
-    "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=1000&q=80",
+    null,
   Menopause:
-    "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80",
+    null,
   "Bladder health":
-    "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=1000&q=80",
+    null,
   "Intimate care":
-    "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=1000&q=80",
+    null,
   Supplements:
-    "https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=1000&q=80",
+    null,
   "Everyday health":
-    "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80",
+    null,
 };
 
 const categoryIcons = {
