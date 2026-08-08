@@ -122,11 +122,12 @@ export default function ChatPage({
         response.text,
         cleanMessage || createAttachmentTitle(submittedAttachments),
         response.suggestions,
+        response.article,
       );
     }, submittedAttachments.length > 0 ? 850 : 450);
   }
 
-  function streamResponse(fullResponse, conversationTitle, suggestions = []) {
+  function streamResponse(fullResponse, conversationTitle, suggestions = [], article = null) {
     setIsThinking(false);
     setStreamingText("");
 
@@ -150,6 +151,7 @@ export default function ChatPage({
           role: "she",
           text: fullResponse,
           suggestions,
+          article,
         };
 
         setConversation((current) => {

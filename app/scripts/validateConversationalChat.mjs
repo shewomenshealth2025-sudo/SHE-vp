@@ -35,6 +35,9 @@ expect("follow-up produces grounded interpretation", /SHE Learn|pattern|overlap|
 const definition = generateSHEReply({ message: "What is POTS?", conversation: [] });
 expect("definition retrieves Learn knowledge", /POTS|postural/i.test(definition.text));
 expect("definition supplies follow-ups", definition.suggestions.length >= 2);
+expect("definition is concise", definition.text.length < 1800);
+expect("definition includes cause", /Cause/i.test(definition.text));
+expect("definition links the full article", definition.article?.id === "pots");
 
 const casual = generateSHEReply({ message: "How are you?", conversation: [] });
 expect("casual conversation does not force health search", /ready to help|just having a chat/i.test(casual.text));
