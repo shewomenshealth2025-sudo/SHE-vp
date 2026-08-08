@@ -3,7 +3,7 @@ export default function ConditionCard({ condition, onClick }) {
     <button
       type="button"
       onClick={() => onClick(condition)}
-      className="w-full rounded-2xl border border-gray-200 bg-white p-6 text-left transition hover:-translate-y-1 hover:border-pink-300 hover:shadow-lg"
+      className="w-full min-h-72 rounded-2xl border border-gray-200 bg-white p-6 pb-16 text-left transition hover:-translate-y-1 hover:border-pink-300 hover:shadow-lg"
     >
       <div className="mb-4 flex items-center justify-between gap-4">
         <span className="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-pink-600">
