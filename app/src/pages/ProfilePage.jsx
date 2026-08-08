@@ -1,18 +1,23 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity,
+  CalendarDays,
+  ChevronLeft,
   ChevronRight,
   CirclePlus,
   HeartPulse,
   LockKeyhole,
   Pill,
+  Smartphone,
   Stethoscope,
   Trash2,
-  UserRound,
+  Upload,
   X,
 } from "lucide-react";
 
-const STORAGE_KEY = "she-health-profile";
+const PROFILE_KEY = "she-health-profile";
+const CYCLE_KEY = "she-cycle-tracker";
+const DAY_MS = 86400000;
 
 const EMPTY_PROFILE = {
   lifeStage: "",
@@ -23,408 +28,255 @@ const EMPTY_PROFILE = {
 };
 
 const SECTIONS = {
-  conditions: {
-    title: "Conditions",
-    description:
-      "Add conditions you have been diagnosed with or are currently investigating.",
-    placeholder: "e.g. Endometriosis",
-    icon: Stethoscope,
-  },
-  medications: {
-    title: "Medications",
-    description:
-      "Keep a simple record of current medicines and treatments.",
-    placeholder: "e.g. Levothyroxine",
-    icon: Pill,
-  },
-  symptoms: {
-    title: "Symptoms",
-    description:
-      "Save symptoms you may want to discuss during an appointment.",
-    placeholder: "e.g. Pelvic pain",
-    icon: Activity,
-  },
+  conditions: { title: "Conditions", placeholder: "e.g. Endometriosis", icon: Stethoscope },
+  medications: { title: "Medications", placeholder: "e.g. Levothyroxine", icon: Pill },
+  symptoms: { title: "Symptoms", placeholder: "e.g. Pelvic pain", icon: Activity },
 };
 
-function loadProfile() {
-  try {
-    const savedProfile = window.localStorage.getItem(STORAGE_KEY);
-
-    return savedProfile
-      ? { ...EMPTY_PROFILE, ...JSON.parse(savedProfile) }
-      : EMPTY_PROFILE;
-  } catch {
-    return EMPTY_PROFILE;
-  }
-}
-
-function HealthSection({
-  sectionKey,
-  items,
-  isAdding,
-  draft,
-  onStartAdding,
-  onDraftChange,
-  onAdd,
-  onCancel,
-  onRemove,
-}) {
-  const section = SECTIONS[sectionKey];
-  const Icon = section.icon;
-
-  return (
-    <section className="border-t border-[#eee8e7] py-8 first:border-t-0">
-      <div className="flex items-start justify-between gap-6">
-        <div className="flex min-w-0 gap-4">
-          <div className="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-[#fff0f5] text-[#f43f75]">
-            <Icon size={21} strokeWidth={1.8} />
-          </div>
-
-          <div>
-            <h2 className="text-xl font-semibold text-[#241f20]">
-              {section.title}
-            </h2>
-
-            <p className="mt-1 max-w-2xl text-sm leading-6 text-[#746c6e]">
-              {section.description}
-            </p>
-          </div>
-        </div>
-
-        {!isAdding && (
-          <button
-            type="button"
-            onClick={() => onStartAdding(sectionKey)}
-            className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-[#f7f5f5] text-[#4e4749] transition hover:bg-[#fff0f5] hover:text-[#f43f75]"
-            aria-label={`Add ${section.title.toLowerCase()}`}
-          >
-            <CirclePlus size={21} strokeWidth={1.8} />
-          </button>
-        )}
-      </div>
-
-      {isAdding && (
-        <form
-          className="ml-0 mt-5 flex flex-col gap-3 sm:ml-15 sm:flex-row"
-          onSubmit={(event) => {
-            event.preventDefault();
-            onAdd(sectionKey);
-          }}
-        >
-          <input
-            autoFocus
-            type="text"
-            value={draft}
-            onChange={(event) => onDraftChange(event.target.value)}
-            placeholder={section.placeholder}
-            className="min-w-0 flex-1 rounded-xl border border-[#ded7d8] bg-white px-4 py-3 text-[#241f20] outline-none transition placeholder:text-[#aaa1a3] focus:border-[#f43f75] focus:ring-4 focus:ring-[#f43f75]/10"
-          />
-
-          <div className="flex gap-2">
-            <button
-              type="submit"
-              disabled={!draft.trim()}
-              className="rounded-xl bg-[#f43f75] px-5 py-3 font-medium text-white transition hover:bg-[#df2f64] disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Add
-            </button>
-
-            <button
-              type="button"
-              onClick={onCancel}
-              className="rounded-xl border border-[#ded7d8] px-4 py-3 text-[#625a5c] transition hover:bg-[#f8f6f6]"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      )}
-
-      {items.length > 0 ? (
-        <div className="ml-0 mt-5 flex flex-wrap gap-2 sm:ml-15">
-          {items.map((item) => (
-            <div
-              key={item}
-              className="group flex items-center gap-2 rounded-full border border-[#eadfe2] bg-[#fffafb] py-2 pl-4 pr-2 text-sm text-[#433c3e]"
-            >
-              <span>{item}</span>
-
-              <button
-                type="button"
-                onClick={() => onRemove(sectionKey, item)}
-                className="flex h-7 w-7 items-center justify-center rounded-full text-[#9b9193] transition hover:bg-white hover:text-[#e11d48]"
-                aria-label={`Remove ${item}`}
-              >
-                <X size={15} />
-              </button>
-            </div>
-          ))}
-        </div>
-      ) : (
-        !isAdding && (
-          <button
-            type="button"
-            onClick={() => onStartAdding(sectionKey)}
-            className="ml-0 mt-5 flex items-center gap-2 text-sm font-medium text-[#f43f75] transition hover:text-[#d92f63] sm:ml-15"
-          >
-            Add your first {section.title.toLowerCase()}
-            <ChevronRight size={16} />
-          </button>
-        )
-      )}
-    </section>
-  );
-}
-
 export default function ProfilePage() {
-  const [profile, setProfile] = useState(loadProfile);
-  const [editingProfile, setEditingProfile] = useState(false);
+  const [profile, setProfile] = useState(() => readStorage(PROFILE_KEY, EMPTY_PROFILE));
+  const [periodDays, setPeriodDays] = useState(() => readStorage(CYCLE_KEY, []));
+  const [month, setMonth] = useState(() => startOfMonth(new Date()));
   const [activeSection, setActiveSection] = useState(null);
   const [draft, setDraft] = useState("");
+  const [importMessage, setImportMessage] = useState("");
+  const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
-  }, [profile]);
+  useEffect(() => window.localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)), [profile]);
+  useEffect(() => window.localStorage.setItem(CYCLE_KEY, JSON.stringify(periodDays)), [periodDays]);
 
-  const totalItems = useMemo(
-    () =>
-      profile.conditions.length +
-      profile.medications.length +
-      profile.symptoms.length,
-    [profile]
-  );
+  const totalItems = profile.conditions.length + profile.medications.length + profile.symptoms.length;
+  const periodSet = useMemo(() => new Set(periodDays), [periodDays]);
+  const cycleAnchor = useMemo(() => findLatestPeriodStart(periodDays), [periodDays]);
 
-  function startAdding(sectionKey) {
-    setActiveSection(sectionKey);
-    setDraft("");
-  }
-
-  function cancelAdding() {
-    setActiveSection(null);
-    setDraft("");
+  function togglePeriodDay(date) {
+    const key = toDateKey(date);
+    setPeriodDays((current) =>
+      current.includes(key)
+        ? current.filter((day) => day !== key)
+        : [...current, key].sort(),
+    );
   }
 
   function addItem(sectionKey) {
     const value = draft.trim();
-
     if (!value) return;
-
-    setProfile((current) => {
-      const alreadyExists = current[sectionKey].some(
-        (item) => item.toLowerCase() === value.toLowerCase()
-      );
-
-      if (alreadyExists) return current;
-
-      return {
-        ...current,
-        [sectionKey]: [...current[sectionKey], value],
-      };
-    });
-
-    cancelAdding();
-  }
-
-  function removeItem(sectionKey, itemToRemove) {
     setProfile((current) => ({
       ...current,
-      [sectionKey]: current[sectionKey].filter(
-        (item) => item !== itemToRemove
-      ),
+      [sectionKey]: current[sectionKey].some((item) => item.toLowerCase() === value.toLowerCase())
+        ? current[sectionKey]
+        : [...current[sectionKey], value],
     }));
+    setDraft("");
+    setActiveSection(null);
+  }
+
+  async function importHealthExport(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const dates = [...new Set(text.match(/\b20\d{2}-\d{2}-\d{2}\b/g) || [])]
+        .filter(isValidDateKey)
+        .sort();
+
+      if (!dates.length) {
+        setImportMessage("No cycle dates were found. Use a JSON or CSV export containing YYYY-MM-DD dates.");
+        return;
+      }
+
+      setPeriodDays((current) => [...new Set([...current, ...dates])].sort());
+      setImportMessage(`${dates.length} dated health records imported on this device. Review the red period days and remove any that are not relevant.`);
+    } catch {
+      setImportMessage("That file could not be read. Try a JSON or CSV health export.");
+    } finally {
+      event.target.value = "";
+    }
   }
 
   function clearProfile() {
-    const confirmed = window.confirm(
-      "Remove all information saved in your health profile?"
-    );
-
-    if (!confirmed) return;
-
+    if (!window.confirm("Remove all information saved in My Health on this device?")) return;
     setProfile(EMPTY_PROFILE);
-    cancelAdding();
+    setPeriodDays([]);
+    setActiveSection(null);
   }
 
   return (
-    <main className="min-h-screen bg-[#fffdfc] px-6 py-10 text-[#241f20] md:px-10 lg:px-14">
+    <main className="min-h-screen bg-[#fffdfc] px-5 py-8 text-[#241f20] md:px-10 lg:px-14">
       <div className="mx-auto max-w-6xl">
-        <header className="border-b border-[#eee8e7] pb-9">
-          <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
-            <div>
-              <div className="mb-3 flex items-center gap-2 text-[#f43f75]">
-                <HeartPulse size={19} strokeWidth={1.8} />
-                <span className="font-semibold">My Health</span>
-              </div>
-
-              <h1 className="max-w-3xl text-4xl font-bold tracking-tight md:text-5xl">
-                A simple place to keep track of what matters to you.
-              </h1>
-
-              <p className="mt-4 max-w-2xl text-base leading-7 text-[#746c6e] md:text-lg">
-                Save information you may want available for appointments and
-                personalised SHE support.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setEditingProfile((current) => !current)}
-              className="inline-flex w-fit items-center gap-2 rounded-full border border-[#ded7d8] bg-white px-5 py-3 font-medium text-[#40393b] shadow-sm transition hover:border-[#f2b7c9] hover:bg-[#fff8fa]"
-            >
-              <UserRound size={18} />
-              Edit profile
-            </button>
-          </div>
+        <header className="pb-8">
+          <div className="flex items-center gap-2 text-[#f43f75]"><HeartPulse size={19} /><span className="font-semibold">My Health</span></div>
+          <h1 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight md:text-5xl">Your cycle, at a glance.</h1>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-[#746c6e] md:text-lg">A simple private tracker for period days and estimated cycle phases.</p>
         </header>
 
-        {editingProfile && (
-          <section className="mt-8 rounded-2xl bg-[#fff4f7] p-6">
-            <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-              <div className="w-full max-w-lg">
-                <label
-                  htmlFor="life-stage"
-                  className="mb-2 block text-sm font-semibold text-[#4b4345]"
-                >
-                  Current life stage
-                </label>
-
-                <select
-                  id="life-stage"
-                  value={profile.lifeStage}
-                  onChange={(event) =>
-                    setProfile((current) => ({
-                      ...current,
-                      lifeStage: event.target.value,
-                    }))
-                  }
-                  className="w-full rounded-xl border border-[#eadce0] bg-white px-4 py-3 outline-none focus:border-[#f43f75] focus:ring-4 focus:ring-[#f43f75]/10"
-                >
-                  <option value="">Not selected</option>
-                  <option value="Menstrual health">Menstrual health</option>
-                  <option value="Trying to conceive">
-                    Trying to conceive
-                  </option>
-                  <option value="Pregnancy">Pregnancy</option>
-                  <option value="Postpartum">Postpartum</option>
-                  <option value="Perimenopause">Perimenopause</option>
-                  <option value="Menopause">Menopause</option>
-                  <option value="General health">General health</option>
-                </select>
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="rounded-3xl border border-[#eee8e7] bg-white p-5 shadow-[0_10px_40px_rgba(67,46,52,0.04)] sm:p-7">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold text-[#f43f75]">Cycle calendar</p>
+                <h2 className="mt-1 text-2xl font-semibold">{month.toLocaleDateString("en-GB", { month: "long", year: "numeric" })}</h2>
               </div>
-
-              <label className="flex cursor-pointer items-center justify-between gap-5 rounded-xl bg-white px-4 py-3">
-                <div>
-                  <p className="font-medium text-[#332d2f]">
-                    Personalise SHE Chat
-                  </p>
-                  <p className="mt-1 text-sm text-[#81787a]">
-                    Use this profile when answering.
-                  </p>
-                </div>
-
-                <input
-                  type="checkbox"
-                  checked={profile.personaliseChat}
-                  onChange={(event) =>
-                    setProfile((current) => ({
-                      ...current,
-                      personaliseChat: event.target.checked,
-                    }))
-                  }
-                  className="h-5 w-5 accent-[#f43f75]"
-                />
-              </label>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => setMonth(addMonths(month, -1))} className="flex h-10 w-10 items-center justify-center rounded-full bg-stone-50 text-stone-600 hover:bg-stone-100" aria-label="Previous month"><ChevronLeft size={18} /></button>
+                <button type="button" onClick={() => setMonth(addMonths(month, 1))} className="flex h-10 w-10 items-center justify-center rounded-full bg-stone-50 text-stone-600 hover:bg-stone-100" aria-label="Next month"><ChevronRight size={18} /></button>
+              </div>
             </div>
-          </section>
-        )}
 
-        <section className="py-8">
-          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+            <div className="mt-6 grid grid-cols-7 text-center text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => <div key={day} className="py-2">{day}</div>)}
+            </div>
+
+            <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
+              {getCalendarDays(month).map(({ date, inMonth }) => {
+                const key = toDateKey(date);
+                const logged = periodSet.has(key);
+                const phase = logged ? "period" : getPhase(date, cycleAnchor);
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => togglePeriodDay(date)}
+                    className={`relative flex aspect-square min-h-10 items-center justify-center rounded-full text-sm transition ${phaseClass(phase)} ${inMonth ? "" : "opacity-30"} ${isToday(date) ? "ring-2 ring-stone-400 ring-offset-2" : ""}`}
+                    aria-label={`${date.toLocaleDateString("en-GB")}${logged ? ", period logged" : phase ? `, estimated ${phase} phase` : ""}`}
+                    aria-pressed={logged}
+                  >
+                    {date.getDate()}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-3 text-xs text-stone-600">
+              <Legend colour="bg-[#e94b64]" label="Period" />
+              <Legend colour="bg-[#93c5fd]" label="Follicular" />
+              <Legend colour="bg-[#74c69d]" label="Ovulation" />
+              <Legend colour="bg-[#c4a7e7]" label="Luteal" />
+            </div>
+            <p className="mt-5 text-xs leading-5 text-stone-500">Tap any date to mark or unmark a period day. Phases use a simple 28-day estimate and are not contraception or medical advice.</p>
+          </div>
+
+          <aside className="space-y-4">
+            <section className="rounded-3xl bg-[#fff0f5] p-6">
+              <CalendarDays size={23} className="text-[#e93368]" />
+              <p className="mt-4 text-sm font-semibold text-[#d92f62]">Quick log</p>
+              <h2 className="mt-2 text-xl font-semibold">Period today?</h2>
+              <button type="button" onClick={() => togglePeriodDay(new Date())} className={`mt-5 w-full rounded-xl px-4 py-3 text-sm font-semibold transition ${periodSet.has(toDateKey(new Date())) ? "bg-white text-[#d92f62]" : "bg-[#e93368] text-white"}`}>
+                {periodSet.has(toDateKey(new Date())) ? "Remove today" : "Log today"}
+              </button>
+            </section>
+
+            <section className="rounded-3xl border border-[#e7e0f7] bg-white p-6">
+              <Smartphone size={23} className="text-[#7255a6]" />
+              <h2 className="mt-4 text-xl font-semibold">Transfer from your health app</h2>
+              <p className="mt-3 text-sm leading-6 text-stone-600">Import a JSON or CSV export from Apple Health or another phone health app. The file is read only in this browser.</p>
+              <input ref={fileInputRef} type="file" accept=".json,.csv,.txt,application/json,text/csv,text/plain" onChange={importHealthExport} className="hidden" />
+              <button type="button" onClick={() => fileInputRef.current?.click()} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#7255a6] px-4 py-3 text-sm font-semibold text-white"><Upload size={16} /> Import health export</button>
+              <p className="mt-3 text-xs leading-5 text-stone-500">Direct Apple Health and Health Connect syncing requires a native mobile permission flow. This MVP uses an export you choose.</p>
+              {importMessage && <p className="mt-3 rounded-xl bg-[#f7f4ff] p-3 text-xs leading-5 text-[#5d4785]" aria-live="polite">{importMessage}</p>}
+            </section>
+          </aside>
+        </section>
+
+        <section className="mt-10 rounded-2xl border border-[#f1d7df] bg-[#fff8fa] p-5 sm:p-6">
+          <div className="flex items-start gap-3">
+            <LockKeyhole size={19} className="mt-0.5 shrink-0 text-[#e93368]" />
             <div>
-              <p className="text-sm font-semibold text-[#f43f75]">
-                Health overview
-              </p>
-
-              <p className="mt-2 text-lg text-[#4e4749]">
-                {totalItems === 0
-                  ? "Your profile is ready when you are."
-                  : `${totalItems} health ${
-                      totalItems === 1 ? "item" : "items"
-                    } saved.`}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-[#746c6e]">
-              <span>
-                <strong className="text-[#241f20]">
-                  {profile.conditions.length}
-                </strong>{" "}
-                conditions
-              </span>
-
-              <span className="hidden text-[#d9d1d3] sm:inline">•</span>
-
-              <span>
-                <strong className="text-[#241f20]">
-                  {profile.medications.length}
-                </strong>{" "}
-                medications
-              </span>
-
-              <span className="hidden text-[#d9d1d3] sm:inline">•</span>
-
-              <span>
-                <strong className="text-[#241f20]">
-                  {profile.symptoms.length}
-                </strong>{" "}
-                symptoms
-              </span>
+              <h2 className="font-semibold">Your health information stays on this device</h2>
+              <p className="mt-2 max-w-4xl text-sm leading-6 text-stone-600">This MVP stores cycle logs, conditions, medications and symptoms in your browser’s local storage. SHE does not upload them to a server. They are used only on this device, and only to personalise chat when you switch personalisation on. Clearing browser data may remove them.</p>
             </div>
           </div>
         </section>
 
-        <div className="rounded-3xl border border-[#eee8e7] bg-white px-6 shadow-[0_10px_40px_rgba(67,46,52,0.04)] md:px-8">
-          {Object.keys(SECTIONS).map((sectionKey) => (
-            <HealthSection
-              key={sectionKey}
-              sectionKey={sectionKey}
-              items={profile[sectionKey]}
-              isAdding={activeSection === sectionKey}
-              draft={draft}
-              onStartAdding={startAdding}
-              onDraftChange={setDraft}
-              onAdd={addItem}
-              onCancel={cancelAdding}
-              onRemove={removeItem}
-            />
-          ))}
-        </div>
-
-        <footer className="mt-7 flex flex-col justify-between gap-4 rounded-2xl bg-[#f8f6f6] px-5 py-4 text-sm text-[#746c6e] sm:flex-row sm:items-center">
-          <div className="flex max-w-3xl items-start gap-3">
-            <LockKeyhole
-              size={17}
-              className="mt-0.5 flex-none text-[#f43f75]"
-            />
-
-            <p>
-              This MVP stores your health profile only in this browser. Do not
-              use it as your only copy of important medical information.
-            </p>
+        <section className="mt-6 rounded-3xl border border-[#eee8e7] bg-white p-5 sm:p-6">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <p className="text-sm font-semibold text-[#f43f75]">Optional health details</p>
+              <h2 className="mt-1 text-xl font-semibold">Keep the essentials small and useful</h2>
+              <p className="mt-2 text-sm text-stone-500">{totalItems ? `${totalItems} health ${totalItems === 1 ? "item" : "items"} saved.` : "Nothing added yet."}</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <select value={profile.lifeStage} onChange={(event) => setProfile((current) => ({ ...current, lifeStage: event.target.value }))} className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm">
+                <option value="">Life stage</option><option>Menstrual health</option><option>Trying to conceive</option><option>Pregnancy</option><option>Postpartum</option><option>Perimenopause</option><option>Menopause</option><option>General health</option>
+              </select>
+              <label className="flex items-center gap-2 rounded-xl border border-stone-200 px-3 py-2 text-sm"><input type="checkbox" checked={profile.personaliseChat} onChange={(event) => setProfile((current) => ({ ...current, personaliseChat: event.target.checked }))} className="accent-[#f43f75]" /> Personalise chat</label>
+            </div>
           </div>
 
-          {totalItems > 0 && (
-            <button
-              type="button"
-              onClick={clearProfile}
-              className="flex w-fit items-center gap-2 font-medium text-[#8a7f82] transition hover:text-[#d92f63]"
-            >
-              <Trash2 size={16} />
-              Clear profile
-            </button>
-          )}
+          <div className="mt-6 grid gap-3 md:grid-cols-3">
+            {Object.entries(SECTIONS).map(([sectionKey, section]) => (
+              <CompactHealthSection key={sectionKey} section={section} items={profile[sectionKey]} active={activeSection === sectionKey} draft={draft} setDraft={setDraft} onOpen={() => { setActiveSection(sectionKey); setDraft(""); }} onCancel={() => setActiveSection(null)} onAdd={() => addItem(sectionKey)} onRemove={(item) => setProfile((current) => ({ ...current, [sectionKey]: current[sectionKey].filter((value) => value !== item) }))} />
+            ))}
+          </div>
+        </section>
+
+        <footer className="mt-5 flex justify-end">
+          {(totalItems > 0 || periodDays.length > 0) && <button type="button" onClick={clearProfile} className="flex items-center gap-2 text-sm font-medium text-stone-500 hover:text-[#d92f63]"><Trash2 size={16} /> Clear My Health data</button>}
         </footer>
       </div>
     </main>
   );
+}
+
+function CompactHealthSection({ section, items, active, draft, setDraft, onOpen, onCancel, onAdd, onRemove }) {
+  const Icon = section.icon;
+  return (
+    <div className="rounded-2xl bg-[#faf8f8] p-4">
+      <div className="flex items-center justify-between"><span className="flex items-center gap-2 text-sm font-semibold"><Icon size={16} className="text-[#e93368]" />{section.title}</span><button type="button" onClick={onOpen} className="text-[#e93368]" aria-label={`Add ${section.title.toLowerCase()}`}><CirclePlus size={18} /></button></div>
+      {active && <form onSubmit={(event) => { event.preventDefault(); onAdd(); }} className="mt-3"><input autoFocus value={draft} onChange={(event) => setDraft(event.target.value)} placeholder={section.placeholder} className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm" /><div className="mt-2 flex gap-2"><button type="submit" className="text-xs font-semibold text-[#d92f62]">Add</button><button type="button" onClick={onCancel} className="text-xs text-stone-500">Cancel</button></div></form>}
+      <div className="mt-3 flex flex-wrap gap-1.5">{items.map((item) => <span key={item} className="flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-xs text-stone-600">{item}<button type="button" onClick={() => onRemove(item)} aria-label={`Remove ${item}`}><X size={12} /></button></span>)}</div>
+      {!active && items.length === 0 && <p className="mt-3 text-xs text-stone-400">None added</p>}
+    </div>
+  );
+}
+
+function Legend({ colour, label }) { return <span className="flex items-center gap-2"><span className={`h-3 w-3 rounded-full ${colour}`} />{label}</span>; }
+
+function readStorage(key, fallback) { try { return JSON.parse(window.localStorage.getItem(key) || JSON.stringify(fallback)); } catch { return fallback; } }
+function startOfMonth(date) { return new Date(date.getFullYear(), date.getMonth(), 1); }
+function addMonths(date, amount) { return new Date(date.getFullYear(), date.getMonth() + amount, 1); }
+function toDateKey(date) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`; }
+function isValidDateKey(key) { const date = new Date(`${key}T00:00:00`); return !Number.isNaN(date.getTime()) && toDateKey(date) === key; }
+function isToday(date) { return toDateKey(date) === toDateKey(new Date()); }
+
+function getCalendarDays(month) {
+  const first = startOfMonth(month);
+  const offset = (first.getDay() + 6) % 7;
+  const start = new Date(first.getFullYear(), first.getMonth(), 1 - offset);
+  return Array.from({ length: 42 }, (_, index) => {
+    const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + index);
+    return { date, inMonth: date.getMonth() === month.getMonth() };
+  });
+}
+
+function findLatestPeriodStart(days) {
+  if (!days.length) return null;
+  const sorted = [...days].filter(isValidDateKey).sort();
+  const starts = sorted.filter((day, index) => {
+    if (index === 0) return true;
+    return (new Date(`${day}T00:00:00`) - new Date(`${sorted[index - 1]}T00:00:00`)) / DAY_MS > 1;
+  });
+  return starts.at(-1) || null;
+}
+
+function getPhase(date, anchor) {
+  if (!anchor) return null;
+  const anchorDate = new Date(`${anchor}T00:00:00`);
+  const difference = Math.floor((new Date(date.getFullYear(), date.getMonth(), date.getDate()) - anchorDate) / DAY_MS);
+  if (difference < 0) return null;
+  const day = difference % 28;
+  if (day <= 4) return "period";
+  if (day <= 12) return "follicular";
+  if (day === 13) return "ovulation";
+  return "luteal";
+}
+
+function phaseClass(phase) {
+  return {
+    period: "bg-[#e94b64] font-semibold text-white hover:bg-[#d83f58]",
+    follicular: "bg-[#dbeafe] text-[#24578f] hover:bg-[#bfdbfe]",
+    ovulation: "bg-[#c9f1da] font-semibold text-[#266747] hover:bg-[#aee5c5]",
+    luteal: "bg-[#eadffc] text-[#674794] hover:bg-[#dac8f5]",
+  }[phase] || "text-stone-600 hover:bg-stone-100";
 }
