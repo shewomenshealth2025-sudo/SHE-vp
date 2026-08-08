@@ -25,6 +25,8 @@ for (const journeyId of expectedJourneys) {
   for (const destination of ["learn", "products", "services"]) {
     if (!plan.links[destination]) errors.push(`${journeyId}: missing ${destination} connection`);
   }
+  const serviceQuery = new URL(`https://example.test${plan.links.services}`).searchParams.get("q") || "";
+  if (serviceQuery.split(/\s+/).length > 2) errors.push(`${journeyId}: service search is too broad for SHE Map matching`);
   if (!plan.reasons.some((reason) => reason.startsWith("SHE is showing this because"))) {
     errors.push(`${journeyId}: missing visible recommendation rationale`);
   }
