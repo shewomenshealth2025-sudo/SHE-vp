@@ -1,338 +1,176 @@
 import { retrieveKnowledge } from "./learnSearch";
 
 const EMERGENCY_PATTERNS = [
-  {
-    terms: [
-      "chest pain",
-      "cant breathe",
-      "cannot breathe",
-      "difficulty breathing",
-      "severe breathlessness",
-    ],
-    message:
-      "Chest pain or significant breathing difficulty can require urgent medical assessment.",
-  },
-  {
-    terms: [
-      "passed out",
-      "unconscious",
-      "fainted and hit",
-      "collapse",
-    ],
-    message:
-      "Loss of consciousness, collapse or injury after fainting can require urgent medical assessment.",
-  },
-  {
-    terms: [
-      "sudden weakness",
-      "face drooping",
-      "slurred speech",
-      "sudden vision loss",
-    ],
-    message:
-      "Sudden weakness, speech changes or vision loss can be signs of a medical emergency.",
-  },
-  {
-    terms: [
-      "bleeding through",
-      "soaking a pad every hour",
-      "soaking pads every hour",
-      "very heavy bleeding",
-    ],
-    message:
-      "Very heavy bleeding, particularly with weakness, faintness or breathlessness, can require urgent assessment.",
-  },
-  {
-    terms: [
-      "worst headache",
-      "sudden severe headache",
-      "thunderclap headache",
-    ],
-    message:
-      "A sudden or exceptionally severe headache requires urgent medical assessment.",
-  },
+  { terms: ["chest pain", "cant breathe", "cannot breathe", "difficulty breathing", "severe breathlessness"], message: "Chest pain or significant breathing difficulty can require urgent medical assessment." },
+  { terms: ["passed out", "unconscious", "collapse"], message: "Loss of consciousness or collapse can require urgent medical assessment." },
+  { terms: ["sudden weakness", "face drooping", "slurred speech", "sudden vision loss"], message: "Sudden weakness, speech changes or vision loss can be signs of a medical emergency." },
+  { terms: ["soaking a pad every hour", "soaking pads every hour", "very heavy bleeding"], message: "Very heavy bleeding, particularly with weakness, faintness or breathlessness, can require urgent assessment." },
+  { terms: ["worst headache", "sudden severe headache", "thunderclap headache"], message: "A sudden or exceptionally severe headache requires urgent medical assessment." },
 ];
 
-const INTENT_PATTERNS = {
-  clinicianQuestions: [
-    "what should i ask",
-    "questions for my gp",
-    "questions to ask",
-    "ask my doctor",
-    "prepare for appointment",
-    "appointment questions",
-  ],
-  compare: [
-    "difference between",
-    "compare",
-    "versus",
-    " vs ",
-    "how is",
-  ],
-  definition: [
-    "what is",
-    "what are",
-    "explain",
-    "tell me about",
-  ],
-};
-
-function normalise(value = "") {
-  return value.toLowerCase().replace(/[’']/g, "").trim();
-}
-
-function detectsIntent(query, patterns) {
-  const text = normalise(query);
-  return patterns.some((pattern) => text.includes(pattern));
-}
+const normalise = (value = "") => value.toLowerCase().replace(/[’']/g, "'").replace(/\s+/g, " ").trim();
+const unique = (items) => [...new Set(items.filter(Boolean))];
 
 function detectUrgentWarning(query) {
   const text = normalise(query);
-
-  return EMERGENCY_PATTERNS.find((pattern) =>
-    pattern.terms.some((term) => text.includes(term)),
-  );
+  return EMERGENCY_PATTERNS.find(({ terms }) => terms.some((term) => text.includes(term)));
 }
 
-function unique(items) {
-  return [...new Set(items.filter(Boolean))];
+function detectQuestionFocus(query) {
+  const text = normalise(query);
+  if (/\b(cause|causes|caused by|why does|why do)\b/.test(text)) return "causes";
+  if (/\b(risk|risk factor|more likely)\b/.test(text)) return "risks";
+  if (/\b(symptom|signs|feel like|look like)\b/.test(text)) return "symptoms";
+  if (/\b(diagnos|test|assessment|check for)\b/.test(text)) return "assessment";
+  if (/\b(treat|treatment|manage|help with|what can i do)\b/.test(text)) return "treatment";
+  if (/\b(difference between|compare|versus| vs )\b/.test(text)) return "comparison";
+  if (/\b(ask my|ask a|appointment|questions for)\b/.test(text)) return "clinician-questions";
+  if (/\b(what is|what are|define|explain|tell me about)\b/.test(text)) return "definition";
+  return "description";
 }
 
-function buildSymptoms(matches) {
-  return unique(
-    matches.flatMap(({ guide }) =>
-      (guide.tags || []).filter(
-        (tag) =>
-          !tag.toLowerCase().includes(guide.title.toLowerCase()) &&
-          !["autoimmune", "fertility", "thyroid"].includes(
-            tag.toLowerCase(),
-          ),
-      ),
-    ),
-  ).slice(0, 7);
+function looksPersonal(query) {
+  return /\b(i have|i get|i feel|i keep|ive had|i've had|my |when i|for the past|happens to me)\b/.test(normalise(query));
 }
 
-function buildQuestions(matches) {
-  return unique(
-    matches.flatMap(({ guide }) => guide.questions || []),
-  ).slice(0, 5);
+function readableSymptoms(guide) {
+  return unique((guide.symptoms || []).map((item) => String(item).replaceAll("-", " "))).slice(0, 7);
 }
 
-function buildSeekHelp(matches) {
-  return unique(
-    matches.flatMap(({ guide }) => guide.seekHelp || []),
-  ).slice(0, 4);
+function confidenceFor(matches) {
+  if (!matches.length) return "low";
+  const first = matches[0].score;
+  const margin = first - (matches[1]?.score || 0);
+  if (first >= 42 && margin >= 6) return "strong";
+  if (first >= 22) return "moderate";
+  return "low";
 }
 
-function buildComparison(matches) {
-  return matches.slice(0, 2).map(({ guide }) => ({
-    title: guide.title,
-    text: guide.overview,
-    keyPoints: (guide.keyPoints || []).slice(0, 3),
-  }));
-}
-
-export function buildGroundedResponse(query) {
-  const matches = retrieveKnowledge(query, {
-    limit: 4,
-    minimumScore: 5,
-  });
-
-  const urgentWarning = detectUrgentWarning(query);
-
-  if (matches.length === 0) {
-    return {
-      id: `she-${Date.now()}`,
-      role: "assistant",
-      type: "knowledge",
-      title: "I do not have enough information in the SHE library yet",
-      introduction:
-        "I could not find a strong match in the current SHE Learn content. Try describing the main symptom, when it happens, how long it has been present and what makes it better or worse.",
-      sections: [
-        {
-          title: "Useful details to include",
-          items: [
-            "The main symptom and where you feel it",
-            "When it started and how often it happens",
-            "Whether it relates to standing, eating, periods, sleep or activity",
-            "Any bleeding, pain, fever, breathlessness or fainting",
-            "Medication, pregnancy or existing health conditions",
-          ],
-        },
-      ],
-      relatedGuides: [],
-      disclaimer:
-        "SHE provides general educational information and cannot diagnose a condition.",
-      urgentWarning: urgentWarning?.message || null,
-      confidence: "low",
-    };
-  }
-
-  const isQuestionIntent = detectsIntent(
-    query,
-    INTENT_PATTERNS.clinicianQuestions,
-  );
-
-  const isComparisonIntent = detectsIntent(
-    query,
-    INTENT_PATTERNS.compare,
-  );
-
-  const isDefinitionIntent = detectsIntent(
-    query,
-    INTENT_PATTERNS.definition,
-  );
-
-  const primary = matches[0].guide;
-  const symptoms = buildSymptoms(matches);
-  const questions = buildQuestions(matches);
-  const seekHelp = buildSeekHelp(matches);
-
-  const sections = [];
-
-  if (isComparisonIntent && matches.length >= 2) {
-    sections.push({
-      title: "How the leading matches differ",
-      comparisons: buildComparison(matches),
-    });
-  } else if (isDefinitionIntent) {
-    sections.push({
-      title: `About ${primary.title}`,
-      text: primary.overview,
-    });
-
-    sections.push({
-      title: "Key things to know",
-      items: (primary.keyPoints || []).slice(0, 5),
-    });
-  } else {
-    sections.push({
-      title: "Symptoms and patterns discussed in the SHE library",
-      items: symptoms,
-    });
-
-    sections.push({
-      title: "Conditions worth reading about",
-      items: matches.slice(0, 4).map(({ guide }) => {
-        return `${guide.title}: ${guide.summary}`;
-      }),
-    });
-  }
-
-  if (isQuestionIntent || questions.length > 0) {
-    sections.push({
-      title: "Questions you could ask a clinician",
-      items: questions,
-    });
-  }
-
-  if (seekHelp.length > 0) {
-    sections.push({
-      title: "Seek medical advice when",
-      items: seekHelp,
-    });
-  }
-
-  const conditionNames = matches
-  .slice(0, 4)
-  .map(({ guide }) => guide.title);
-
-const symptomTerms = [
-  ...new Set(
-    matches.flatMap(({ matches: terms = [] }) => terms)
-  ),
-].slice(0, 5);
-
-const formatList = (items) => {
-  if (items.length === 0) return "";
-  if (items.length === 1) return items[0];
-  if (items.length === 2) return `${items[0]} and ${items[1]}`;
-
-  return `${items.slice(0, -1).join(", ")}, and ${items.at(-1)}`;
-};
-
-const isPainfulPeriodQuery =
-  normalizedQuery.includes("painful period") ||
-  normalizedQuery.includes("period pain") ||
-  normalizedQuery.includes("cramps");
-
-const introduction = isPainfulPeriodQuery
-  ? "Painful periods can have several causes, but severe pain that affects your daily life should not be dismissed."
-  : isDefinitionIntent
-    ? primary.summary
-    : "There are a few possibilities worth considering based on what you’ve described.";
-
-const guidance = isPainfulPeriodQuery
-  ? [
-      conditionNames.length > 0
-        ? `Some possibilities worth reading about include ${formatList(conditionNames)}.`
-        : "",
-      "It may help to track when the pain starts, how long it lasts, how heavy your bleeding is, whether pain relief helps, and whether you also experience pelvic pain, pain during sex, bowel symptoms or fatigue.",
-      "Consider speaking to a GP if the pain is severe, worsening, recurring, or affecting work, study, sleep or daily life.",
-      "Seek urgent medical help if the pain is sudden and severe, you feel faint, you have a fever, you are bleeding very heavily, or pregnancy is possible.",
-    ]
-  : [
-      conditionNames.length > 0
-        ? `Some possibilities worth reading about include ${formatList(conditionNames)}.`
-        : "",
-      symptomTerms.length > 0
-        ? `Related symptoms and patterns include ${formatList(symptomTerms)}.`
-        : "",
-      "Keeping a brief record of when symptoms happen, how severe they are and what makes them better or worse can help when speaking to a healthcare professional.",
-    ];
-
-return {
-  id: `she-${Date.now()}`,
-  role: "assistant",
-  type: "knowledge",
-
-  title: isComparisonIntent
-    ? "Here’s a clearer comparison"
-    : isDefinitionIntent
-      ? `Understanding ${primary.title}`
-      : "Here’s what may be worth considering",
-
-  introduction,
-
-  sections: guidance
-    .filter(Boolean)
-    .map((text) => ({
-      heading: "",
-      body: text,
-    })),
-
-  relatedGuides: matches.slice(0, 4).map(({ guide, score, matches: terms }) => ({
+function relatedGuides(matches) {
+  return matches.slice(0, 4).map(({ guide, score, matches: terms }) => ({
     id: guide.id,
     title: guide.title,
-    subtitle: guide.subtitle || "",
     category: guide.categoryLabel,
     summary: guide.summary,
     readTime: guide.readTime,
     score,
     matchedTerms: terms,
-  })),
+  }));
+}
 
-  disclaimer:
-    "This response is grounded in SHE Learn content and provides general educational information. It does not diagnose a condition.",
+function lowConfidenceResponse(urgentWarning) {
+  return {
+    id: `she-${Date.now()}`,
+    role: "assistant",
+    type: "knowledge",
+    title: "I can’t confidently match that description yet",
+    introduction: "I do not have enough specific information to interpret what you mean without guessing.",
+    sections: [{
+      title: "Tell me a little more",
+      items: [
+        "What is the main symptom and where do you feel it?",
+        "When did it start, how often does it happen and how severe is it?",
+        "Does it relate to standing, meals, periods, pregnancy, sex, sleep or activity?",
+        "Are there other symptoms such as bleeding, fever, fainting, breathlessness, discharge, bowel or bladder changes?",
+      ],
+    }],
+    relatedGuides: [],
+    urgentWarning: urgentWarning?.message || null,
+    disclaimer: "SHE can interpret patterns in its Learn library, but it cannot diagnose a condition.",
+    confidence: "low",
+  };
+}
 
-  urgentWarning: urgentWarning?.message || null,
+function definitionSections(guide, focus) {
+  const sectionMap = {
+    causes: [{ title: "Possible causes and mechanisms", items: guide.causes }],
+    risks: [{ title: "Risk factors", items: guide.riskFactors }],
+    symptoms: [{ title: "Symptoms and patterns", items: readableSymptoms(guide) }],
+    assessment: [{ title: "How it is assessed", items: guide.assessment }],
+    treatment: [{ title: "Treatment and management", items: guide.treatment }],
+    "clinician-questions": [{ title: "Questions to ask a clinician", items: guide.questions }],
+  };
+  if (sectionMap[focus]) return sectionMap[focus];
+  return [
+    { title: "What it can involve", items: readableSymptoms(guide) },
+    { title: "Possible causes and mechanisms", items: (guide.causes || []).slice(0, 3) },
+    { title: "How it is assessed", items: (guide.assessment || []).slice(0, 3) },
+    { title: "Treatment and management", items: (guide.treatment || []).slice(0, 3) },
+  ];
+}
 
-  confidence:
-    matches[0]?.score >= 40
-      ? "strong"
-      : matches[0]?.score >= 20
-        ? "moderate"
-        : "limited",
-};
+function buildComparison(matches) {
+  return matches.slice(0, 2).map(({ guide }) => ({
+    title: guide.title,
+    text: guide.summary,
+    keyPoints: [
+      ...(guide.symptoms || []).slice(0, 3).map((item) => String(item).replaceAll("-", " ")),
+      ...(guide.assessment || []).slice(0, 1),
+    ],
+  }));
+}
+
+export function buildGroundedResponse(query) {
+  const focus = detectQuestionFocus(query);
+  const matches = retrieveKnowledge(query, { limit: 6, minimumScore: 5 });
+  const urgentWarning = detectUrgentWarning(query);
+  const confidence = confidenceFor(matches);
+
+  if (!matches.length || confidence === "low") return lowConfidenceResponse(urgentWarning);
+
+  const primary = matches[0].guide;
+  const personal = looksPersonal(query) || focus === "description";
+  const sections = [];
+  let title;
+  let introduction;
+
+  if (focus === "comparison" && matches.length >= 2) {
+    title = `Comparing ${matches[0].guide.title} and ${matches[1].guide.title}`;
+    introduction = "These topics can overlap, but their typical pattern and assessment differ.";
+    sections.push({ title: "How they differ", comparisons: buildComparison(matches) });
+  } else if (!personal) {
+    title = focus === "definition" ? `What is ${primary.title}?` : primary.title;
+    introduction = primary.summary || primary.overview;
+    sections.push(...definitionSections(primary, focus));
+  } else {
+    const alternatives = matches.slice(1, 3).map(({ guide }) => guide.title);
+    title = "What your description may overlap with";
+    introduction = `What you described overlaps most closely with the SHE Learn guide on ${primary.title}. This is a pattern match, not a diagnosis${alternatives.length ? `; ${alternatives.join(" and ")} also share some features` : ""}.`;
+    sections.push({
+      title: `Why ${primary.title} may be relevant`,
+      items: [
+        ...readableSymptoms(primary).slice(0, 5),
+        ...(primary.keyPoints || []).slice(0, 2),
+      ],
+    });
+    sections.push({ title: "What a clinician may assess", items: (primary.assessment || []).slice(0, 4) });
+    sections.push({ title: "Useful details to track", items: ["When symptoms happen and what triggers them", "How long they last and how much they affect normal activity", "Associated bleeding, pain, heart-rate, bowel, bladder, skin, cycle or pregnancy changes", "Medicines, recent illness and existing diagnoses"] });
+  }
+
+  const seekHelp = unique([...(primary.seekHelp || []), ...(primary.urgentHelp || [])]).slice(0, 4);
+  if (seekHelp.length) sections.push({ title: "When to seek medical help", items: seekHelp });
+
+  return {
+    id: `she-${Date.now()}`,
+    role: "assistant",
+    type: "knowledge",
+    title,
+    introduction,
+    sections,
+    relatedGuides: relatedGuides(matches),
+    urgentWarning: urgentWarning?.message || null,
+    disclaimer: "This answer is generated only from SHE Learn content. It provides educational pattern interpretation and does not diagnose a condition.",
+    confidence,
+  };
 }
 
 export function getSuggestedChatPrompts() {
   return [
-    "Why do I feel dizzy and get a racing heart when I stand?",
-    "What autoimmune conditions can cause fatigue and joint pain?",
-    "What should I ask my GP about painful periods?",
+    "What is POTS?",
+    "My heart races when I stand and I feel faint — what could this pattern relate to?",
+    "What causes adenomyosis?",
     "What is the difference between endometriosis and adenomyosis?",
-    "Could heavy periods be linked to iron deficiency?",
-    "Explain POTS in simple terms",
+    "What should I ask my GP about painful periods?",
+    "What happens at 20 weeks pregnant?",
   ];
 }

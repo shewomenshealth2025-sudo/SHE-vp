@@ -23,6 +23,7 @@ try {
   const search = await server.ssrLoadModule("/src/utils/learnSearch.js");
   const database = await server.ssrLoadModule("/src/data/knowledge/database.js");
   const productData = await server.ssrLoadModule("/src/data/products.js");
+  const chat = await server.ssrLoadModule("/src/utils/chatEngine.js");
 
   const guides = knowledge.knowledgeGuides;
   const conditions = database.conditions;
@@ -84,6 +85,27 @@ try {
     const matches = search.retrieveKnowledge(query, { limit: 5, minimumScore: 1 });
     assert(matches.some(({ guide }) => guide.id === expectedId), `Chat retrieval missed ${expectedId}`);
   }
+
+  const definitionAnswer = chat.generateSHEMessage({ message: "What is POTS?", conversation: [] });
+  assert(definitionAnswer.includes("POTS causes an excessive sustained heart-rate rise"), "Chat must answer definition questions from Learn");
+  assert(definitionAnswer.includes("How it is assessed"), "Definition answers must use detailed Learn sections");
+
+  const describedSymptoms = chat.generateSHEMessage({ message: "My heart races when I stand and I feel faint", conversation: [] });
+  assert(describedSymptoms.includes("overlaps most closely"), "Chat must interpret symptom descriptions");
+  assert(describedSymptoms.includes("Postural Orthostatic Tachycardia Syndrome"), "Chat symptom interpretation should retrieve POTS");
+  assert(describedSymptoms.includes("not a diagnosis"), "Chat interpretation must state its limits");
+
+  const unclearAnswer = chat.generateSHEMessage({ message: "purple bananas orbit quietly", conversation: [] });
+  assert(unclearAnswer.includes("can’t confidently match"), "Chat must state when it cannot interpret a description");
+
+  const followUpConversation = [
+    { role: "user", text: "What is adenomyosis?" },
+    { role: "she", text: "Adenomyosis information" },
+    { role: "user", text: "What causes it?" },
+  ];
+  const followUpAnswer = chat.generateSHEMessage({ message: "What causes it?", conversation: followUpConversation });
+  assert(followUpAnswer.includes("Possible causes and mechanisms"), "Chat must understand conversational follow-ups");
+  assert(followUpAnswer.includes("muscular wall of the womb"), "Follow-up answers must retain the previous topic");
 
   console.log(`Knowledge integration valid: ${guides.length} unified guides, ${guides.reduce((sum, guide) => sum + guide.relatedGuideIds.length, 0)} relationships.`);
 } finally {

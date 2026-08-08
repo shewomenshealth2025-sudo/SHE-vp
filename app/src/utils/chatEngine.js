@@ -105,6 +105,19 @@ const HEALTH_TERMS = [
   "blood test",
   "lab result",
   "medication",
+  "heart races",
+  "racing heart",
+  "palpitations",
+  "faint",
+  "standing",
+  "joint",
+  "bowel",
+  "urine",
+  "skin",
+  "sleep",
+  "brain fog",
+  "pots",
+  "dysautonomia",
 ];
 
 const EMERGENCY_PATTERNS = [
@@ -131,6 +144,7 @@ export function generateSHEMessage({
 }) {
   const originalMessage = String(message ?? "").trim();
   const normalised = normaliseText(originalMessage);
+  const groundedQuery = resolveConversationQuery(originalMessage, conversation);
 
   if (attachments.length > 0) {
     return createAttachmentResponse({
@@ -184,19 +198,20 @@ export function generateSHEMessage({
       ].join("\n\n");
 
     case "symptom_statement":
-      return createSymptomFollowUp(normalised);
+      return createGroundedHealthResponse(groundedQuery);
 
     case "health_question":
-      return createGroundedHealthResponse(originalMessage);
+      return createGroundedHealthResponse(groundedQuery);
 
     case "vague":
-      return createClarifyingResponse(normalised, conversation);
+      return groundedQuery !== originalMessage
+        ? createGroundedHealthResponse(groundedQuery)
+        : ["why", "how", "what", "maybe", "worried"].includes(normalised)
+          ? createClarifyingResponse(normalised, conversation)
+          : createGroundedHealthResponse(originalMessage);
 
     default:
-      return [
-        "I can help with women’s health information and next steps.",
-        "Could you tell me a little more about what you would like help with?",
-      ].join("\n\n");
+      return createGroundedHealthResponse(groundedQuery);
   }
 }
 
@@ -336,91 +351,27 @@ function isSymptomStatement(text) {
   );
 }
 
+function resolveConversationQuery(message, conversation = []) {
+  const text = normaliseText(message);
+  const refersBack = /\b(it|that|this|they|them|those|its)\b/.test(text) ||
+    /^(why|how|what causes|what symptoms|treatment|and |also )/.test(text);
+
+  if (!refersBack) {
+    return message;
+  }
+
+  const previousUserMessage = [...conversation]
+    .slice(0, -1)
+    .reverse()
+    .find((entry) => entry.role === "user" && entry.text?.trim());
+
+  return previousUserMessage
+    ? `${previousUserMessage.text}. Follow-up question: ${message}`
+    : message;
+}
+
 function createSymptomFollowUp(text) {
-  if (
-    containsAny(text, [
-      "period",
-      "periods",
-      "menstrual",
-      "bleeding",
-      "cramp",
-      "cramps",
-      "pelvic pain",
-    ])
-  ) {
-    return [
-      "I’m sorry you’re dealing with that.",
-      "To understand the pattern better, can you tell me:",
-      "• How long this has been happening",
-      "• Where the pain is located",
-      "• Whether it happens before, during or after your period",
-      "• Whether it affects school, work, sleep or daily activities",
-      "• Whether you have heavy bleeding, pain during sex, bowel symptoms or pain when urinating",
-    ].join("\n\n");
-  }
-
-  if (
-    containsAny(text, [
-      "bloating",
-      "weight",
-      "fatigue",
-      "tired",
-      "sweating",
-      "thyroid",
-    ])
-  ) {
-    return [
-      "Those symptoms can have several possible causes, so the pattern matters.",
-      "Can you tell me:",
-      "• How long they have been happening",
-      "• Whether they started suddenly or gradually",
-      "• Whether your periods or cycle have changed",
-      "• Whether you have noticed changes in appetite, sleep, heart rate, bowel habits or temperature tolerance",
-      "• Whether you take any medication or have had recent blood tests",
-    ].join("\n\n");
-  }
-
-  if (
-    containsAny(text, [
-      "discharge",
-      "itching",
-      "infection",
-      "uti",
-    ])
-  ) {
-    return [
-      "I can help you think through the next step.",
-      "Can you tell me:",
-      "• How long this has been happening",
-      "• Whether there is pain, burning, itching or an unusual smell",
-      "• Whether the colour or consistency has changed",
-      "• Whether you have pelvic pain, fever or pain when urinating",
-    ].join("\n\n");
-  }
-
-  if (
-    containsAny(text, [
-      "fertility",
-      "conceive",
-      "pregnant",
-      "pregnancy",
-      "ovulation",
-    ])
-  ) {
-    return [
-      "I can help you work through this.",
-      "Can you tell me:",
-      "• What you are most concerned about",
-      "• How long you have been trying or tracking",
-      "• Whether your cycles are usually regular",
-      "• Whether you have any diagnosed conditions or previous fertility assessments",
-    ].join("\n\n");
-  }
-
-  return [
-    "I’m sorry you’ve been experiencing that.",
-    "Can you tell me how long it has been happening, how severe it feels and whether anything makes it better or worse?",
-  ].join("\n\n");
+  return createGroundedHealthResponse(text);
 }
 
 function createGroundedHealthResponse(question) {
