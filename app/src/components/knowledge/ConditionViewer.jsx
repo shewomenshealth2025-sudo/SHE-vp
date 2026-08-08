@@ -39,7 +39,7 @@ function formatId(value) {
 
 const fallbackSources = [
   { title: "NHS Health A to Z", url: "https://www.nhs.uk/conditions/" },
-  { title: "NICE guidance", url: "https://www.nice.org.uk/guidance" },
+  { title: "HSE Women’s health A–Z", url: "https://www2.hse.ie/conditions/womens-health-a-z/" },
 ];
 
 export default function ConditionViewer({ condition, onBack, onSelectRelated }) {

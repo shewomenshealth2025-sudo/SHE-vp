@@ -22,6 +22,7 @@ import {
 
 import { pelvicPain } from "./symptoms";
 import { expandedConditions } from "./conditions/expandedConditions";
+import { additionalConditions } from "./conditions/additionalConditions";
 
 const baseConditions = [
   endometriosis,
@@ -44,6 +45,7 @@ const baseConditions = [
   osteoporosis,
   coeliacDisease,
   ...expandedConditions,
+  ...additionalConditions,
 ];
 
 function relationshipScore(left, right) {

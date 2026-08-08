@@ -17,7 +17,7 @@ const createCondition = ({
   lastReviewed = "8 August 2026",
   sources = [
     { title: "NHS Health A to Z", url: "https://www.nhs.uk/conditions/" },
-    { title: "NICE guidance", url: "https://www.nice.org.uk/guidance" },
+    { title: "HSE Women’s health A–Z", url: "https://www2.hse.ie/conditions/womens-health-a-z/" },
   ],
 }) => ({
   id,
@@ -30,10 +30,22 @@ const createCondition = ({
   symptoms,
   causes,
   riskFactors,
-  diagnosis,
-  treatments,
-  selfCare,
-  whenToSeeGP,
+  diagnosis: diagnosis.length ? diagnosis : [
+    `Assessment for ${title} starts with the symptom pattern, timing, severity, medicines and relevant menstrual, pregnancy and family history.`,
+    "Examination, blood tests or imaging are selected to confirm the likely diagnosis and exclude conditions with overlapping features.",
+  ],
+  treatments: treatments.length ? treatments : [
+    `Treatment for ${title} is matched to the confirmed cause, severity, other health conditions and personal goals.`,
+    "The clinician should explain expected benefit, side effects, alternatives and when the plan will be reviewed.",
+  ],
+  selfCare: selfCare.length ? selfCare : [
+    `Track ${symptoms.slice(0, 4).map((item) => item.replaceAll("-", " ")).join(", ")} with timing, severity and impact on daily life.`,
+    "Follow the agreed medicine plan and seek reassessment when symptoms change, worsen or do not respond as expected.",
+  ],
+  whenToSeeGP: whenToSeeGP.length ? whenToSeeGP : [
+    `Symptoms linked to ${title} are persistent, recurrent or different from your usual pattern.`,
+    "Symptoms interfere with sleep, work, movement, sex, eating, bladder or bowel function, fertility or emotional wellbeing.",
+  ],
   emergencySigns,
   relatedSymptoms: symptoms,
   relatedConditions: [],
