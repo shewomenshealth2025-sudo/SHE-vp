@@ -1,5 +1,17 @@
 import { createServer } from "vite";
 
+const GENERIC_CAUSE_PATTERNS = [
+  "varies with life stage",
+  "depend on the clinical pattern",
+  "Possible causes depend on",
+];
+
+const GENERIC_RISK_PATTERNS = [
+  "Relevant factors are assessed",
+  "can change the likelihood and urgency",
+  "help identify which personal or family-history factors",
+];
+
 const server = await createServer({
   appType: "custom",
   logLevel: "error",
@@ -28,6 +40,20 @@ try {
   assert(conditions.every((condition) => condition.diagnosis?.length >= 2), "Every guide needs detailed assessment guidance");
   assert(conditions.every((condition) => condition.treatments?.length >= 2), "Every guide needs detailed management guidance");
   assert(conditions.every((condition) => condition.selfCare?.length >= 2), "Every guide needs actionable self-management guidance");
+  assert(conditions.every((condition) => condition.causes?.length >= 2), "Every guide needs at least 2 topic-specific cause or mechanism points");
+  assert(conditions.every((condition) => condition.riskFactors?.length >= 2), "Every guide needs at least 2 topic-specific risk-factor points");
+  assert(
+    conditions.every((condition) => condition.causes.every((item) =>
+      !GENERIC_CAUSE_PATTERNS.some((pattern) => item.includes(pattern)),
+    )),
+    "Generic cause copy is not allowed",
+  );
+  assert(
+    conditions.every((condition) => condition.riskFactors.every((item) =>
+      !GENERIC_RISK_PATTERNS.some((pattern) => item.includes(pattern)),
+    )),
+    "Generic risk-factor copy is not allowed",
+  );
   assert(conditions.every((condition) => condition.whenToSeeGP?.length >= 2), "Every guide needs clinical safety-netting");
   assert(conditions.every((condition) => condition.sources?.length >= 2), "Every guide needs NHS and HSE references");
   assert(conditions.every((condition) => condition.sources.every(isNhsOrHseSource)), "Every source must be an NHS or HSE website");

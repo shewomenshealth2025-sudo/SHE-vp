@@ -23,8 +23,9 @@ import {
 import { pelvicPain } from "./symptoms";
 import { expandedConditions } from "./conditions/expandedConditions";
 import { additionalConditions } from "./conditions/additionalConditions";
+import { applyCauseRiskProfiles } from "./causeRiskProfiles";
 
-const baseConditions = [
+const baseConditions = applyCauseRiskProfiles([
   endometriosis,
   pcos,
   adenomyosis,
@@ -46,7 +47,7 @@ const baseConditions = [
   coeliacDisease,
   ...expandedConditions,
   ...additionalConditions,
-];
+]);
 
 function relationshipScore(left, right) {
   if (left.id === right.id) return -1;
