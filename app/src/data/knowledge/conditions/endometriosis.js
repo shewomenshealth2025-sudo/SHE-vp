@@ -77,7 +77,7 @@ export const endometriosis = {
     { title: "HSE — Endometriosis", url: "https://www2.hse.ie/conditions/endometriosis/" }
   ],
 
-  clinicalReviewer: "Clinical reviewer to be confirmed",
+  clinicalReviewer: null,
 
   lastReviewed: "8 August 2026",
 

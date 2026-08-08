@@ -15,7 +15,7 @@ const trendingProducts = [
 
 const sheNews = [
   { category: "Pelvic health", title: "Why severe period pain deserves proper investigation", summary: "What to track and when to speak to a clinician." },
-  { category: "Hormonal health", title: "PMOS (PCOS) is about more than ovarian cysts", summary: "A clearer look at symptoms, assessment and long-term care." },
+  { category: "Hormonal health", title: "PCOS is about more than ovarian cysts", summary: "A clearer look at symptoms, assessment and long-term care, including why PMOS is sometimes proposed as an alternative name." },
   { category: "Menopause", title: "Understanding the stages of menopause", summary: "How perimenopause, menopause and postmenopause differ." },
   { category: "Fertility", title: "What ovulation tests can—and cannot—tell you", summary: "How to use test results without overinterpreting them." },
   { category: "Everyday health", title: "Iron deficiency can show up in unexpected ways", summary: "Fatigue, breathlessness and other signs worth discussing." },
@@ -182,7 +182,7 @@ export default function ChatPage({
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-5 pb-32 pt-4 md:px-8 lg:px-12">
+    <main className="mx-auto w-full max-w-6xl px-5 pb-52 pt-4 md:px-8 lg:px-12">
       {!hasConversation && !streamingText && (
         <section className="py-10 md:py-16">
           <div className="w-full">
@@ -217,7 +217,7 @@ export default function ChatPage({
       )}
 
       {(hasConversation || streamingText) && (
-        <section className="mx-auto max-w-3xl pb-8 pt-3">
+        <section className="mx-auto max-w-3xl pb-40 pt-3">
           <div className="mb-7">
             <p className="text-sm font-medium text-[#f43f72]">
               SHE Health Navigator
@@ -253,10 +253,10 @@ export default function ChatPage({
   />
 )}
 
-            <div ref={endRef} />
+            <div ref={endRef} className="h-28 scroll-mb-48" aria-hidden="true" />
           </div>
 
-          <div className="sticky bottom-24 z-20 mt-8">
+          <div className="sticky bottom-20 z-20 mt-8 md:bottom-6">
             <ChatComposer
               message={message}
               setMessage={setMessage}

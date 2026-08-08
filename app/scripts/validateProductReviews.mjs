@@ -10,10 +10,12 @@ const negative = addCommunityMetrics(product, { rating: 1, comment: "Not for me"
 
 const failures = [];
 if (unchanged.score !== product.score) failures.push("Products without a new review must keep their score.");
-if (positive.rating <= product.rating || positive.score <= product.score) failures.push("A positive review must raise rating and score.");
-if (negative.rating >= product.rating || negative.score >= product.score) failures.push("A negative review must lower rating and score.");
-if (Math.abs(positive.score - product.score) > 0.5 || Math.abs(negative.score - product.score) > 0.5) failures.push("One review must not overpower the evidence-led score.");
-if (positive.reviews !== product.reviews + 1) failures.push("Review count must increase exactly once.");
+for (const reviewed of [positive, negative]) {
+  if (reviewed.rating !== product.rating) failures.push("A device-only review must not change the retailer rating.");
+  if (reviewed.reviews !== product.reviews) failures.push("A device-only review must not change the retailer review count.");
+  if (reviewed.score !== product.score) failures.push("A device-only review must not change the SHE Score.");
+  if (!reviewed.userReview) failures.push("The user's device-only review must remain available on the product.");
+}
 
 await server.close();
 
@@ -22,4 +24,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("Validated review persistence metrics and bounded SHE Score influence.");
+console.log("Validated device-only review persistence and zero influence on public metrics.");

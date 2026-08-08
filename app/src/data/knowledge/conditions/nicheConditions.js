@@ -97,7 +97,7 @@ function pregnancyWeek(week, milestone) {
     whenToSeeGP: ["You have persistent vomiting, pain, bleeding, urinary symptoms, severe headache, itching or worsening mental health.", "You need advice about medicines, long-term conditions, screening, vaccines or the next antenatal appointment."],
     emergencySigns: [lateWarning],
     sources: [NHS_PREGNANCY_WEEKS, HSE_PREGNANCY_STAGES],
-    clinicalReviewer: "Clinical reviewer to be confirmed",
+    clinicalReviewer: null,
     lastReviewed: "8 August 2026",
     reviewed: "8 August 2026",
     version: 1,
@@ -107,7 +107,7 @@ function pregnancyWeek(week, milestone) {
 const profiles = {
   cycle: {
     causes: ["The menstrual cycle is coordinated by GnRH from the brain, FSH and LH from the pituitary gland, and oestrogen and progesterone from the ovaries.", "Changes in ovulation, the womb lining or hormone timing alter bleeding, discharge, temperature and symptoms across the cycle."],
-    risks: ["Puberty, breastfeeding and perimenopause commonly produce more variable hormone patterns.", "Pregnancy, hormonal contraception, stress, major weight or exercise change, PMOS (PCOS), thyroid disease and high prolactin can disrupt expected stages."],
+    risks: ["Puberty, breastfeeding and perimenopause commonly produce more variable hormone patterns.", "Pregnancy, hormonal contraception, stress, major weight or exercise change, PCOS, thyroid disease and high prolactin can disrupt expected stages."],
     diagnosis: ["Track first bleeding day, cycle length, discharge, pain and relevant symptoms for several cycles.", "Pregnancy testing and targeted hormone, thyroid or ultrasound assessment are used when the pattern is persistently abnormal."],
     treatment: ["Normal cycle stages need no treatment; management targets pain, heavy bleeding, absent ovulation or an identified endocrine cause.", "Apps can record patterns but do not confirm ovulation or diagnose a hormonal condition."],
   },
@@ -263,7 +263,7 @@ function createNiche([id, title, category, summary, symptomText, profileKey]) {
     whenToSeeGP: [`${symptoms[0]} is persistent, worsening, recurrent or different from your normal pattern.`, "Symptoms affect normal activities, sleep, mobility, eating, sex, fertility, pregnancy, bladder, bowel or mental wellbeing."],
     emergencySigns: ["Seek urgent help for collapse, severe or rapidly worsening pain, heavy bleeding, breathing difficulty, new neurological symptoms or pregnancy warning signs."],
     sources: [NHS_AZ, HSE_WOMENS_HEALTH],
-    clinicalReviewer: "Clinical reviewer to be confirmed", lastReviewed: "8 August 2026", reviewed: "8 August 2026", version: 1,
+    clinicalReviewer: null, lastReviewed: "8 August 2026", reviewed: "8 August 2026", version: 1,
   };
 }
 

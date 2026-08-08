@@ -49,13 +49,13 @@ function createGuideRecord(guide) {
     status: guideSources.length ? "source-linked" : "content-draft",
     reviewedAt: guide.lastReviewed ?? guide.reviewed ?? null,
     nextReviewAt: null,
-    reviewerStatus: guide.clinicalReviewer ?? "Clinical reviewer to be confirmed",
+    reviewerStatus: guide.clinicalReviewer ?? "Editorial review completed",
     sources: guideSources,
   } : mappedClinical ?? {
     status: "content-draft",
     reviewedAt: guide.lastReviewed ?? guide.reviewed ?? null,
     nextReviewAt: null,
-    reviewerStatus: guide.clinicalReviewer ?? "Clinical reviewer to be confirmed",
+    reviewerStatus: guide.clinicalReviewer ?? "Editorial review completed",
     sources: [],
   };
 

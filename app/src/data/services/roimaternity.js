@@ -59,7 +59,6 @@ const roiMaternityServices = [
     sourceUrl: maternitySource,
     lastVerified: verifiedDate,
   },
-
   {
     id: "rotunda-hospital",
     name: "The Rotunda Hospital",
@@ -288,3 +287,6 @@ const roiMaternityServices = [
     sourceUrl: maternitySource,
     lastVerified: verifiedDate,
   },
+];
+
+export { roiMaternityServices };

@@ -11,6 +11,7 @@
     "test:chat": "node scripts/validateConversationalChat.mjs",
     "test:services": "node scripts/validateServices.mjs",
     "test:reviews": "node scripts/validateProductReviews.mjs",
+    "test:products": "node scripts/validateProductCatalogue.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

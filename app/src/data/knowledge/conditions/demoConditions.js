@@ -13,7 +13,7 @@ const createCondition = ({
   selfCare = [],
   whenToSeeGP = [],
   emergencySigns = [],
-  clinicalReviewer = "Clinical reviewer to be confirmed",
+  clinicalReviewer = null,
   lastReviewed = "8 August 2026",
   sources = [
     { title: "NHS Health A to Z", url: "https://www.nhs.uk/conditions/" },
@@ -62,14 +62,14 @@ const createCondition = ({
 
 export const pcos = createCondition({
   id: "pcos",
-  title: "Polyendocrine Metabolic Ovarian Syndrome (PMOS; PCOS)",
+  title: "Polycystic ovary syndrome (PCOS), sometimes proposed as PMOS",
   category: "Hormonal health",
   readTime: 7,
   summary:
-    "Polyendocrine metabolic ovarian syndrome, often called PMOS (PCOS), is a hormonal condition that can affect periods, ovulation, skin, hair, fertility and metabolism.",
+    "Polycystic ovary syndrome (PCOS) is a hormonal condition that can affect periods, ovulation, skin, hair, fertility and metabolism. PMOS is sometimes proposed as an alternative name, but PCOS remains the recognised clinical term.",
   quickFacts: [
     "Symptoms can differ significantly between individuals.",
-    "PMOS (PCOS) may affect ovulation and menstrual cycles.",
+    "PCOS may affect ovulation and menstrual cycles.",
     "Management depends on symptoms and personal health goals.",
   ],
   symptoms: [

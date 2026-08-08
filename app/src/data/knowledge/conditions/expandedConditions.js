@@ -11,7 +11,7 @@ const SOURCES = {
 const specs = [
   ["period-pain", "Period Pain", "Menstrual health", "Cramping around a period is common, but pain that disrupts normal life deserves assessment.", ["painful-periods", "pelvic-pain", "nausea"], "Sudden severe pain, fainting or pain with a possible pregnancy.", "periods"],
   ["irregular-periods", "Irregular Periods", "Menstrual health", "Cycle length can vary, but persistent changes may relate to pregnancy, stress, hormones, medicines or health conditions.", ["irregular-periods", "missed-periods", "unexpected-bleeding"], "Very heavy bleeding, severe pain, fainting or suspected pregnancy complications.", "periods"],
-  ["missed-periods", "Missed or Late Periods", "Menstrual health", "A late period has many possible causes, including pregnancy, stress, weight change, exercise, perimenopause and PMOS (PCOS).", ["missed-periods", "cycle-changes", "pelvic-pain"], "Severe one-sided pain, shoulder-tip pain, dizziness or bleeding with a possible pregnancy.", "periods"],
+  ["missed-periods", "Missed or Late Periods", "Menstrual health", "A late period has many possible causes, including pregnancy, stress, weight change, exercise, perimenopause and PCOS.", ["missed-periods", "cycle-changes", "pelvic-pain"], "Severe one-sided pain, shoulder-tip pain, dizziness or bleeding with a possible pregnancy.", "periods"],
   ["bleeding-between-periods", "Bleeding Between Periods", "Menstrual health", "Bleeding between periods should be discussed with a clinician, particularly when it is new or recurring.", ["unexpected-bleeding", "pelvic-pain", "bleeding-after-sex"], "Heavy bleeding with weakness, fainting, severe pain or pregnancy.", "nhs"],
   ["bleeding-after-sex", "Bleeding After Sex", "Menstrual health", "Post-coital bleeding can have several causes and should be assessed if it persists or recurs.", ["bleeding-after-sex", "vaginal-dryness", "pelvic-pain"], "Heavy bleeding, severe pain, faintness or symptoms after sexual assault.", "nhs"],
   ["periods-starting", "Starting Periods", "Menstrual health", "A practical guide to early cycles, period products and changes that deserve support.", ["first-period", "irregular-periods", "period-pain"], "Bleeding that soaks products rapidly with dizziness or fainting.", "periods"],
@@ -126,7 +126,7 @@ function createExpandedCondition([id, title, category, summary, symptoms, urgent
     selfCare: [`Track ${symptomNames.join(", ")} with dates, severity, triggers and effect on sleep, movement, work or sex.`, "Use medicines only as directed and record whether they improve symptoms or cause side effects."],
     whenToSeeGP: [`Arrange review when ${symptomNames.slice(0, 2).join(" or ")} persists, recurs or changes from your usual pattern.`, `Ask for reassessment if ${title.toLowerCase()} continues to limit normal activities despite the agreed plan.`],
     emergencySigns: [urgent],
-    clinicalReviewer: "Clinical reviewer to be confirmed",
+    clinicalReviewer: null,
     lastReviewed: "8 August 2026",
     sources: [SOURCES[sourceKey] || SOURCES.nhs, category === "Pregnancy" || category === "Postpartum" ? SOURCES.hsePregnancy : SOURCES.hse],
     version: 1,

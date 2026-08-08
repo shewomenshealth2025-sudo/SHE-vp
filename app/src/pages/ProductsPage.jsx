@@ -21,6 +21,7 @@ import {
   addCommunityMetrics,
   readProductReviews,
 } from "../utils/productReviews";
+import { getRetailerDestination } from "../utils/retailerLinks";
 
 const money = new Intl.NumberFormat("en-GB", {
   style: "currency",
@@ -207,7 +208,7 @@ const categoryDirectory = [
   {
     group: "Hormonal health",
     items: [
-      { label: "PMOS (PCOS) support", terms: ["pcos", "polycystic"] },
+      { label: "PCOS support", terms: ["pcos", "polycystic", "pmos"] },
       { label: "Endometriosis support", terms: ["endometriosis"] },
       { label: "Adenomyosis support", terms: ["adenomyosis"] },
       { label: "Hormone tracking", terms: ["hormone", "cycle tracker"] },
@@ -395,34 +396,21 @@ function selectionDescription(selection) {
 }
 
 function ProductImage({ product, className = "", compact = false }) {
-  if (product.image) {
-    return (
-      <img
-        src={product.image}
-        alt={product.name}
-        className={className}
-      />
-    );
-  }
+  const [failed, setFailed] = useState(false);
+  const source = product.image && !failed
+    ? product.image
+    : "/products/product-fallback.svg";
 
   return (
-    <div
-      className={`${className} flex flex-col items-center justify-center bg-gradient-to-br from-[#fff8fa] via-white to-[#f5edf1] px-4 text-center`}
-      role="img"
-      aria-label={`${product.brand} ${product.name}`}
-    >
-      <span className={`${compact ? "text-[9px]" : "text-xs"} font-semibold uppercase tracking-[0.18em] text-[#d92f62]`}>
-        {product.brand}
-      </span>
-      {!compact && (
-        <span className="mt-3 max-w-[14rem] text-lg font-semibold leading-snug text-[#2a2225]">
-          {product.name}
-        </span>
-      )}
-      <span className={`${compact ? "mt-1 text-[8px]" : "mt-4 text-[10px]"} font-medium uppercase tracking-[0.14em] text-stone-400`}>
-        Verified image coming soon
-      </span>
-    </div>
+    <img
+      src={source}
+      alt={`${product.brand} ${product.name}`}
+      className={className}
+      loading={compact ? "eager" : "lazy"}
+      onError={() => {
+        if (source !== "/products/product-fallback.svg") setFailed(true);
+      }}
+    />
   );
 }
 
@@ -460,9 +448,9 @@ function ProductCard({ product, saved, comparing, onSave, onCompare, onOpen }) {
             {product.brand}
           </p>
 
-          <div className="flex items-center gap-1 text-xs text-stone-500">
+          <div className="flex items-center gap-1 text-xs text-stone-500" title="Rating shown by the retailer or manufacturer; not a SHE community rating">
             <Star size={13} className="fill-amber-400 text-amber-400" />
-            {product.rating.toFixed(1)}
+            {product.rating.toFixed(1)} retailer
           </div>
         </div>
 
@@ -584,7 +572,7 @@ function ProductModal({ product, saved, onSave, onClose, onReview }) {
               <div className="flex items-center gap-1.5 text-sm text-stone-500">
                 <Star size={15} className="fill-amber-400 text-amber-400" />
                 {product.rating.toFixed(1)}
-                <span>({product.reviews.toLocaleString("en-GB")})</span>
+                <span>({product.reviews.toLocaleString("en-GB")} retailer reviews)</span>
               </div>
 
               <span className="rounded-full bg-[#fff0f5] px-3 py-1.5 text-xs font-semibold text-[#e93368]">
@@ -598,12 +586,12 @@ function ProductModal({ product, saved, onSave, onClose, onReview }) {
                 Why this SHE Score?
               </div>
               <p className="mt-2 text-sm leading-6 text-stone-600">
-                SHE considers evidence relevance, safety information, user feedback,
+                SHE considers evidence relevance, safety information,
                 value and product transparency. A score is guidance, not a medical
                 endorsement.
               </p>
               <p className="mt-2 text-xs leading-5 text-stone-500">
-                Community ratings can adjust the score slightly; evidence and safety remain the strongest factors.
+                Retailer ratings and reviews are shown separately and do not change the SHE Score. Your device-only review does not change it either.
               </p>
             </div>
 
@@ -646,16 +634,19 @@ function ProductModal({ product, saved, onSave, onClose, onReview }) {
               </p>
 
               <div className="mt-3 space-y-2">
-                {product.retailers.map((retailer) => (
-                  <button
+                {product.retailers.map((retailer) => {
+                  const destination = getRetailerDestination(retailer, product);
+                  return <a
                     key={retailer}
-                    type="button"
+                    href={destination.url}
+                    target="_blank"
+                    rel="noopener noreferrer sponsored"
                     className="flex w-full items-center justify-between border border-stone-200 px-4 py-3 text-left text-sm"
                   >
-                    {retailer}
+                    <span><span className="font-medium">Shop at {retailer}</span><span className="mt-0.5 block text-xs text-stone-400">{destination.affiliate ? "Affiliate link may apply" : "Official retailer website"}</span></span>
                     <ExternalLink size={15} className="text-stone-400" />
-                  </button>
-                ))}
+                  </a>;
+                })}
               </div>
             </div>
           </div>
@@ -686,10 +677,10 @@ function ProductReviewPanel({ product, onReview }) {
 
   return (
     <section className="mt-9 border-t border-stone-200 pt-8">
-      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#d92f62]">Community reviews</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#d92f62]">Your review</p>
       <h2 className="mt-2 text-2xl font-semibold">{existing ? "Update your review" : "Rate this product"}</h2>
       <p className="mt-2 text-sm leading-6 text-stone-500">
-        Share your experience to help other users. Your rating contributes modestly to the SHE Score.
+        Save a private note and rating for yourself. It stays in this browser, is not shared with other users and does not change the SHE Score.
       </p>
 
       <form onSubmit={submitReview} className="mt-5">
@@ -737,12 +728,12 @@ function ProductReviewPanel({ product, onReview }) {
           disabled={!rating}
           className="mt-5 w-full rounded-2xl bg-[#241f20] px-5 py-3.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {existing ? "Update review" : "Publish review"}
+          {existing ? "Update your review" : "Save your review"}
         </button>
 
         {submitted && (
           <p className="mt-3 rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700" role="status">
-            Your review has been saved and the community rating has been updated.
+            Your review has been saved on this device. The retailer rating and SHE Score have not changed.
           </p>
         )}
       </form>
@@ -1249,7 +1240,7 @@ export default function ProductsPage() {
                   <CuratedRail eyebrow="Saved by you" title="Pick up where you left off" products={savedProducts} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />
                 )}
 
-                <CuratedRail eyebrow="Popular now" title="Trending on SHE" description="Products women are saving, reviewing and comparing right now." products={trendingProducts} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />
+                <CuratedRail eyebrow="Popular now" title="Trending on SHE" description="Popular catalogue products, ranked using retailer review volume and SHE’s editorial selection—not live SHE community activity." products={trendingProducts} savedIds={savedIds} compareIds={compareIds} onSave={toggleSaved} onCompare={toggleCompare} onOpen={setSelectedProduct} />
 
                 <section className="mt-14 grid gap-5 lg:grid-cols-3">
                   <div className="rounded-2xl bg-[#211d1f] p-7 text-white lg:col-span-2">

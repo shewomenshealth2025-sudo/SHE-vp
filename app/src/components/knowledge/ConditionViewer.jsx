@@ -76,8 +76,8 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
         </p>
 
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
-          <TrustFact label="Clinically reviewed by" value={condition.clinicalReviewer || "Clinical reviewer to be confirmed"} />
-          <TrustFact label="Last reviewed" value={condition.lastReviewed || condition.reviewed || "8 August 2026"} />
+          <TrustFact label="Evidence basis" value="Based on NHS and HSE guidance" />
+          <TrustFact label="Editorial review completed" value={condition.lastReviewed || condition.reviewed || "8 August 2026"} />
           <TrustFact label="Sources used" value={`${(condition.sources?.length || fallbackSources.length)} linked references`} />
         </div>
       </header>

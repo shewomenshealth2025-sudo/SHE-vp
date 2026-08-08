@@ -93,7 +93,7 @@ export const symptomGroups = [
         id: "irregular-periods",
         name: "Irregular or absent periods",
         searchTerms:
-          "irregular periods absent periods PMOS (PCOS) perimenopause ovulation",
+          "irregular periods absent periods PCOS PMOS perimenopause ovulation",
       },
       {
         id: "pain-during-sex",
