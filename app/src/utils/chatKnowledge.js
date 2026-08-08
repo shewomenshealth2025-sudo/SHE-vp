@@ -1,4 +1,4 @@
-import { retrieveKnowledge } from "./learnSearch";
+import { retrieveKnowledge } from "./learnSearch.js";
 
 const EMERGENCY_PATTERNS = [
   { terms: ["chest pain", "cant breathe", "cannot breathe", "difficulty breathing", "severe breathlessness"], message: "Chest pain or significant breathing difficulty can require urgent medical assessment." },

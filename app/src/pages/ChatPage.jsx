@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import ChatComposer from "../components/ChatComposer";
 import ChatMessage from "../components/ChatMessage";
-import { generateSHEMessage } from "../utils/chatEngine";
+import { generateSHEReply } from "../utils/chatEngine";
 import { ArrowRight, ChevronLeft, ChevronRight, Lightbulb, Newspaper, TrendingUp } from "lucide-react";
 
 const trendingProducts = [
@@ -112,20 +112,21 @@ export default function ChatPage({
     setIsThinking(true);
 
     responseTimeoutRef.current = window.setTimeout(() => {
-      const response = generateSHEMessage({
+      const response = generateSHEReply({
         message: cleanMessage,
         attachments: submittedAttachments,
         conversation: conversationWithUserMessage,
       });
 
       streamResponse(
-        response,
-        cleanMessage || createAttachmentTitle(submittedAttachments)
+        response.text,
+        cleanMessage || createAttachmentTitle(submittedAttachments),
+        response.suggestions,
       );
     }, submittedAttachments.length > 0 ? 850 : 450);
   }
 
-  function streamResponse(fullResponse, conversationTitle) {
+  function streamResponse(fullResponse, conversationTitle, suggestions = []) {
     setIsThinking(false);
     setStreamingText("");
 
@@ -148,6 +149,7 @@ export default function ChatPage({
           id: createMessageId(),
           role: "she",
           text: fullResponse,
+          suggestions,
         };
 
         setConversation((current) => {
@@ -229,7 +231,7 @@ export default function ChatPage({
               <ChatMessage
                 key={entry.id}
                 message={entry}
-                suggestions={[]}
+                suggestions={entry.suggestions || []}
                 chooseSuggestion={chooseSuggestion}
               />
             ))}
