@@ -2,7 +2,42 @@ import { useEffect, useRef, useState } from "react";
 import ChatComposer from "../components/ChatComposer";
 import ChatMessage from "../components/ChatMessage";
 import { generateSHEMessage } from "../utils/chatEngine";
-import { ArrowRight, Lightbulb, Newspaper, TrendingUp } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Lightbulb, Newspaper, TrendingUp } from "lucide-react";
+
+const trendingProducts = [
+  { brand: "BeYou", name: "Monthly Patches", image: "https://img.ananinja.com/media/bra-public-files/services-admin/files/dc51349f-8725-4d8d-8351-c0ea6005feb1" },
+  { brand: "Mooncup", name: "Reusable Menstrual Cup", image: "https://images.coopvitality.ch/product-images/650/650/mooncup-coupe-menstruelle-28-8ml-reutilisable-main-001UCC.jpg" },
+  { brand: "WUKA", name: "Ultimate Medium Flow Brief", image: "/products/internet/wuka-medium-flow.webp" },
+  { brand: "Beurer", name: "HK 72 Battery Heat Belt", image: "/products/branded-static/beurer-hk72.webp" },
+  { brand: "Vitabiotics", name: "Pregnacare Original", image: "/products/internet/pregnacare-original.webp" },
+  { brand: "OMRON", name: "M3 Blood Pressure Monitor", image: "/products/internet/omron-m3.webp" },
+];
+
+const sheNews = [
+  { category: "Pelvic health", title: "Why severe period pain deserves proper investigation", summary: "What to track and when to speak to a clinician." },
+  { category: "Hormonal health", title: "PCOS is about more than ovarian cysts", summary: "A clearer look at symptoms, assessment and long-term care." },
+  { category: "Menopause", title: "Understanding the stages of menopause", summary: "How perimenopause, menopause and postmenopause differ." },
+  { category: "Fertility", title: "What ovulation tests can—and cannot—tell you", summary: "How to use test results without overinterpreting them." },
+  { category: "Everyday health", title: "Iron deficiency can show up in unexpected ways", summary: "Fatigue, breathlessness and other signs worth discussing." },
+  { category: "Pregnancy", title: "Preparing useful questions for antenatal appointments", summary: "A simple framework for getting the information you need." },
+];
+
+const dailyTips = [
+  { title: "Write down when symptoms change", description: "Timing, triggers and patterns can make health conversations more useful.", prompt: "How should I track my symptoms before an appointment?" },
+  { title: "Bring a current medicines list", description: "Include prescriptions, supplements and anything you take only occasionally.", prompt: "How do I prepare a medicines list for an appointment?" },
+  { title: "Describe impact, not only intensity", description: "Note whether a symptom affects sleep, work, movement, eating or relationships.", prompt: "How can I explain the impact of my symptoms to a clinician?" },
+  { title: "Track the first day of each period", description: "A simple calendar can reveal changes in cycle length and bleeding patterns.", prompt: "What period details are most useful to track?" },
+  { title: "Write questions before an appointment", description: "Choose the three answers you most need so time pressure does not derail you.", prompt: "Help me prepare questions for a health appointment." },
+  { title: "Check medicine instructions", description: "Some treatments depend on timing, food or avoiding particular combinations.", prompt: "What should I check when reading medicine instructions?" },
+  { title: "Notice patterns around sleep", description: "Record bedtime, waking, symptoms and energy for a clearer picture over time.", prompt: "How can I keep a useful sleep and symptom diary?" },
+  { title: "Do not normalise disruptive pain", description: "Pain that repeatedly stops daily activities deserves clinical attention.", prompt: "When should period or pelvic pain be medically assessed?" },
+  { title: "Record unusual bleeding clearly", description: "Dates, duration, heaviness, clots and associated symptoms are useful details.", prompt: "How should I track unusual or heavy bleeding?" },
+  { title: "Prepare for blood-pressure readings", description: "Sit quietly, support your arm and avoid talking during the measurement.", prompt: "How do I take an accurate blood-pressure reading at home?" },
+  { title: "Ask what happens next", description: "Before leaving an appointment, clarify follow-up, results and when to seek urgent help.", prompt: "What follow-up questions should I ask at the end of an appointment?" },
+  { title: "Keep test results together", description: "A single secure folder makes trends and past investigations easier to review.", prompt: "How should I organise my health records and test results?" },
+  { title: "Mention every relevant symptom", description: "Symptoms across different body systems may still be important when considered together.", prompt: "How can I summarise several symptoms clearly for a clinician?" },
+  { title: "Know your urgent warning signs", description: "Severe sudden pain, heavy bleeding, fainting or breathing difficulty need prompt assessment.", prompt: "Which women's health symptoms need urgent medical help?" },
+];
 
 export default function ChatPage({
   conversation,
@@ -21,6 +56,7 @@ export default function ChatPage({
 
   const hasConversation = conversation.length > 0;
   const isBusy = isThinking || Boolean(streamingText);
+  const dailyTip = dailyTips[getLocalDayNumber() % dailyTips.length];
 
   useEffect(() => {
     endRef.current?.scrollIntoView({
@@ -168,33 +204,9 @@ export default function ChatPage({
             </div>
 
             <div className="mx-auto mt-12 grid max-w-5xl gap-4 md:grid-cols-3">
-              <HomeFeatureCard
-                icon={TrendingUp}
-                eyebrow="Trending on SHE"
-                title="What women are comparing now"
-                description="Discover popular period care, fertility and everyday health products."
-                action="Explore products"
-                onClick={() => navigate("products")}
-                tone="bg-[#fff0f5]"
-              />
-              <HomeFeatureCard
-                icon={Newspaper}
-                eyebrow="SHE News"
-                title="The health stories worth knowing"
-                description="Clear, practical context on women’s health research and care."
-                action="Read SHE Learn"
-                onClick={() => navigate("education")}
-                tone="bg-[#f4f1ff]"
-              />
-              <HomeFeatureCard
-                icon={Lightbulb}
-                eyebrow="Daily tip"
-                title="Write down when symptoms change"
-                description="Timing, triggers and patterns can make health conversations more useful."
-                action="Ask SHE about tracking"
-                onClick={() => chooseSuggestion("How should I track my symptoms before an appointment?")}
-                tone="bg-[#eef8f5]"
-              />
+              <TrendingCarousel items={trendingProducts} onOpen={() => navigate("products")} />
+              <NewsCarousel items={sheNews} onOpen={() => navigate("education")} />
+              <DailyTipCard tip={dailyTip} onAsk={() => chooseSuggestion(dailyTip.prompt)} />
             </div>
           </div>
         </section>
@@ -257,25 +269,83 @@ export default function ChatPage({
   );
 }
 
-function HomeFeatureCard({ icon: Icon, eyebrow, title, description, action, onClick, tone }) {
+function TrendingCarousel({ items, onOpen }) {
+  const [index, setIndex] = useState(0);
+  const item = items[index];
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`${tone} group rounded-2xl p-6 text-left transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f43f72]/40`}
-    >
-      <div className="flex items-center gap-2 text-sm font-semibold text-[#d92f62]">
-        <Icon size={18} />
-        {eyebrow}
-      </div>
-      <h3 className="mt-4 text-xl font-semibold leading-snug">{title}</h3>
-      <p className="mt-3 text-sm leading-6 text-stone-600">{description}</p>
-      <span className="mt-5 flex items-center gap-2 text-sm font-semibold text-[#d92f62]">
-        {action}
-        <ArrowRight size={16} className="transition group-hover:translate-x-1" />
-      </span>
-    </button>
+    <article className="overflow-hidden rounded-2xl border border-[#f7d7e2] bg-white shadow-sm">
+      <CarouselHeader icon={TrendingUp} label="Trending on SHE" index={index} count={items.length} setIndex={setIndex} />
+      <button type="button" onClick={onOpen} className="group block w-full text-left">
+        <div className="aspect-[4/3] overflow-hidden bg-[#fff7fa]">
+          <img src={item.image} alt={`${item.brand} ${item.name}`} className="h-full w-full object-contain p-3 transition duration-500 group-hover:scale-[1.03]" />
+        </div>
+        <div className="p-5">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#d92f62]">{item.brand}</p>
+          <h3 className="mt-2 font-semibold leading-snug">{item.name}</h3>
+          <span className="mt-4 flex items-center gap-2 text-sm font-semibold text-[#d92f62]">View in SHE Finds <ArrowRight size={15} /></span>
+        </div>
+      </button>
+      <CarouselDots count={items.length} index={index} setIndex={setIndex} label="trending product" />
+    </article>
   );
+}
+
+function NewsCarousel({ items, onOpen }) {
+  const [index, setIndex] = useState(0);
+  const item = items[index];
+
+  return (
+    <article className="overflow-hidden rounded-2xl border border-[#e7e0f7] bg-white shadow-sm">
+      <CarouselHeader icon={Newspaper} label="SHE News" index={index} count={items.length} setIndex={setIndex} />
+      <button type="button" onClick={onOpen} className="group block w-full text-left">
+        <div className="flex aspect-[4/3] items-end bg-gradient-to-br from-[#eee8ff] via-[#f8f5ff] to-white p-5">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7255a6]">{item.category}</p>
+            <h3 className="mt-3 text-xl font-semibold leading-snug">{item.title}</h3>
+          </div>
+        </div>
+        <div className="p-5">
+          <p className="text-sm leading-6 text-stone-600">{item.summary}</p>
+          <span className="mt-4 flex items-center gap-2 text-sm font-semibold text-[#7255a6]">Read in SHE Learn <ArrowRight size={15} /></span>
+        </div>
+      </button>
+      <CarouselDots count={items.length} index={index} setIndex={setIndex} label="news story" />
+    </article>
+  );
+}
+
+function DailyTipCard({ tip, onAsk }) {
+  return (
+    <article className="flex min-h-full flex-col rounded-2xl bg-[#eef8f5] p-6">
+      <div className="flex items-center gap-2 text-sm font-semibold text-[#287563]"><Lightbulb size={18} /> Daily tip</div>
+      <p className="mt-2 text-xs font-medium text-[#4d8879]">One practical idea for today</p>
+      <h3 className="mt-8 text-2xl font-semibold leading-snug">{tip.title}</h3>
+      <p className="mt-4 text-sm leading-7 text-stone-600">{tip.description}</p>
+      <button type="button" onClick={onAsk} className="mt-auto flex items-center gap-2 pt-8 text-left text-sm font-semibold text-[#287563]">Ask SHE about this <ArrowRight size={15} /></button>
+    </article>
+  );
+}
+
+function CarouselHeader({ icon: Icon, label, index, count, setIndex }) {
+  return (
+    <div className="flex items-center justify-between gap-3 px-4 py-3">
+      <div className="flex items-center gap-2 text-sm font-semibold text-[#d92f62]"><Icon size={17} /> {label}</div>
+      <div className="flex items-center gap-1">
+        <button type="button" onClick={() => setIndex((index - 1 + count) % count)} aria-label={`Previous ${label} slide`} className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-50 text-stone-600 hover:bg-stone-100"><ChevronLeft size={16} /></button>
+        <button type="button" onClick={() => setIndex((index + 1) % count)} aria-label={`Next ${label} slide`} className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-50 text-stone-600 hover:bg-stone-100"><ChevronRight size={16} /></button>
+      </div>
+    </div>
+  );
+}
+
+function CarouselDots({ count, index, setIndex, label }) {
+  return <div className="flex justify-center gap-1.5 pb-4">{Array.from({ length: count }, (_, dot) => <button key={dot} type="button" onClick={() => setIndex(dot)} aria-label={`Show ${label} ${dot + 1}`} className={`h-1.5 rounded-full transition-all ${dot === index ? "w-5 bg-[#e93368]" : "w-1.5 bg-stone-300"}`} />)}</div>;
+}
+
+function getLocalDayNumber() {
+  const now = new Date();
+  return Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
 }
 
 function ThinkingMessage() {
