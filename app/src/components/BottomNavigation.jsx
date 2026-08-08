@@ -8,8 +8,8 @@ import {
 
 const items = [
   { id: "chat", label: "Chat", icon: MessageCircle },
-  { id: "products", label: "Products", brand: "SHE Finds", icon: ShoppingBag },
-  { id: "services", label: "Services", brand: "SHE Map", icon: MapPin },
+  { id: "products", label: "Products", icon: ShoppingBag },
+  { id: "services", label: "Services", icon: MapPin },
   { id: "education", label: "Learn", icon: BookOpen },
   { id: "profile", label: "Profile", icon: User },
 ];
@@ -18,7 +18,7 @@ export default function BottomNavigation({ activeTab, navigate }) {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-[1200] border-t border-pink-100 bg-white/95 px-3 py-2 shadow-[0_-8px_30px_rgba(50,35,40,0.05)] backdrop-blur">
       <div className="mx-auto grid max-w-3xl grid-cols-5 gap-1">
-        {items.map(({ id, label, brand, icon: Icon }) => {
+        {items.map(({ id, label, icon: Icon }) => {
           const active = activeTab === id;
 
           return (
@@ -33,12 +33,7 @@ export default function BottomNavigation({ activeTab, navigate }) {
               }`}
             >
               <Icon size={21} strokeWidth={active ? 2.4 : 1.9} />
-              <span className="leading-none">{label}</span>
-              {brand && (
-                <span className="text-[8px] font-semibold uppercase leading-none tracking-[0.06em] text-[#f43f72]/75">
-                  {brand}
-                </span>
-              )}
+              <span>{label}</span>
             </button>
           );
         })}
