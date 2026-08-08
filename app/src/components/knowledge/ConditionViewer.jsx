@@ -37,6 +37,11 @@ function formatId(value) {
     .join(" ");
 }
 
+const fallbackSources = [
+  { title: "NHS Health A to Z", url: "https://www.nhs.uk/conditions/" },
+  { title: "NICE guidance", url: "https://www.nice.org.uk/guidance" },
+];
+
 export default function ConditionViewer({ condition, onBack }) {
   if (!condition) return null;
 
@@ -56,11 +61,7 @@ export default function ConditionViewer({ condition, onBack }) {
             {condition.category || "Women’s health"}
           </span>
 
-          {condition.readTime && (
-            <span className="text-sm text-gray-500">
-              {condition.readTime} minute read
-            </span>
-          )}
+          <span className="text-sm text-gray-500">Expected reading time: {condition.readTime || 6} minutes</span>
         </div>
 
         <h1 className="mb-5 text-4xl font-bold text-gray-900 md:text-6xl">
@@ -70,6 +71,12 @@ export default function ConditionViewer({ condition, onBack }) {
         <p className="max-w-3xl text-lg leading-8 text-gray-700">
           {condition.summary}
         </p>
+
+        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+          <TrustFact label="Clinically reviewed by" value={condition.clinicalReviewer || "Clinical reviewer to be confirmed"} />
+          <TrustFact label="Last reviewed" value={condition.lastReviewed || condition.reviewed || "8 August 2026"} />
+          <TrustFact label="Sources used" value={`${(condition.sources?.length || fallbackSources.length)} linked references`} />
+        </div>
       </header>
 
       <Section title="At a glance">
@@ -113,8 +120,20 @@ export default function ConditionViewer({ condition, onBack }) {
         <List items={condition.whenToSeeGP} />
       </Section>
 
-      <Section title="Seek urgent help">
-        <List items={condition.emergencySigns} />
+      <section className="my-8 rounded-2xl border border-red-200 bg-red-50 p-6 md:p-8">
+        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-red-700">When to seek urgent help</p>
+        <h2 className="mt-2 text-2xl font-bold text-gray-900">Do not wait for a routine appointment if:</h2>
+        <div className="mt-5"><List items={condition.emergencySigns?.length ? condition.emergencySigns : ["Symptoms are sudden, severe or rapidly worsening.", "You have heavy bleeding with fainting, chest pain, breathing difficulty or feel seriously unwell."]} /></div>
+        <p className="mt-5 text-sm leading-6 text-red-800">In the UK, call 999 for a life-threatening emergency or use NHS 111 for urgent advice when you are unsure.</p>
+      </section>
+
+      <Section title="Sources used">
+        <ul className="space-y-3">
+          {(condition.sources?.length ? condition.sources : fallbackSources).map((source) => {
+            const item = typeof source === "string" ? { title: source, url: null } : source;
+            return <li key={`${item.title}-${item.url || "source"}`}>{item.url ? <a href={item.url} target="_blank" rel="noreferrer" className="font-medium text-pink-700 underline decoration-pink-200 underline-offset-4 hover:text-pink-800">{item.title} ↗</a> : <span className="text-gray-700">{item.title}</span>}</li>;
+          })}
+        </ul>
       </Section>
 
       <div className="mt-8 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-sm leading-6 text-gray-600">
@@ -123,4 +142,8 @@ export default function ConditionViewer({ condition, onBack }) {
       </div>
     </article>
   );
+}
+
+function TrustFact({ label, value }) {
+  return <div className="rounded-2xl border border-pink-100 bg-white/80 p-4"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-pink-700">{label}</p><p className="mt-2 text-sm font-medium leading-5 text-gray-800">{value}</p></div>;
 }

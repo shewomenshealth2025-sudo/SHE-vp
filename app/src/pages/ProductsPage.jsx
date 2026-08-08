@@ -202,7 +202,7 @@ const categoryDirectory = [
   {
     group: "Hormonal health",
     items: [
-      { label: "PCOS support", terms: ["pcos", "polycystic"] },
+      { label: "PMOS (PCOS) support", terms: ["pcos", "polycystic"] },
       { label: "Endometriosis support", terms: ["endometriosis"] },
       { label: "Adenomyosis support", terms: ["adenomyosis"] },
       { label: "Hormone tracking", terms: ["hormone", "cycle tracker"] },

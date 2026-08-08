@@ -21,6 +21,7 @@ import {
 } from "./conditions";
 
 import { pelvicPain } from "./symptoms";
+import { expandedConditions } from "./conditions/expandedConditions";
 
 export const conditions = [
   endometriosis,
@@ -42,6 +43,7 @@ export const conditions = [
   ironDeficiencyAnaemia,
   osteoporosis,
   coeliacDisease,
+  ...expandedConditions,
 ];
 
 export const symptoms = [

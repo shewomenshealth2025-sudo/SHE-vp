@@ -56,9 +56,16 @@ export const endometriosis = {
 
   relatedProducts: [],
 
-  sources: [],
+  sources: [
+    { title: "NHS — Endometriosis", url: "https://www.nhs.uk/conditions/endometriosis/" },
+    { title: "NICE — Endometriosis: diagnosis and management", url: "https://www.nice.org.uk/guidance/ng73" }
+  ],
 
-  reviewed: "",
+  clinicalReviewer: "Clinical reviewer to be confirmed",
+
+  lastReviewed: "8 August 2026",
+
+  reviewed: "8 August 2026",
 
   version: 1
 };

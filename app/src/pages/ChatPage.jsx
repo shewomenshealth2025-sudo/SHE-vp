@@ -15,7 +15,7 @@ const trendingProducts = [
 
 const sheNews = [
   { category: "Pelvic health", title: "Why severe period pain deserves proper investigation", summary: "What to track and when to speak to a clinician." },
-  { category: "Hormonal health", title: "PCOS is about more than ovarian cysts", summary: "A clearer look at symptoms, assessment and long-term care." },
+  { category: "Hormonal health", title: "PMOS (PCOS) is about more than ovarian cysts", summary: "A clearer look at symptoms, assessment and long-term care." },
   { category: "Menopause", title: "Understanding the stages of menopause", summary: "How perimenopause, menopause and postmenopause differ." },
   { category: "Fertility", title: "What ovulation tests can—and cannot—tell you", summary: "How to use test results without overinterpreting them." },
   { category: "Everyday health", title: "Iron deficiency can show up in unexpected ways", summary: "Fatigue, breathlessness and other signs worth discussing." },
