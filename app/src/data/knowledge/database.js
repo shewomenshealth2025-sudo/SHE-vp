@@ -24,6 +24,8 @@ import { pelvicPain } from "./symptoms";
 import { expandedConditions } from "./conditions/expandedConditions";
 import { additionalConditions } from "./conditions/additionalConditions";
 import { applyCauseRiskProfiles } from "./causeRiskProfiles";
+import { nicheConditions } from "./conditions/nicheConditions";
+import { relatedProductsFor } from "./productLinks";
 
 const baseConditions = applyCauseRiskProfiles([
   endometriosis,
@@ -47,6 +49,7 @@ const baseConditions = applyCauseRiskProfiles([
   coeliacDisease,
   ...expandedConditions,
   ...additionalConditions,
+  ...nicheConditions,
 ]);
 
 function relationshipScore(left, right) {
@@ -66,6 +69,7 @@ function categoryFamily(category = "") {
 
 export const conditions = baseConditions.map((condition) => ({
   ...condition,
+  relatedProductIds: relatedProductsFor(condition),
   relatedConditions: baseConditions
     .map((candidate) => ({ id: candidate.id, score: relationshipScore(condition, candidate) }))
     .filter((candidate) => candidate.score > 0)

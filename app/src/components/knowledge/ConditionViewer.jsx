@@ -44,6 +44,9 @@ const fallbackSources = [
 
 export default function ConditionViewer({ condition, onBack, onSelectRelated }) {
   if (!condition) return null;
+  const relatedProducts = (condition.relatedProductIds || [])
+    .map((id) => products.find((product) => product.id === id))
+    .filter(Boolean);
 
   return (
     <article className="mx-auto max-w-5xl">
@@ -148,6 +151,24 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
         </Section>
       )}
 
+      {relatedProducts.length > 0 && (
+        <section className="mt-8 rounded-3xl border border-pink-100 bg-pink-50/50 p-6 md:p-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-pink-700">Related products</p>
+          <h2 className="mt-2 text-2xl font-bold text-gray-900">Products that may support comfort or tracking</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-600">These products do not treat the underlying condition. Check the full SHE Score, suitability and safety information before buying.</p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {relatedProducts.slice(0, 3).map((product) => (
+              <Link key={product.id} to="/products" className="group rounded-2xl border border-white bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                {product.image && <img src={product.image} alt={product.name} className="aspect-square w-full rounded-xl bg-gray-50 object-contain" loading="lazy" />}
+                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-gray-400">{product.brand}</p>
+                <h3 className="mt-1 font-semibold text-gray-900 group-hover:text-pink-700">{product.name}</h3>
+                <p className="mt-2 text-sm font-semibold text-pink-700">SHE Score {product.score.toFixed(1)} · View in SHE Finds →</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="mt-8 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-sm leading-6 text-gray-600">
         This information is for education and does not replace advice from a
         qualified healthcare professional.
@@ -159,3 +180,5 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
 function TrustFact({ label, value }) {
   return <div className="rounded-2xl border border-pink-100 bg-white/80 p-4"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-pink-700">{label}</p><p className="mt-2 text-sm font-medium leading-5 text-gray-800">{value}</p></div>;
 }
+import { Link } from "react-router-dom";
+import { products } from "../../data/products";

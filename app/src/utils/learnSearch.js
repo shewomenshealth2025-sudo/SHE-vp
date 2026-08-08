@@ -90,7 +90,7 @@ function normalise(value = "") {
 function tokenise(value = "") {
   return normalise(value)
     .split(" ")
-    .filter((token) => token.length > 2 && !STOP_WORDS.has(token));
+    .filter((token) => (/^\d+$/.test(token) || token.length > 2) && !STOP_WORDS.has(token));
 }
 
 function expandQuery(query) {
