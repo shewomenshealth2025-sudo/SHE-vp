@@ -22,13 +22,15 @@ try {
   const knowledge = await server.ssrLoadModule("/src/knowledge/knowledgeBase.js");
   const search = await server.ssrLoadModule("/src/utils/learnSearch.js");
   const database = await server.ssrLoadModule("/src/data/knowledge/database.js");
+  const productData = await server.ssrLoadModule("/src/data/products.js");
 
   const guides = knowledge.knowledgeGuides;
   const conditions = database.conditions;
+  const productIds = new Set(productData.products.map((product) => product.id));
   const ids = new Set(guides.map((guide) => guide.id));
 
-  assert(guides.length === 169, `Expected 169 Chat guides, received ${guides.length}`);
-  assert(conditions.length === 169, `Expected 169 Learn conditions, received ${conditions.length}`);
+  assert(guides.length === 269, `Expected 269 Chat guides, received ${guides.length}`);
+  assert(conditions.length === 269, `Expected 269 Learn conditions, received ${conditions.length}`);
   assert(ids.size === guides.length, "Guide IDs must be unique");
   assert(conditions.every((condition) => ids.has(condition.id)), "Learn and Chat IDs must match");
   assert(guides.every((guide) => guide.evidence?.sources?.length > 0), "Every guide needs sources");
@@ -57,6 +59,10 @@ try {
   assert(conditions.every((condition) => condition.whenToSeeGP?.length >= 2), "Every guide needs clinical safety-netting");
   assert(conditions.every((condition) => condition.sources?.length >= 2), "Every guide needs NHS and HSE references");
   assert(conditions.every((condition) => condition.sources.every(isNhsOrHseSource)), "Every source must be an NHS or HSE website");
+  const linkedProductIds = new Set(conditions.flatMap((condition) => condition.relatedProductIds || []));
+  assert(linkedProductIds.size > 0, "Relevant guides should link to products");
+  assert([...linkedProductIds].every((id) => productIds.has(id)), "Every related product link must resolve");
+  assert(conditions.some((condition) => !condition.relatedProductIds?.length), "Product links must remain selective");
 
   const retrievalCases = [
     ["sudden pain and vomiting ovarian torsion", "ovarian-torsion"],
@@ -68,6 +74,10 @@ try {
     ["one leg swollen and breathless after giving birth", "postpartum-blood-clot"],
     ["painless sore and rash on palms", "syphilis"],
     ["bladder bulge and cannot empty fully", "cystocele"],
+    ["heart races when I stand up dizzy", "pots"],
+    ["what is happening at 20 weeks pregnant", "pregnancy-week-20"],
+    ["first period menarche puberty", "menarche"],
+    ["follicular phase before ovulation", "follicular-phase"],
   ];
 
   for (const [query, expectedId] of retrievalCases) {
