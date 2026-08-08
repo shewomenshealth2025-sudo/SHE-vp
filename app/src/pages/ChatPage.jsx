@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import ChatComposer from "../components/ChatComposer";
 import ChatMessage from "../components/ChatMessage";
+import GuidedJourney from "../components/GuidedJourney";
 import { generateSHEReply } from "../utils/chatEngine";
-import { ArrowRight, ChevronLeft, ChevronRight, Lightbulb, Newspaper, Search, Sparkles, TrendingUp } from "lucide-react";
+import { hasMemoryConsent, JOURNEYS, readPlans } from "../utils/shePlan";
+import { ArrowRight, CalendarClock, ChevronLeft, ChevronRight, HeartPulse, Lightbulb, Newspaper, Search, Sparkles, TrendingUp } from "lucide-react";
 
 const trendingProducts = [
   { brand: "BeYou", name: "Monthly Patches", image: "https://img.ananinja.com/media/bra-public-files/services-admin/files/dc51349f-8725-4d8d-8351-c0ea6005feb1" },
@@ -50,6 +52,8 @@ export default function ChatPage({
   const [isThinking, setIsThinking] = useState(false);
   const [streamingText, setStreamingText] = useState("");
   const [productSearch, setProductSearch] = useState("");
+  const [activeJourney, setActiveJourney] = useState(null);
+  const [latestPlan, setLatestPlan] = useState(() => hasMemoryConsent() ? readPlans()[0] || null : null);
 
   const endRef = useRef(null);
   const streamIntervalRef = useRef(null);
@@ -124,11 +128,12 @@ export default function ChatPage({
         cleanMessage || createAttachmentTitle(submittedAttachments),
         response.suggestions,
         response.article,
+        detectJourney(cleanMessage),
       );
     }, submittedAttachments.length > 0 ? 850 : 450);
   }
 
-  function streamResponse(fullResponse, conversationTitle, suggestions = [], article = null) {
+  function streamResponse(fullResponse, conversationTitle, suggestions = [], article = null, journeyId = null) {
     setIsThinking(false);
     setStreamingText("");
 
@@ -153,6 +158,7 @@ export default function ChatPage({
           text: fullResponse,
           suggestions,
           article,
+          journeyId,
         };
 
         setConversation((current) => {
@@ -187,6 +193,18 @@ export default function ChatPage({
     navigate("products", { search: productSearch });
   }
 
+  function handlePlanSaved(plan, consent) {
+    setLatestPlan(consent ? plan : null);
+    setActiveJourney(null);
+    const completedMessage = {
+      id: createMessageId(),
+      role: "she",
+      text: "Your SHE Plan has been saved to My Health. I’ve organised what you told me into practical next steps and an appointment-ready summary.",
+      suggestions: ["Help me prepare for an appointment", "What should I track next?"],
+    };
+    setConversation((current) => [...current, completedMessage]);
+  }
+
   return (
     <main className="mx-auto w-full max-w-6xl px-5 pb-52 pt-4 md:px-8 lg:px-12">
       {!hasConversation && !streamingText && (
@@ -212,6 +230,26 @@ export default function ChatPage({
                 setAttachments={setAttachments}
               />
             </div>
+
+            {latestPlan && (
+              <button type="button" onClick={() => setMessage(`Last time I created a plan about ${latestPlan.title.toLowerCase()}. Help me update it.`)} className="mx-auto mt-5 flex w-full max-w-2xl items-start gap-3 rounded-2xl border border-[#e4ddf3] bg-[#faf8ff] p-4 text-left">
+                <CalendarClock size={19} className="mt-0.5 shrink-0 text-[#7255a6]" />
+                <span><span className="block text-sm font-semibold">Continue where you left off</span><span className="mt-1 block text-sm leading-6 text-stone-600">Last time you created a plan for {latestPlan.title.toLowerCase()}. Has anything changed?</span></span>
+              </button>
+            )}
+
+            <div className="mx-auto mt-8 max-w-5xl">
+              <div className="text-center"><p className="text-sm font-semibold text-[#e93368]">Start with what is happening</p><h3 className="mt-1 text-2xl font-semibold">Leave with a personalised next-step plan</h3></div>
+              <div className="mt-5 grid gap-3 md:grid-cols-3">
+                {Object.values(JOURNEYS).map((journey, index) => {
+                  const icons = [HeartPulse, CalendarClock, Sparkles];
+                  const Icon = icons[index];
+                  return <button key={journey.id} type="button" onClick={() => setActiveJourney(journey.id)} className="rounded-2xl border border-stone-200 bg-white p-5 text-left transition hover:-translate-y-0.5 hover:border-pink-200 hover:shadow-md"><Icon size={20} className="text-[#e93368]" /><span className="mt-4 block font-semibold">{journey.label}</span><span className="mt-2 block text-sm leading-6 text-stone-500">{journey.description}</span><span className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-[#d92f62]">Create my plan <ArrowRight size={15} /></span></button>;
+                })}
+              </div>
+            </div>
+
+            {activeJourney && <div className="mx-auto mt-8 max-w-3xl"><GuidedJourney journeyId={activeJourney} onClose={() => setActiveJourney(null)} onSaved={handlePlanSaved} navigate={navigate} /></div>}
 
             <form onSubmit={searchProducts} className="mx-auto mt-5 flex w-full max-w-2xl flex-col gap-3 rounded-2xl border border-[#f4cad8] bg-[#fff7fa] p-3 sm:flex-row sm:items-center">
               <div className="flex min-w-0 flex-1 items-center gap-3 px-2">
@@ -251,6 +289,8 @@ export default function ChatPage({
             </h2>
           </div>
 
+          {activeJourney && <div className="mb-7"><GuidedJourney journeyId={activeJourney} onClose={() => setActiveJourney(null)} onSaved={handlePlanSaved} navigate={navigate} /></div>}
+
           <div className="space-y-6">
             {conversation.map((entry) => (
               <ChatMessage
@@ -258,6 +298,7 @@ export default function ChatPage({
                 message={entry}
                 suggestions={entry.suggestions || []}
                 chooseSuggestion={chooseSuggestion}
+                onStartJourney={setActiveJourney}
               />
             ))}
 
@@ -294,6 +335,16 @@ export default function ChatPage({
       )}
     </main>
   );
+}
+
+function detectJourney(message = "") {
+  const text = message.toLowerCase();
+  const personal = /\b(i|my|me|i'm|i’ve|ive)\b/.test(text);
+  if (!personal) return null;
+  if (/pregnan|postpartum|postnatal|after (giving )?birth|baby movement/.test(text)) return "pregnancy-postpartum";
+  if (/cycle.*chang|period.*(late|early|miss|irregular)|bleeding between/.test(text)) return "cycle-changed";
+  if (/(heavy|painful) period|period.*(heavy|pain|clot|flood)|bleed.*through/.test(text)) return "heavy-periods";
+  return null;
 }
 
 function TrendingCarousel({ items, onOpen }) {
