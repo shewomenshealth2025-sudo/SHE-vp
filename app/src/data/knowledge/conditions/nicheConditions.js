@@ -4,6 +4,9 @@ const NHS_AZ = { title: "NHS Health A to Z", url: "https://www.nhs.uk/conditions
 const HSE_WOMENS_HEALTH = { title: "HSE Women’s health A–Z", url: "https://www2.hse.ie/conditions/womens-health-a-z/" };
 
 const pregnancyMilestones = {
+  1: "pregnancy dating begins on the first day of the last menstrual period, although conception has not yet occurred",
+  2: "the body is preparing for ovulation and conception has usually not yet occurred",
+  3: "ovulation and fertilisation may have occurred and the fertilised egg is dividing as it travels towards the womb",
   4: "implantation is completing and the early placenta and embryo are beginning to form",
   5: "the neural tube, which becomes the brain and spinal cord, is developing",
   6: "the embryo is curved, limb buds are emerging and early cardiac activity may be visible on ultrasound",
@@ -50,6 +53,8 @@ function pregnancyWeek(week, milestone) {
     ? "Contact maternity triage urgently for reduced or changed fetal movement, bleeding, leaking fluid, regular painful contractions or severe illness."
     : "Seek urgent assessment for heavy bleeding, severe one-sided pain, shoulder-tip pain, collapse or severe dehydration.";
 
+  const beforeConception = week <= 2;
+  const veryEarly = week <= 3;
   return {
     id: `pregnancy-week-${week}`,
     slug: `pregnancy-week-${week}`,
@@ -62,10 +67,16 @@ function pregnancyWeek(week, milestone) {
       `At week ${week}, ${milestone}.`,
       "Developmental measurements are averages and a scan should be interpreted by the maternity team rather than compared with an app alone.",
     ],
-    symptoms: week < 13 ? ["nausea", "fatigue", "breast-tenderness", "frequent-urination"] : week < 28 ? ["growing-bump", "fetal-movement", "backache", "indigestion"] : ["fetal-movement", "pelvic-pressure", "breathlessness", "sleep-disruption"],
-    causes: [
+    symptoms: veryEarly ? ["period or cycle changes", "usually no pregnancy symptoms", "pregnancy planning"] : week < 13 ? ["nausea", "fatigue", "breast-tenderness", "frequent-urination"] : week < 28 ? ["growing-bump", "fetal-movement", "backache", "indigestion"] : ["fetal-movement", "pelvic-pressure", "breathlessness", "sleep-disruption"],
+    causes: beforeConception ? [
+      `Week ${week} is a dating convention based on the last menstrual period; pregnancy hormones and an embryo are not normally present yet.`,
+      "FSH supports follicle growth and rising oestrogen prepares the womb lining before ovulation.",
+    ] : week === 3 ? [
+      "An LH surge triggers ovulation; if sperm fertilises the egg, the resulting cells divide while travelling towards the womb.",
+      "Implantation and a measurable rise in pregnancy hormone usually occur later, so a test may still be negative.",
+    ] : [
       `The changes at week ${week} are driven by placental hormones, growth of the uterus and the developmental milestone that ${milestone}.`,
-      `Symptoms vary because hormone sensitivity, previous pregnancies, fetal position, placenta position and individual health differ.`,
+      "Symptoms vary because hormone sensitivity, previous pregnancies, fetal position, placenta position and individual health differ.",
     ],
     riskFactors: [
       "Pregnancy complications are more likely with some pre-existing conditions, multiple pregnancy, previous complications or abnormal placental development.",
@@ -130,6 +141,12 @@ const profiles = {
     diagnosis: ["History links pain, bleeding, bowel, bladder, chest or fertility symptoms to the cycle.", "Specialist ultrasound or MRI can map deep disease and endometriomas; laparoscopy may diagnose and treat selected cases."],
     treatment: ["Pain relief and hormonal suppression are common when pregnancy is not being pursued.", "Complex ovarian, bowel, bladder or thoracic disease may need a specialist multidisciplinary surgical and fertility plan."],
   },
+  postpartum: {
+    causes: ["Postnatal changes reflect healing after pregnancy and birth, rapid hormone shifts, feeding physiology and recovery from blood loss, surgery or tissue injury.", "The timing, severity and associated fever, bleeding, pain, mood or feeding change help separate expected recovery from a complication."],
+    risks: ["Caesarean or assisted birth, severe tears, haemorrhage, infection, thyroid or mental-health history and feeding difficulties increase particular postnatal risks.", "Symptoms can still occur after an uncomplicated birth, so rapid worsening or impaired daily function should not be dismissed."],
+    diagnosis: ["Assessment includes the birth history, time since delivery, observations, bleeding, wounds, bladder and bowel function, feeding, sleep and emotional wellbeing.", "Examination and targeted blood tests, imaging or specialist mental-health assessment are used for the suspected complication."],
+    treatment: ["Management may include reassurance with follow-up, pain relief, feeding support, physiotherapy, thyroid treatment, antibiotics, psychological therapy or urgent hospital care.", "Plans should consider breastfeeding or chestfeeding, contraception, future pregnancy and clear signs for reassessment."],
+  },
   general: {
     causes: ["This topic has several possible biological mechanisms, so the symptom pattern and clinical context are needed to identify the most likely one.", "Hormonal, inflammatory, structural, neurological, infectious and medicine-related explanations are considered where relevant."],
     risks: ["Age, life stage, pregnancy, family history, medicines and previous diagnoses change likelihood but do not confirm the condition.", "A person can be affected without a recognised risk factor, so persistent or progressive symptoms still deserve assessment."],
@@ -139,6 +156,34 @@ const profiles = {
 };
 
 const nicheSpecs = [
+  ["early-puberty", "Early Puberty in Girls", "Puberty", "Early puberty means breast or pubic-hair development begins unusually young and may require assessment of growth, hormones and neurological symptoms.", "early breast development|rapid growth|pubic hair|early bleeding", "cycle"],
+  ["delayed-puberty", "Delayed Puberty", "Puberty", "Delayed puberty means expected breast development or periods have not begun within the usual age range and may reflect family timing, nutrition, long-term illness or hormone conditions.", "no breast development|no periods|slow growth|puberty concern", "cycle"],
+  ["breast-development-puberty", "Breast Development During Puberty", "Puberty", "Breast budding is often the first visible sign of puberty and one side commonly develops before the other, although persistent lumps or marked pain need assessment.", "breast buds|temporary asymmetry|tenderness|growth changes", "cycle"],
+  ["mrkh-syndrome", "MRKH Syndrome", "Reproductive development", "MRKH syndrome is a congenital difference in which the uterus and upper vagina are absent or underdeveloped despite typical ovaries and external puberty development.", "absent first period|typical breast development|short vaginal canal|fertility questions", "uterine"],
+  ["vaginal-septum", "Vaginal Septum", "Reproductive development", "A vaginal septum is a congenital wall of tissue running across or along the vagina and may affect periods, tampon use, sex or childbirth.", "difficulty using tampons|pain during sex|obstructed bleeding|vaginal difference", "uterine"],
+  ["corpus-luteum-cyst", "Corpus Luteum Cyst", "Ovarian health", "A corpus luteum cyst forms after ovulation when the follicle that released the egg seals and fills with fluid or blood.", "one-sided pelvic pain|cycle-related pain|incidental ultrasound finding", "cycle"],
+  ["haemorrhagic-ovarian-cyst", "Haemorrhagic Ovarian Cyst", "Ovarian health", "A haemorrhagic ovarian cyst occurs when bleeding develops within a functional cyst and may cause sudden or persistent one-sided pelvic pain.", "one-sided pain|sudden pelvic pain|bloating|nausea", "cycle"],
+  ["dermoid-ovarian-cyst", "Dermoid Ovarian Cyst", "Ovarian health", "A dermoid cyst is a usually benign ovarian germ-cell tumour that can contain different mature tissue types and grows independently of the menstrual cycle.", "often no symptoms|pelvic pressure|one-sided pain|torsion symptoms", "general"],
+  ["ruptured-ovarian-cyst", "Ruptured Ovarian Cyst", "Ovarian health", "An ovarian cyst can release fluid or blood when it ruptures, causing sudden pain that ranges from self-limiting to an internal-bleeding emergency.", "sudden one-sided pain|spotting|dizziness|shoulder pain", "cycle"],
+  ["tubo-ovarian-abscess", "Tubo-Ovarian Abscess", "Gynaecological emergency", "A tubo-ovarian abscess is a collection of infected fluid involving a fallopian tube and ovary, most often as a complication of pelvic inflammatory disease.", "severe pelvic pain|fever|unusual discharge|vomiting", "general"],
+  ["cervical-polyp", "Cervical Polyp", "Cervical health", "A cervical polyp is a usually benign growth from the cervical canal that may cause bleeding after sex, spotting or increased discharge.", "bleeding after sex|spotting|discharge|incidental examination finding", "general"],
+  ["vulval-cyst", "Vulval Cysts and Lumps", "Vulval health", "Vulval cysts can arise from blocked glands, skin structures or previous injury; a new persistent lump needs examination rather than self-diagnosis.", "vulval lump|swelling|tenderness|skin change", "vulval"],
+  ["urethral-caruncle", "Urethral Caruncle", "Urinary and vulval health", "A urethral caruncle is a small red benign growth at the urethral opening, seen most often after menopause and sometimes causing soreness or bleeding.", "small urethral lump|spotting|pain passing urine|soreness", "vulval"],
+  ["genitourinary-syndrome-menopause", "Genitourinary Syndrome of Menopause", "Menopause", "Genitourinary syndrome of menopause describes vaginal, vulval and urinary changes caused by lower oestrogen, including dryness, pain, urgency and recurrent UTIs.", "vaginal dryness|pain during sex|urinary urgency|recurrent UTI", "vulval"],
+  ["nocturia-women", "Nocturia in Women", "Bladder health", "Nocturia means waking from sleep to pass urine and can reflect evening fluids, overactive bladder, sleep problems, swelling, diabetes or heart and kidney conditions.", "waking to urinate|sleep disruption|urgency|daytime fatigue", "general"],
+  ["urinary-retention-women", "Urinary Retention in Women", "Bladder health", "Urinary retention is difficulty emptying the bladder fully and may be acute or chronic, with causes including prolapse, constipation, medicines, nerve problems or postnatal swelling.", "difficulty starting urine|weak stream|lower abdominal pressure|incomplete emptying", "general"],
+  ["diastasis-recti", "Diastasis Recti After Pregnancy", "Postpartum", "Diastasis recti is widening of the connective tissue between the abdominal muscles during pregnancy, which often improves gradually after birth.", "midline abdominal bulge|core weakness|back discomfort|doming with effort", "postpartum"],
+  ["caesarean-scar-recovery", "Caesarean Scar Recovery", "Postpartum", "A caesarean incision heals through several tissue layers and should gradually become less painful, while increasing redness, discharge or opening suggests a complication.", "scar tenderness|numbness|itching|wound redness", "postpartum"],
+  ["postpartum-thyroiditis", "Postpartum Thyroiditis", "Postpartum", "Postpartum thyroiditis is autoimmune inflammation of the thyroid within a year of birth and may cause an overactive phase followed by underactivity.", "palpitations|anxiety|fatigue|cold intolerance|weight change", "postpartum"],
+  ["postpartum-hair-loss", "Postpartum Hair Loss", "Postpartum", "Postpartum hair shedding occurs when hairs retained during pregnancy enter the resting phase together after hormone levels fall.", "diffuse hair shedding|hairline thinning|postnatal change", "postpartum"],
+  ["retained-placenta", "Retained Placenta", "Birth complication", "A retained placenta has not delivered within the expected time after birth and increases the risk of haemorrhage and infection.", "placenta not delivered|heavy bleeding|womb not contracting|postnatal fever", "placental"],
+  ["uterine-inversion", "Uterine Inversion", "Birth emergency", "Uterine inversion is a rare emergency in which the womb turns partly or completely inside out after birth, causing haemorrhage, pain and shock.", "severe bleeding|collapse|pelvic mass|shock", "placental"],
+  ["obstetric-anal-sphincter-injury", "Obstetric Anal Sphincter Injury", "Postpartum", "An obstetric anal sphincter injury is a third- or fourth-degree perineal tear involving the muscles controlling the anus and requires repair and follow-up.", "perineal pain|bowel urgency|wind leakage|stool leakage", "postpartum"],
+  ["birth-trauma-ptsd", "Birth Trauma and Postnatal PTSD", "Postpartum mental health", "Postnatal PTSD can follow a frightening or traumatic pregnancy, birth or neonatal experience and involves re-experiencing, avoidance and hyperarousal.", "flashbacks|nightmares|avoidance|hypervigilance|birth distress", "postpartum"],
+  ["tokophobia", "Tokophobia: Severe Fear of Childbirth", "Pregnancy mental health", "Tokophobia is an intense fear of pregnancy or childbirth that causes significant distress, avoidance or difficulty engaging with maternity care.", "severe birth fear|panic|avoidance|intrusive images|sleep problems", "postpartum"],
+  ["pregnancy-after-loss", "Pregnancy After Loss", "Pregnancy mental health", "Pregnancy after miscarriage, ectopic pregnancy, stillbirth or neonatal loss can bring intense anxiety alongside hope and may need additional emotional and clinical support.", "scan anxiety|fear of recurrence|grief triggers|hypervigilance", "postpartum"],
+  ["milk-bleb", "Milk Bleb", "Breastfeeding", "A milk bleb is a small white or yellow spot over a nipple pore linked to underlying duct inflammation rather than a simple skin blister to puncture.", "white nipple spot|focal nipple pain|pain during feeding", "postpartum"],
+  ["nipple-vasospasm", "Nipple Vasospasm", "Breastfeeding", "Nipple vasospasm occurs when blood vessels constrict, causing blanching and burning or shooting pain, often after feeding or cold exposure.", "nipple blanching|burning pain|colour change|cold-triggered pain", "postpartum"],
   ["menarche", "Menarche: The First Period", "Puberty", "Menarche is the first menstrual period and usually follows other puberty changes such as breast development and growth of pubic hair.", "first bleeding|puberty changes|irregular early cycles", "cycle"],
   ["imperforate-hymen", "Imperforate Hymen", "Puberty", "An imperforate hymen completely covers the vaginal opening and can block menstrual blood, causing cyclical pain without visible periods after puberty begins.", "monthly abdominal pain|absent visible periods|pelvic pressure|difficulty passing urine", "uterine"],
   ["menstrual-cycle-overview", "The Menstrual Cycle: A Detailed Overview", "Menstrual health", "The cycle includes menstruation, the follicular phase, ovulation and the luteal phase, coordinated by changing reproductive hormones.", "bleeding|cervical mucus change|ovulation|premenstrual symptoms", "cycle"],
