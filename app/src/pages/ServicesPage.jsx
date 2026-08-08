@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useSearchParams } from "react-router-dom";
 import {
   Bookmark,
   Building2,
@@ -242,7 +243,8 @@ function distanceFromUser(service, userLocation) {
 }
 
 export default function ServicesPage() {
-  const [query, setQuery] = useState("");
+  const [searchParams] = useSearchParams();
+  const [query, setQuery] = useState(() => searchParams.get("q") || "");
   const [selectedType, setSelectedType] = useState("All");
   const [selectedTopic, setSelectedTopic] =
     useState("All topics");
@@ -252,7 +254,7 @@ export default function ServicesPage() {
   const [locationStatus, setLocationStatus] = useState("idle");
   const [showLocationConsent, setShowLocationConsent] = useState(false);
   const [savedIds, setSavedIds] = useState(readSavedServices);
-  const [viewMode, setViewMode] = useState("map");
+  const [viewMode, setViewMode] = useState(() => searchParams.get("view") === "list" ? "list" : "map");
   const [visibleListCount, setVisibleListCount] = useState(30);
 
   const filteredServices = useMemo(() => {
