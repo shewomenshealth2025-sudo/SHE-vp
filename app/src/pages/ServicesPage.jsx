@@ -8,9 +8,12 @@ import {
   Filter,
   HeartPulse,
   Hospital,
+  Globe2,
+  Mail,
   MapPin,
   Navigation,
   LoaderCircle,
+  Phone,
   Search,
   Stethoscope,
   Users,
@@ -21,12 +24,16 @@ import { services as originalServices } from "../data/services";
 import { expandedServices } from "../data/expandedServices";
 import { expandedServices2 } from "../data/expandedServices2";
 import { serviceDatabase } from "../data/services/database";
+import { communitySupportServices } from "../data/services/communitySupport.generated";
+import { niFamilySupportServices } from "../data/services/niFamilySupport";
 
 const allCandidateServices = [
   ...originalServices,
   ...expandedServices,
   ...expandedServices2,
   ...serviceDatabase,
+  ...communitySupportServices,
+  ...niFamilySupportServices,
 ];
 
 const services = allCandidateServices.filter(
@@ -189,6 +196,14 @@ function getSpeciality(service) {
   );
 }
 
+function getContactDetails(service) {
+  return {
+    phone: toDisplayText(service.phone ?? service.telephone),
+    email: toDisplayText(service.email),
+    website: toDisplayText(service.website ?? service.sourceUrl),
+  };
+}
+
 function searchTextForService(service) {
   return [
     service.name,
@@ -298,7 +313,7 @@ export default function ServicesPage() {
   }
 
   return (
-    <main className="relative h-[calc(100vh-1px)] min-h-[680px] overflow-hidden bg-stone-100">
+    <main className="relative h-[calc(100dvh-72px)] min-h-[560px] overflow-hidden bg-stone-100 pb-20 lg:h-screen lg:min-h-[680px] lg:pb-0">
       <div className="absolute inset-0">
         <RealServiceMap
           services={filteredServices}
@@ -409,7 +424,7 @@ export default function ServicesPage() {
       )}
 
       {/* Women’s health map controls */}
-      <div className="absolute bottom-6 right-4 z-[500] flex flex-col items-end gap-3 md:right-6">
+      <div className="absolute bottom-24 right-4 z-[500] flex flex-col items-end gap-3 md:bottom-6 md:right-6">
         <button
           type="button"
           onClick={locateUser}
@@ -465,7 +480,7 @@ export default function ServicesPage() {
 
       {/* Map helper */}
       {!selectedService && filteredServices.length > 0 && (
-        <div className="pointer-events-none absolute bottom-6 left-1/2 z-[450] -translate-x-1/2">
+        <div className="pointer-events-none absolute bottom-24 left-1/2 z-[450] hidden -translate-x-1/2 sm:block md:bottom-6">
           <div className="rounded-full bg-[#241f20]/90 px-5 py-3 text-xs font-medium text-white shadow-xl backdrop-blur-md">
             Select a map marker to view the service
           </div>
@@ -538,7 +553,7 @@ function SelectedServiceCard({
         y: 30,
         scale: 0.98,
       }}
-      className="absolute inset-x-3 bottom-3 z-[600] rounded-[28px] border border-white/80 bg-white/95 p-5 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:bottom-6 sm:left-6 sm:w-[390px] md:p-6"
+      className="absolute inset-x-3 bottom-24 z-[600] max-h-[62dvh] overflow-y-auto rounded-[28px] border border-white/80 bg-white/95 p-5 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:bottom-24 sm:left-6 sm:w-[390px] md:bottom-6 md:max-h-[80vh] md:p-6"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-pink-50 text-[#f43f72]">
@@ -604,6 +619,8 @@ function SelectedServiceCard({
         </p>
       </div>
 
+      <ServiceContacts service={service} compact />
+
       <button
         type="button"
         onClick={openProfile}
@@ -667,7 +684,7 @@ function ServiceProfileModal({
           scale: 0.98,
         }}
         onClick={(event) => event.stopPropagation()}
-        className="max-h-[94vh] w-full max-w-3xl overflow-y-auto rounded-t-[34px] bg-white shadow-2xl md:rounded-[34px]"
+        className="mb-[76px] max-h-[calc(94dvh-76px)] w-full max-w-3xl overflow-y-auto rounded-t-[34px] bg-white shadow-2xl md:mb-0 md:max-h-[94vh] md:rounded-[34px]"
       >
         <header className="sticky top-0 z-10 flex items-center justify-between border-b border-stone-100 bg-white/95 px-5 py-4 backdrop-blur-xl md:px-8">
           <p className="text-sm font-medium text-stone-500">
@@ -749,6 +766,8 @@ function ServiceProfileModal({
             />
           </div>
 
+          <ServiceContacts service={service} />
+
           {offered.length > 0 && (
             <ProfileSection
               icon={HeartPulse}
@@ -789,6 +808,70 @@ function ServiceProfileModal({
         </div>
       </motion.article>
     </motion.div>
+  );
+}
+
+function ServiceContacts({ service, compact = false }) {
+  const { phone, email, website } = getContactDetails(service);
+  const actions = [
+    {
+      label: phone || "Phone not published",
+      shortLabel: "Call",
+      href: phone ? `tel:${phone.replace(/[^+\d]/g, "")}` : null,
+      icon: Phone,
+    },
+    {
+      label: email || "Email not published",
+      shortLabel: "Email",
+      href: email ? `mailto:${email}` : null,
+      icon: Mail,
+    },
+    {
+      label: website ? "Open provider website" : "Website not published",
+      shortLabel: "Website",
+      href: website || null,
+      icon: Globe2,
+      external: true,
+    },
+  ];
+
+  return (
+    <section className={compact ? "mt-4" : "mt-9"} aria-label="Contact this service">
+      {!compact && <h2 className="text-xl font-semibold">Contact this service</h2>}
+      <div className={`${compact ? "grid grid-cols-3" : "mt-4 grid sm:grid-cols-3"} gap-2`}>
+        {actions.map(({ label, shortLabel, href, icon: Icon, external }) => {
+          const classes = `flex min-w-0 flex-col items-center justify-center gap-2 rounded-2xl border px-2 py-3 text-center transition ${
+            href
+              ? "border-pink-100 bg-pink-50 text-[#e93368] hover:bg-pink-100"
+              : "cursor-not-allowed border-stone-100 bg-stone-50 text-stone-400"
+          }`;
+          const content = (
+            <>
+              <Icon size={compact ? 17 : 20} />
+              <span className="text-xs font-semibold">{shortLabel}</span>
+              {!compact && <span className="max-w-full truncate text-[11px] font-normal text-stone-500">{label}</span>}
+            </>
+          );
+
+          return href ? (
+            <a
+              key={shortLabel}
+              href={href}
+              target={external ? "_blank" : undefined}
+              rel={external ? "noreferrer" : undefined}
+              className={classes}
+              aria-label={`${shortLabel}: ${label}`}
+            >
+              {content}
+            </a>
+          ) : (
+            <span key={shortLabel} className={classes} title={label}>
+              {content}
+            </span>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 

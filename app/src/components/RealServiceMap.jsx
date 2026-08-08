@@ -740,7 +740,8 @@ export default function RealServiceMap({
       <MapContainer
         center={initialCentre}
         zoom={11}
-        scrollWheelZoom
+        scrollWheelZoom={false}
+        dragging
         className="h-full w-full"
         zoomControl
       >
