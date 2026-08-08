@@ -19,6 +19,8 @@ const lifeStages = [
   { id: "postpartum", label: "Postpartum", description: "Recovery, feeding, pelvic health and postnatal wellbeing", terms: ["postpartum", "postnatal", "breastfeed", "after birth", "newborn"] },
   { id: "menopause", label: "Perimenopause & menopause", description: "Hormone changes, symptoms, HRT and long-term health", terms: ["menopause", "perimenopause", "hrt", "hot flush", "postmenopausal"] },
   { id: "sexual-health", label: "Sexual & intimate health", description: "Contraception, infections, vaginal and sexual wellbeing", terms: ["sexual", "contracep", "vaginal", "vulva", "sti", "painful sex"] },
+  { id: "autoimmune", label: "Autoimmune diseases", description: "Lupus, rheumatoid arthritis, Sjögren’s, Hashimoto’s, coeliac disease and symptom overlap", terms: ["autoimmune", "lupus", "rheumatoid", "sjögren", "sjogren", "hashimoto", "coeliac", "immune system"] },
+  { id: "mental-health", label: "Mental health & emotional wellbeing", description: "Anxiety, depression, PMDD, perinatal mental health, trauma and eating disorders", terms: ["mental health", "anxiety", "depression", "depressive", "mood", "pmdd", "trauma", "eating disorder", "postnatal depression", "perinatal mental"] },
 ];
 
 const popularIds = [
@@ -171,7 +173,7 @@ export default function LearnPageV2() {
           <nav className="mt-8 grid gap-3 sm:grid-cols-3" aria-label="Browse SHE Learn">
             <BrowseButton icon={Layers3} title="Browse categories" detail={`${categories.length} health categories`} onClick={() => document.getElementById("learn-categories")?.scrollIntoView({ behavior: "smooth" })} />
             <BrowseButton icon={ListFilter} title="A–Z index" detail="Every guide, alphabetically" onClick={() => openBrowse({ view: "az", letter: "A" })} />
-            <BrowseButton icon={Sparkles} title="Life stages" detail="From first periods to menopause" onClick={() => document.getElementById("life-stages")?.scrollIntoView({ behavior: "smooth" })} />
+            <BrowseButton icon={Sparkles} title="Health collections" detail="Life stages and connected conditions" onClick={() => document.getElementById("life-stages")?.scrollIntoView({ behavior: "smooth" })} />
           </nav>
 
           <KnowledgeSection title="Popular topics">
@@ -181,7 +183,7 @@ export default function LearnPageV2() {
 
           <section id="life-stages" className="border-t border-gray-200 py-10">
             <p className="text-sm font-semibold text-pink-600">Browse around where you are</p>
-            <h2 className="mt-1 text-3xl font-bold text-gray-950">Life-stage collections</h2>
+            <h2 className="mt-1 text-3xl font-bold text-gray-950">Life-stage and health collections</h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {lifeStages.map((stage) => {
                 const count = conditions.filter((condition) => stage.terms.some((term) => conditionText(condition).includes(term))).length;
