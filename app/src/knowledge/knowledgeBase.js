@@ -2,6 +2,7 @@ import {
   learnCategories as legacyCategories,
   learnGuides as legacyGuides,
 } from "../data/learnContent";
+import { conditions as canonicalConditions } from "../data/knowledge/database";
 import { clinicalSourceMappings } from "./clinicalSources";
 import { resolveSource } from "./sourceRegistry";
 
@@ -42,13 +43,14 @@ function deriveSymptoms(guide) {
 }
 
 function createGuideRecord(guide) {
-  const clinical = clinicalSourceMappings[guide.id] ?? {
-    status: "content-draft",
-    reviewedAt: null,
+  const mappedClinical = clinicalSourceMappings[guide.id];
+  const guideSources = normaliseArray(guide.sources);
+  const clinical = mappedClinical ?? {
+    status: guideSources.length ? "source-linked" : "content-draft",
+    reviewedAt: guide.lastReviewed ?? guide.reviewed ?? null,
     nextReviewAt: null,
-    reviewerStatus:
-      "Sources and clinical review required before public launch",
-    sources: [],
+    reviewerStatus: guide.clinicalReviewer ?? "Clinical reviewer to be confirmed",
+    sources: guideSources,
   };
 
   const record = {
@@ -89,7 +91,9 @@ function createGuideRecord(guide) {
       nextReviewAt: clinical.nextReviewAt,
       reviewerStatus: clinical.reviewerStatus,
 
-      sources: clinical.sources.map(resolveSource),
+      sources: clinical.sources.map((source) =>
+        typeof source === "string" ? resolveSource(source) : source,
+      ),
     },
   };
 
@@ -148,7 +152,102 @@ export function validateKnowledgeGuide(guide) {
 
 export const learnCategories = legacyCategories;
 
-export const knowledgeGuides = legacyGuides.map(createGuideRecord);
+const legacyById = new Map(legacyGuides.map((guide) => [guide.id, guide]));
+
+function humanise(value = "") {
+  return value
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function conditionToGuide(condition) {
+  const legacy = legacyById.get(condition.id) || {};
+  const symptoms = normaliseArray(condition.symptoms);
+
+  return {
+    ...legacy,
+    ...condition,
+    categoryLabel: condition.category || legacy.categoryLabel || "Women’s health",
+    summary: condition.summary || legacy.summary,
+    overview: legacy.overview || condition.summary,
+    tags: [
+      condition.title,
+      condition.category,
+      ...symptoms,
+      ...normaliseArray(legacy.tags),
+    ].filter(Boolean),
+    symptoms: symptoms.map(humanise),
+    assessment: normaliseArray(condition.diagnosis).length
+      ? condition.diagnosis
+      : legacy.assessment,
+    treatment: normaliseArray(condition.treatments).length
+      ? condition.treatments
+      : legacy.treatment,
+    livingWith: normaliseArray(condition.selfCare).length
+      ? condition.selfCare
+      : legacy.livingWith,
+    seekHelp: normaliseArray(condition.whenToSeeGP).length
+      ? condition.whenToSeeGP
+      : legacy.seekHelp,
+    urgentHelp: normaliseArray(condition.emergencySigns).length
+      ? condition.emergencySigns
+      : [
+          "Symptoms are sudden, severe or rapidly worsening.",
+          "You have heavy bleeding with fainting, chest pain, breathing difficulty or feel seriously unwell.",
+        ],
+    keyPoints: normaliseArray(condition.quickFacts).length
+      ? condition.quickFacts
+      : legacy.keyPoints,
+    questions: normaliseArray(legacy.questions).length
+      ? legacy.questions
+      : [
+          `Could ${condition.title} explain my symptoms?`,
+          "What assessment or tests may be appropriate?",
+          "Which treatment options fit my circumstances?",
+        ],
+  };
+}
+
+function relationshipScore(left, right) {
+  if (left.id === right.id) return -1;
+
+  const leftSymptoms = new Set(normaliseArray(left.symptoms).map((item) => item.toLowerCase()));
+  const sharedSymptoms = normaliseArray(right.symptoms).filter((item) =>
+    leftSymptoms.has(item.toLowerCase()),
+  ).length;
+  const sameCategory = left.categoryLabel === right.categoryLabel
+    ? 3
+    : categoryFamily(left.categoryLabel) === categoryFamily(right.categoryLabel)
+      ? 1
+      : 0;
+
+  return sameCategory + sharedSymptoms * 2;
+}
+
+function categoryFamily(category = "") {
+  const value = category.toLowerCase();
+  if (/menstrual|gynaec|pelvic|fertility|contracep|sexual|vaginal|screen/.test(value)) return "reproductive";
+  if (/pregnan|postpartum|menopause/.test(value)) return "life-stage";
+  return "whole-health";
+}
+
+const baseGuides = canonicalConditions.map(conditionToGuide).map(createGuideRecord);
+
+export const knowledgeGuides = baseGuides.map((guide) => {
+  const relatedGuideIds = baseGuides
+    .map((candidate) => ({ id: candidate.id, score: relationshipScore(guide, candidate) }))
+    .filter((candidate) => candidate.score > 0)
+    .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id))
+    .slice(0, 5)
+    .map((candidate) => candidate.id);
+
+  return {
+    ...guide,
+    relatedGuideIds,
+    relatedConditions: relatedGuideIds,
+  };
+});
 
 /*
   Backwards-compatible export so the current Learn, Chat,

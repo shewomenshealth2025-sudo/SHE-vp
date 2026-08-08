@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { getAllConditions } from "../data/knowledge";
+import { getAllConditions, getCondition } from "../data/knowledge";
 
 import KnowledgeSearch from "../components/knowledge/KnowledgeSearch";
 import KnowledgeSection from "../components/knowledge/KnowledgeSection";
@@ -28,6 +28,10 @@ export default function LearnPageV2() {
         <ConditionViewer
           condition={selectedCondition}
           onBack={closeCondition}
+          onSelectRelated={(id) => {
+            const related = getCondition(id);
+            if (related) openCondition(related);
+          }}
         />
       </main>
     );
