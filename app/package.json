@@ -10,6 +10,7 @@
     "test:knowledge": "node scripts/validateKnowledgeIntegration.mjs",
     "test:chat": "node scripts/validateConversationalChat.mjs",
     "test:services": "node scripts/validateServices.mjs",
+    "test:plans": "node scripts/validateShePlans.mjs",
     "test:reviews": "node scripts/validateProductReviews.mjs",
     "test:products": "node scripts/validateProductCatalogue.mjs",
     "preview": "vite preview"
