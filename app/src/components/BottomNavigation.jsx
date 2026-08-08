@@ -16,7 +16,7 @@ const items = [
 
 export default function BottomNavigation({ activeTab, navigate }) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-pink-100 bg-white/95 px-3 py-2 shadow-[0_-8px_30px_rgba(50,35,40,0.05)] backdrop-blur">
+    <nav className="fixed inset-x-0 bottom-0 z-[1200] border-t border-pink-100 bg-white/95 px-3 py-2 shadow-[0_-8px_30px_rgba(50,35,40,0.05)] backdrop-blur">
       <div className="mx-auto grid max-w-3xl grid-cols-5 gap-1">
         {items.map(({ id, label, icon: Icon }) => {
           const active = activeTab === id;
