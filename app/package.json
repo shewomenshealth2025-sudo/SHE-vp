@@ -10,6 +10,7 @@
     "test:knowledge": "node scripts/validateKnowledgeIntegration.mjs",
     "test:chat": "node scripts/validateConversationalChat.mjs",
     "test:services": "node scripts/validateServices.mjs",
+    "test:reviews": "node scripts/validateProductReviews.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
