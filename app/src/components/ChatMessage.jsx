@@ -134,7 +134,7 @@ export default function ChatMessage({
 
           {message.journeyId && (
             <button type="button" onClick={() => onStartJourney?.(message.journeyId)} className="mt-5 flex w-full items-center justify-between rounded-2xl border border-[#f0cad7] bg-[#fff5f8] px-5 py-4 text-left text-sm font-semibold text-[#c92758]">
-              <span className="flex items-center gap-3"><ClipboardList size={19} /><span><span className="block text-[10px] uppercase tracking-[0.14em] text-[#c92758]/65">Personalised next step</span><span className="mt-1 block">Create my SHE Plan</span></span></span>
+              <span className="flex items-center gap-3"><ClipboardList size={19} /><span><span className="block text-[10px] uppercase tracking-[0.14em] text-[#c92758]/65">Optional guided support</span><span className="mt-1 block">Help me work out my next steps</span></span></span>
               <ArrowRight size={18} />
             </button>
           )}
