@@ -78,6 +78,7 @@ try {
   assert([...categoryCounts.values()].every((count) => count >= 5), "Every public Learn category must contain at least five guides");
   assert(conditions.filter((condition) => condition.category === "Hospitals and healthcare navigation").every((condition) => condition.articleType === "hospital-navigation"), "Hospital guides must use the navigation article format");
   assert(conditions.filter((condition) => condition.category === "Pregnancy options and support").every((condition) => condition.articleType === "decision-support"), "Pregnancy-options guides must use the decision-support article format");
+  assert(conditions.filter((condition) => condition.category === "Pregnancy week by week").every((condition) => condition.articleType === "health-explainer"), "Pregnancy-week guides must use the educational article format");
   const linkedProductIds = new Set(conditions.flatMap((condition) => condition.relatedProductIds || []));
   assert(linkedProductIds.size > 0, "Relevant guides should link to products");
   assert([...linkedProductIds].every((id) => productIds.has(id)), "Every related product link must resolve");
