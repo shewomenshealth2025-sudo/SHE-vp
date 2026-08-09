@@ -122,23 +122,6 @@ export default function ProfilePage() {
           <p className="mt-4 max-w-2xl text-base leading-7 text-[#746c6e] md:text-lg">A simple private tracker for period days and estimated cycle phases.</p>
         </header>
 
-        <section className="mb-8 overflow-hidden rounded-3xl border border-[#f1d7df] bg-white shadow-[0_10px_40px_rgba(67,46,52,0.04)]">
-          <div className="flex flex-col justify-between gap-5 bg-[#fff5f8] p-6 sm:flex-row sm:items-center">
-            <div className="flex items-start gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#e93368] text-white"><FileText size={20} /></span>
-              <div><p className="text-sm font-semibold text-[#d92f62]">My SHE Plan</p><h2 className="mt-1 text-2xl font-semibold">Your health next steps, in one place</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">Saved Chat journeys connect appointment preparation, Learn, Map and Finds.</p></div>
-            </div>
-            <a href="/" className="flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#241f20] px-5 text-sm font-semibold text-white">Start a new plan <ArrowRight size={16} /></a>
-          </div>
-
-          {plans.length ? <div className="grid gap-4 p-5 md:grid-cols-2">{plans.map((plan) => <PlanCard key={plan.id} plan={plan} onDelete={() => setPlans(deletePlan(plan.id))} />)}</div> : <div className="p-7 text-center"><p className="font-semibold">No saved plans yet</p><p className="mt-2 text-sm text-stone-500">Choose one of the guided journeys in Chat to create an appointment-ready plan.</p></div>}
-
-          <label className="flex items-start gap-3 border-t border-stone-100 p-5 text-sm">
-            <input type="checkbox" checked={memoryAllowed} onChange={(event) => { setMemoryAllowed(event.target.checked); setMemoryConsent(event.target.checked); }} className="mt-1 accent-[#e93368]" />
-            <span><span className="font-semibold">Allow SHE Chat to remember saved plans on this device</span><span className="mt-1 block text-xs leading-5 text-stone-500">Turn this off at any time. Your plans remain here, but Chat will not refer back to them.</span></span>
-          </label>
-        </section>
-
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="rounded-3xl border border-[#eee8e7] bg-white p-5 shadow-[0_10px_40px_rgba(67,46,52,0.04)] sm:p-7">
             <div className="flex items-center justify-between gap-4">
@@ -239,6 +222,17 @@ export default function ProfilePage() {
           </div>
         </section>
 
+        <details className="mt-6 rounded-2xl border border-stone-200 bg-white">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5">
+            <span className="flex items-center gap-3"><FileText size={18} className="text-[#e93368]" /><span><span className="block text-sm font-semibold">Saved health summaries</span><span className="mt-1 block text-xs text-stone-500">{plans.length ? `${plans.length} saved from Chat` : "Nothing saved yet"}</span></span></span>
+            <ArrowRight size={16} className="text-stone-400" />
+          </summary>
+          <div className="border-t border-stone-100 p-5">
+            {plans.length ? <div className="grid gap-4 md:grid-cols-2">{plans.map((plan) => <PlanCard key={plan.id} plan={plan} onDelete={() => setPlans(deletePlan(plan.id))} />)}</div> : <p className="text-sm text-stone-500">When Chat creates a useful health summary, you can choose to save it here.</p>}
+            <label className="mt-5 flex items-start gap-3 rounded-xl bg-stone-50 p-4 text-sm"><input type="checkbox" checked={memoryAllowed} onChange={(event) => { setMemoryAllowed(event.target.checked); setMemoryConsent(event.target.checked); }} className="mt-1 accent-[#e93368]" /><span><span className="font-semibold">Let Chat remember saved summaries on this device</span><span className="mt-1 block text-xs leading-5 text-stone-500">Turn this off whenever you want.</span></span></label>
+          </div>
+        </details>
+
         <footer className="mt-5 flex justify-end">
           {(totalItems > 0 || periodDays.length > 0) && <button type="button" onClick={clearProfile} className="flex items-center gap-2 text-sm font-medium text-stone-500 hover:text-[#d92f63]"><Trash2 size={16} /> Clear My Health data</button>}
         </footer>
@@ -262,8 +256,8 @@ function CompactHealthSection({ section, items, active, draft, setDraft, onOpen,
 function PlanCard({ plan, onDelete }) {
   return (
     <article className="rounded-2xl border border-stone-200 p-5">
-      <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#e93368]">Active plan</p><h3 className="mt-2 text-lg font-semibold">{plan.title}</h3><p className="mt-2 line-clamp-2 text-sm leading-6 text-stone-600">{plan.summary}</p></div><button type="button" onClick={onDelete} className="text-stone-400 hover:text-red-600" aria-label={`Delete ${plan.title}`}><Trash2 size={17} /></button></div>
-      <div className="mt-4 rounded-xl bg-[#faf8ff] p-3 text-xs leading-5 text-stone-600"><strong className="text-[#7255a6]">Why this plan:</strong> {plan.reasons?.[0]?.replace(/^SHE is showing this because /, "")}</div>
+      <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#e93368]">Chat summary</p><h3 className="mt-2 text-lg font-semibold">{plan.title}</h3><p className="mt-2 line-clamp-2 text-sm leading-6 text-stone-600">{plan.summary}</p></div><button type="button" onClick={onDelete} className="text-stone-400 hover:text-red-600" aria-label={`Delete ${plan.title}`}><Trash2 size={17} /></button></div>
+      <div className="mt-4 rounded-xl bg-[#faf8ff] p-3 text-xs leading-5 text-stone-600"><strong className="text-[#7255a6]">Why this was suggested:</strong> {plan.reasons?.[0]?.replace(/^SHE is showing this because /, "")}</div>
       <div className="mt-4 grid grid-cols-2 gap-2"><button type="button" onClick={() => exportAppointmentSummary(plan)} className="flex min-h-10 items-center justify-center gap-2 rounded-xl bg-[#241f20] px-3 text-xs font-semibold text-white"><Download size={14} /> Summary</button><a href={plan.links.learn} className="flex min-h-10 items-center justify-center gap-2 rounded-xl bg-[#fff0f5] px-3 text-xs font-semibold text-[#d92f62]">Guides <ArrowRight size={14} /></a><a href={plan.links.services} className="flex min-h-10 items-center justify-center rounded-xl border border-stone-200 px-3 text-xs font-semibold">Services</a><a href={plan.links.products} className="flex min-h-10 items-center justify-center rounded-xl border border-stone-200 px-3 text-xs font-semibold">Products</a></div>
     </article>
   );
