@@ -90,7 +90,7 @@ export default function ChatMessage({
       className="flex justify-start"
     >
       <div className="w-full max-w-[94%]">
-        <div className="rounded-3xl rounded-bl-lg border border-pink-100 bg-white px-5 py-5 shadow-sm md:px-6">
+        <div className={`rounded-3xl rounded-bl-lg border bg-white px-5 py-5 shadow-sm md:px-6 ${message.urgency === "urgent" ? "border-red-300" : "border-pink-100"}`}>
           <div className="mb-4 flex items-center gap-2">
             <img
               src="/logo.png"
@@ -139,9 +139,8 @@ export default function ChatMessage({
             </button>
           )}
 
-          <div className="mt-5 rounded-2xl bg-pink-50 px-4 py-3 text-xs leading-5 text-stone-500">
-            SHE offers general health information and navigation support, not a
-            diagnosis.
+          <div className={`mt-5 rounded-2xl px-4 py-3 text-xs leading-5 ${message.urgency === "urgent" ? "bg-red-50 text-red-700" : "bg-pink-50 text-stone-500"}`}>
+            {message.urgency === "urgent" ? "Urgent safety guidance: use an appropriate urgent or emergency service now." : "Grounded in SHE Learn’s NHS and HSE-linked guidance. SHE supports navigation and does not provide a diagnosis."}
           </div>
         </div>
 
