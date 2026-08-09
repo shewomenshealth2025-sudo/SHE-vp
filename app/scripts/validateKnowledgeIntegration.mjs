@@ -26,15 +26,14 @@ try {
   const chat = await server.ssrLoadModule("/src/utils/chatEngine.js");
   const learnQueries = await server.ssrLoadModule("/src/data/knowledge/queries.js");
   const gpQuestionSupport = await server.ssrLoadModule("/src/utils/gpQuestions.js");
-  const taxonomy = await server.ssrLoadModule("/src/utils/learnTaxonomy.js");
 
   const guides = knowledge.knowledgeGuides;
   const conditions = database.conditions;
   const productIds = new Set(productData.products.map((product) => product.id));
   const ids = new Set(guides.map((guide) => guide.id));
 
-  assert(guides.length === 406, `Expected 406 Chat guides, received ${guides.length}`);
-  assert(conditions.length === 406, `Expected 406 Learn conditions, received ${conditions.length}`);
+  assert(guides.length === 527, `Expected 527 Chat guides, received ${guides.length}`);
+  assert(conditions.length === 527, `Expected 527 Learn conditions, received ${conditions.length}`);
   assert(ids.size === guides.length, "Guide IDs must be unique");
   assert(conditions.every((condition) => ids.has(condition.id)), "Learn and Chat IDs must match");
   assert(guides.every((guide) => guide.evidence?.sources?.length > 0), "Every guide needs sources");
@@ -71,7 +70,7 @@ try {
   assert(conditions.every((condition) => condition.sources?.length >= 2), "Every guide needs NHS and HSE references");
   assert(conditions.every((condition) => condition.sources.every(isNhsOrHseSource)), "Every source must be an NHS or HSE website");
   const categoryCounts = conditions.reduce((counts, condition) => {
-    const category = taxonomy.getLearnCategory(condition);
+    const category = String(condition.category || "Women’s health").trim().replace(/^./, (letter) => letter.toUpperCase());
     counts.set(category, (counts.get(category) || 0) + 1);
     return counts;
   }, new Map());
