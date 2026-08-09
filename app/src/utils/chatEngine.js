@@ -536,6 +536,17 @@ function resolveConversationQuery(message, conversation = []) {
     .slice(-3)
     .map((entry) => entry.text.trim());
 
+  const explicitTopic = recentUserMessages
+    .map((entry) => entry.match(/^(?:what is|tell me about|explain)\s+(.+?)[?.!]*$/i)?.[1]?.trim())
+    .filter(Boolean)
+    .at(-1);
+
+  if (explicitTopic) {
+    // Repeating an explicitly named topic keeps a short follow-up attached to
+    // the parent guide even when the library contains narrower sub-guides.
+    return `${explicitTopic}. ${explicitTopic}. Follow-up: ${message}`;
+  }
+
   return recentUserMessages.length
     ? `${recentUserMessages.join(". ")}. Follow-up: ${message}`
     : message;
