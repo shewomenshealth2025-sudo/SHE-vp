@@ -9,7 +9,6 @@ import KnowledgeSection from "../components/knowledge/KnowledgeSection";
 import ConditionCard from "../components/knowledge/ConditionCard";
 import ConditionViewer from "../components/knowledge/ConditionViewer";
 import { sheNews, sheNewsUpdated } from "../data/sheNews";
-import { getLearnCategory } from "../utils/learnTaxonomy";
 
 const PAGE_SIZE = 24;
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -38,6 +37,10 @@ function conditionText(condition) {
     .toLowerCase();
 }
 
+function normaliseCategory(value = "") {
+  return value.trim().replace(/^./, (letter) => letter.toUpperCase());
+}
+
 function parseReviewDate(condition) {
   const value = condition.lastReviewed || condition.reviewed || "";
   const timestamp = Date.parse(value);
@@ -60,7 +63,7 @@ export default function LearnPageV2() {
   const categories = useMemo(() => {
     const grouped = new Map();
     conditions.forEach((condition) => {
-      const label = getLearnCategory(condition);
+      const label = normaliseCategory(condition.category || "Women’s health");
       if (!grouped.has(label)) grouped.set(label, []);
       grouped.get(label).push(condition);
     });
@@ -82,7 +85,7 @@ export default function LearnPageV2() {
     .slice(0, 6), [conditions]);
 
   const browsedConditions = useMemo(() => {
-    if (selectedCategory) return conditions.filter((condition) => getLearnCategory(condition) === selectedCategory);
+    if (selectedCategory) return conditions.filter((condition) => normaliseCategory(condition.category || "Women’s health") === selectedCategory);
     if (selectedStage) {
       const stage = lifeStages.find((item) => item.id === selectedStage);
       return stage ? conditions.filter((condition) => stage.terms.some((term) => conditionText(condition).includes(term))) : [];
