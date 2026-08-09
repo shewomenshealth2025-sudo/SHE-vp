@@ -146,23 +146,30 @@ const EMERGENCY_PATTERNS = [
   "passed out",
   "fainted",
   "unconscious",
-  "severe bleeding",
-  "bleeding heavily",
   "suicidal",
   "kill myself",
   "severe allergic reaction",
   "face is swelling",
   "sudden severe pain",
+  "reduced baby movement",
+  "baby is not moving",
+  "one leg is swollen",
+  "coughing up blood",
 ];
 
 export function generateSHEReply({
   message,
   attachments = [],
   conversation = [],
+  healthContext = {},
 }) {
   const originalMessage = String(message ?? "").trim();
   const normalised = normaliseText(originalMessage);
   const groundedQuery = resolveConversationQuery(originalMessage, conversation);
+
+  if (detectEmergency(normalised)) {
+    return reply(createEmergencyResponse(normalised), ["What should I tell urgent care?", "Show me urgent-care options"], { urgency: "urgent" });
+  }
 
   if (attachments.length > 0) {
     return reply(createAttachmentResponse({
@@ -186,6 +193,10 @@ export function generateSHEReply({
     );
   }
 
+  if (/^(actually|sorry,? i meant|i meant|correction|not quite)/.test(normalised) || /\bnot .+ but\b/.test(normalised)) {
+    return createCorrectionReply(originalMessage, conversation, healthContext);
+  }
+
   const intent = detectIntent(normalised);
 
   switch (intent) {
@@ -193,7 +204,7 @@ export function generateSHEReply({
       return reply("What would you like help with today?");
 
     case "emergency":
-      return reply(createEmergencyResponse(), ["Find urgent care", "What should I tell them?"]);
+      return reply(createEmergencyResponse(normalised), ["What should I tell urgent care?", "Show me urgent-care options"], { urgency: "urgent" });
 
     case "greeting":
       return reply(
@@ -230,7 +241,7 @@ export function generateSHEReply({
       ].join("\n\n"));
 
     case "symptom_statement":
-      return createConversationalHealthReply(originalMessage, groundedQuery, conversation);
+      return createConversationalHealthReply(originalMessage, groundedQuery, conversation, healthContext);
 
     case "health_question":
       if (/^(what is|what are|define|explain)\b/.test(normalised)) {
@@ -240,7 +251,7 @@ export function generateSHEReply({
 
     case "vague":
       return groundedQuery !== originalMessage
-        ? replyWithGroundedAnswer(groundedQuery)
+        ? replyWithGroundedAnswer(groundedQuery, "", healthContext)
         : ["why", "how", "what", "maybe", "worried"].includes(normalised)
           ? reply(createClarifyingResponse(normalised, conversation))
           : replyWithGroundedAnswer(originalMessage);
@@ -305,24 +316,27 @@ function createCompactDefinitionReply(query) {
   }
 }
 
-function createConversationalHealthReply(message, groundedQuery, conversation) {
+function createConversationalHealthReply(message, groundedQuery, conversation, healthContext = {}) {
   const combinedContext = collectRecentUserContext(conversation);
   const missing = missingSymptomContext(combinedContext || message);
 
-  if (missing.length >= 2 && !hasPriorClarification(conversation)) {
-    const questions = missing.slice(0, 3);
+  if (missing.length) {
+    const question = missing[0];
     return reply(
       [
         compassionateAcknowledgement(message),
-        "I don’t want to jump to a conclusion from that alone. A few details would help me understand the pattern:",
-        questions.map((question) => `• ${question}`).join("\n"),
+        "I don’t want to jump to a conclusion. Let me ask one useful question at a time.",
+        question,
         "Answer however feels natural — you don’t need to use medical language.",
       ].join("\n\n"),
-      questions.map(shortSuggestionForQuestion).filter(Boolean).slice(0, 3)
+      suggestionsForMissingDetail(question),
+      { conversationStage: "clarifying" },
     );
   }
 
-  return replyWithGroundedAnswer(groundedQuery, compassionateAcknowledgement(message));
+  const contextNote = healthContextSummary(healthContext);
+  const acknowledgement = [compassionateAcknowledgement(message), contextNote].filter(Boolean).join(" ");
+  return replyWithGroundedAnswer(augmentWithHealthContext(groundedQuery, healthContext), acknowledgement, healthContext);
 }
 
 function replyWithGroundedAnswer(query, acknowledgement = "") {
@@ -332,6 +346,15 @@ function replyWithGroundedAnswer(query, acknowledgement = "") {
     : answer;
 
   return reply(naturalAnswer, suggestionsForQuery(query));
+}
+
+function createCorrectionReply(message, conversation, healthContext) {
+  const prior = collectRecentUserContext(conversation.slice(0, -1));
+  const query = `${prior}. The latest correction supersedes conflicting earlier details: ${message}`;
+  return replyWithGroundedAnswer(
+    augmentWithHealthContext(query, healthContext),
+    "Thanks for correcting me — I’ll use the latest detail rather than the earlier one.",
+  );
 }
 
 function createGeneralConversationReply(message, groundedQuery, conversation) {
@@ -495,8 +518,13 @@ function isSymptomStatement(text) {
 
 function resolveConversationQuery(message, conversation = []) {
   const text = normaliseText(message);
+  const lastAssistant = [...conversation]
+    .slice(0, -1)
+    .reverse()
+    .find((entry) => entry.role === "she" || entry.role === "assistant");
+  const answeringFollowUp = text.split(" ").length <= 16 && /\?|one useful question|when did|how intense|pattern|anything else/i.test(lastAssistant?.text || "");
   const refersBack = /\b(it|that|this|they|them|those|its)\b/.test(text) ||
-    /^(why|how|what causes|what symptoms|treatment|and |also )/.test(text);
+    /^(why|how|what causes|what symptoms|treatment|and |also )/.test(text) || answeringFollowUp;
 
   if (!refersBack) {
     return message;
@@ -519,13 +547,6 @@ function collectRecentUserContext(conversation = []) {
     .slice(-4)
     .map((entry) => entry.text.trim())
     .join(". ");
-}
-
-function hasPriorClarification(conversation = []) {
-  return conversation
-    .filter((entry) => entry.role === "she" || entry.role === "assistant")
-    .slice(-2)
-    .some((entry) => /few details would help|how long|how severe|where (?:is|do)/i.test(entry.text || ""));
 }
 
 function missingSymptomContext(value) {
@@ -561,6 +582,38 @@ function shortSuggestionForQuestion(question) {
   if (question.startsWith("Is it constant")) return "It follows a pattern";
   if (question.startsWith("Have you noticed")) return "There are other symptoms";
   return "Tell you more";
+}
+
+function suggestionsForMissingDetail(question) {
+  if (question.startsWith("When")) return ["It started recently", "It has been happening for months", "It has been happening for years"];
+  if (question.startsWith("How intense")) return ["I notice it but can continue", "It affects daily life", "It stops normal activities"];
+  if (question.startsWith("Is it constant")) return ["It is constant", "It comes and goes", "It follows my cycle"];
+  if (question.startsWith("Have you noticed")) return ["No other symptoms", "There are other symptoms", "I’m not sure"];
+  return [shortSuggestionForQuestion(question)];
+}
+
+function healthContextSummary(context = {}) {
+  if (!context.enabled) return "";
+  const hasDetails = context.lifeStage || context.conditions?.length || context.symptoms?.length || context.latestSummary;
+  return hasDetails ? "I’m also taking account of the health details you chose to share on this device." : "";
+}
+
+function augmentWithHealthContext(query, context = {}) {
+  if (!context.enabled) return query;
+  const details = [
+    context.lifeStage && `life stage: ${context.lifeStage}`,
+    context.conditions?.length && `existing conditions: ${context.conditions.join(", ")}`,
+    context.symptoms?.length && `saved symptoms: ${context.symptoms.join(", ")}`,
+    context.latestSummary && `recent saved summary: ${context.latestSummary}`,
+  ].filter(Boolean);
+  return details.length ? `${query}. Context the user consented to share: ${details.join("; ")}.` : query;
+}
+
+function detectEmergency(text) {
+  if (containsAny(text, EMERGENCY_PATTERNS)) return true;
+  const heavyBleeding = /\b(bleed|bleeding|period|pad|tampon)\b/.test(text) && /\b(soak|soaking|every hour|faint|fainted|passing out|breathless|very weak|pregnan)\b/.test(text);
+  const pregnancyWarning = /\b(pregnan|postpartum|postnatal|after birth)\b/.test(text) && /\b(severe headache|vision change|heavy bleeding|chest pain|shortness of breath|swollen leg|reduced movement)\b/.test(text);
+  return heavyBleeding || pregnancyWarning;
 }
 
 function suggestionsForQuery(query) {
@@ -681,10 +734,24 @@ function createAttachmentResponse({
   ].join("\n\n");
 }
 
-function createEmergencyResponse() {
+function createEmergencyResponse(text = "") {
+  if (/suicidal|kill myself|self harm|self-harm/.test(text)) {
+    return [
+      "⚠️ Your immediate safety matters more than continuing this chat.",
+      "If you may act on these thoughts or cannot stay safe, call 999/112 now or go to the nearest emergency department. If you can, tell someone you trust and stay with them while you get help.",
+      "For urgent mental-health support in the UK, you can also call NHS 111 and select the mental-health option where available. Do not rely on SHE for crisis support.",
+    ].join("\n\n");
+  }
+  if (/pregnan|postpartum|postnatal|baby|after birth/.test(text)) {
+    return [
+      "⚠️ This may need urgent pregnancy or postnatal assessment.",
+      "Contact your maternity assessment unit, labour ward, midwife or urgent medical service now. Call 999/112 for severe breathing difficulty, collapse, chest pain, uncontrolled bleeding or another life-threatening emergency.",
+      "Do not wait for a routine appointment or rely on this chat to assess the situation.",
+    ].join("\n\n");
+  }
   return [
     "⚠️ This may need urgent medical attention.",
-    "Please contact your local emergency service or seek urgent in-person medical care now, especially if symptoms are sudden, severe or getting worse.",
+    "Please contact urgent medical care now. Call 999/112 for a life-threatening emergency; otherwise use NHS 111, an out-of-hours service or urgent in-person care as appropriate.",
     "Do not rely on this chat for emergency assessment.",
   ].join("\n\n");
 }
