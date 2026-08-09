@@ -59,6 +59,20 @@ const cramps = generateSHEReply({ message: crampsUser.text, conversation: [cramp
 expect("painful cramps and bloating trigger clarification", /where exactly|one useful question/i.test(cramps.text));
 expect("chat does not invent bleeding", !/bleeding between periods/i.test(cramps.text));
 
+const paraphrasedSymptoms = [
+  "Been cramping badly and my stomach feels swollen",
+  "My tummy is bloated and I keep getting sharp pains",
+  "Could these awful cramps mean something is wrong with me?",
+  "I'm sore, bloated and not feeling like myself",
+  "I get aches in my lower stomach and feel unusually full",
+];
+for (const message of paraphrasedSymptoms) {
+  const user = { role: "user", text: message };
+  const response = generateSHEReply({ message, conversation: [user] });
+  expect(`paraphrased symptom description is clarified: ${message}`, /one useful question|where exactly|when did|pattern/i.test(response.text));
+  expect(`paraphrased symptom description does not invent bleeding: ${message}`, !/bleeding between periods/i.test(response.text));
+}
+
 const contextual = generateSHEReply({
   message: "I have had pelvic pain for six months, it is severe, worse around my period and comes with nausea",
   conversation: [{ role: "user", text: "I have had pelvic pain for six months, it is severe, worse around my period and comes with nausea" }],
