@@ -30,6 +30,7 @@ import { abortionCareConditions } from "./conditions/abortionCareConditions";
 import { pregnancyOptionsConditions } from "./conditions/pregnancyOptionsConditions";
 import { hospitalNavigationConditions } from "./conditions/hospitalNavigationConditions";
 import { autoimmuneConditions } from "./conditions/autoimmuneConditions";
+import { ivfConditions } from "./conditions/ivfConditions";
 import { relatedProductsFor } from "./productLinks";
 
 const baseConditions = applyCauseRiskProfiles([
@@ -60,6 +61,7 @@ const baseConditions = applyCauseRiskProfiles([
   ...pregnancyOptionsConditions,
   ...hospitalNavigationConditions,
   ...autoimmuneConditions,
+  ...ivfConditions,
 ]);
 
 function relationshipScore(left, right) {
