@@ -78,6 +78,8 @@ const SYNONYM_GROUPS = [
   ["hot flushes", "hot flashes", "temperature changes"],
 ];
 
+const NAMED_TERM_TOKENS = new Set(["pcos", "pmos", "pots", "pmdd", "pms", "ivf", "icsi", "ohss", "amh", "pgta", "pgtm"]);
+
 function normalise(value = "") {
   return value
     .toLowerCase()
@@ -150,6 +152,8 @@ function phraseMatchScore(query, fields) {
 export function scoreGuide(query, guide) {
   const fields = createSearchFields(guide);
   const tokens = expandQuery(query);
+  const directTokens = new Set(tokenise(query));
+  const titleTokens = new Set(tokenise(fields.title));
 
   let score = phraseMatchScore(query, fields);
   const matches = [];
@@ -165,6 +169,9 @@ export function scoreGuide(query, guide) {
     if (fields.keyPoints.includes(token)) tokenScore += 4;
     if (fields.seekHelp.includes(token)) tokenScore += 3;
     if (fields.questions.includes(token)) tokenScore += 2;
+    // A condition or treatment explicitly named by the user should outrank
+    // broader guides that happen to share several symptom words.
+    if (NAMED_TERM_TOKENS.has(token) && directTokens.has(token) && titleTokens.has(token)) tokenScore += 30;
 
     if (tokenScore > 0) {
       matches.push(token);
