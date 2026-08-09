@@ -48,7 +48,8 @@ const fallbackSources = [
 
 export default function ConditionViewer({ condition, onBack, onSelectRelated }) {
   if (!condition) return null;
-  const gpQuestions = getGpQuestions(condition);
+  const nonClinical = condition.articleType === "hospital-navigation" || condition.articleType === "decision-support";
+  const gpQuestions = nonClinical ? getNonClinicalQuestions(condition.articleType) : getGpQuestions(condition);
   const relatedProducts = (condition.relatedProductIds || [])
     .map((id) => products.find((product) => product.id === id))
     .filter(Boolean);
@@ -87,68 +88,35 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
         </div>
       </header>
 
-      <Section title="At a glance">
-        <List items={condition.quickFacts} />
-      </Section>
+      {nonClinical ? <NonClinicalArticle condition={condition} questions={gpQuestions} /> : <>
+        <Section title="At a glance">
+          <List items={condition.quickFacts} />
+        </Section>
 
-      <Section title="Common symptoms">
-        <div className="flex flex-wrap gap-3">
-          {condition.symptoms?.map((symptom) => (
-            <span
-              key={symptom}
-              className="rounded-full border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-medium text-gray-800"
-            >
-              {formatId(symptom)}
-            </span>
-          ))}
-        </div>
-      </Section>
+        <Section title="Common symptoms">
+          <div className="flex flex-wrap gap-3">
+            {condition.symptoms?.map((symptom) => (
+              <span key={symptom} className="rounded-full border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-medium text-gray-800">{formatId(symptom)}</span>
+            ))}
+          </div>
+        </Section>
 
-      <Section title="Possible causes">
-        <List items={condition.causes} />
-      </Section>
+        <Section title="Possible causes"><List items={condition.causes} /></Section>
+        <Section title="Risk factors"><List items={condition.riskFactors} /></Section>
+        <Section title="How it is diagnosed"><List items={condition.diagnosis} /></Section>
+        <Section title="Treatment and management"><List items={condition.treatments} /></Section>
+        <Section title="Things that may help"><List items={condition.selfCare} /></Section>
+        <Section title="When to speak to a healthcare professional"><List items={condition.whenToSeeGP} /></Section>
 
-      <Section title="Risk factors">
-        <List items={condition.riskFactors} />
-      </Section>
+        <QuestionPanel title="Questions you could ask your GP" eyebrow="Prepare for an appointment" questions={gpQuestions} description="Choose the questions that match your situation and add your own. You do not need to ask all of them in one appointment." />
 
-      <Section title="How it is diagnosed">
-        <List items={condition.diagnosis} />
-      </Section>
-
-      <Section title="Treatment and management">
-        <List items={condition.treatments} />
-      </Section>
-
-      <Section title="Things that may help">
-        <List items={condition.selfCare} />
-      </Section>
-
-      <Section title="When to speak to a healthcare professional">
-        <List items={condition.whenToSeeGP} />
-      </Section>
-
-      <section className="my-8 rounded-3xl border border-[#e4ddf3] bg-[#faf8ff] p-6 md:p-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#7255a6]">Prepare for an appointment</p>
-        <h2 className="mt-2 text-2xl font-bold text-gray-900">Questions you could ask your GP</h2>
-        <p className="mt-3 max-w-3xl text-sm leading-6 text-gray-600">Choose the questions that match your situation and add your own. You do not need to ask all of them in one appointment.</p>
-        <ol className="mt-6 space-y-3">
-          {gpQuestions.map((question, index) => (
-            <li key={question} className="flex gap-4 rounded-2xl border border-white bg-white p-4 shadow-sm">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#7255a6] text-xs font-bold text-white">{index + 1}</span>
-              <span className="pt-0.5 text-sm font-medium leading-6 text-gray-800">{question}</span>
-            </li>
-          ))}
-        </ol>
-        <p className="mt-5 text-xs leading-5 text-gray-500">SHE is showing these because they relate to the assessment, treatment and safety information in this guide. Your GP may recommend a different approach based on your history.</p>
-      </section>
-
-      <section className="my-8 rounded-2xl border border-red-200 bg-red-50 p-6 md:p-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-red-700">When to seek urgent help</p>
-        <h2 className="mt-2 text-2xl font-bold text-gray-900">Do not wait for a routine appointment if:</h2>
-        <div className="mt-5"><List items={condition.emergencySigns?.length ? condition.emergencySigns : ["Symptoms are sudden, severe or rapidly worsening.", "You have heavy bleeding with fainting, chest pain, breathing difficulty or feel seriously unwell."]} /></div>
-        <p className="mt-5 text-sm leading-6 text-red-800">In the UK, call 999 for a life-threatening emergency or use NHS 111 for urgent advice when you are unsure.</p>
-      </section>
+        <section className="my-8 rounded-2xl border border-red-200 bg-red-50 p-6 md:p-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-red-700">When to seek urgent help</p>
+          <h2 className="mt-2 text-2xl font-bold text-gray-900">Do not wait for a routine appointment if:</h2>
+          <div className="mt-5"><List items={condition.emergencySigns?.length ? condition.emergencySigns : ["Symptoms are sudden, severe or rapidly worsening.", "You have heavy bleeding with fainting, chest pain, breathing difficulty or feel seriously unwell."]} /></div>
+          <p className="mt-5 text-sm leading-6 text-red-800">In the UK, call 999 for a life-threatening emergency or use NHS 111 for urgent advice when you are unsure.</p>
+        </section>
+      </>}
 
       <Section title="Sources used">
         <ul className="space-y-3">
@@ -171,7 +139,7 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
         </Section>
       )}
 
-      {relatedProducts.length > 0 && (
+      {!nonClinical && relatedProducts.length > 0 && (
         <section className="mt-8 rounded-3xl border border-pink-100 bg-pink-50/50 p-6 md:p-8">
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-pink-700">Related products</p>
           <h2 className="mt-2 text-2xl font-bold text-gray-900">Products that may support comfort or tracking</h2>
@@ -195,6 +163,55 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
       </div>
     </article>
   );
+}
+
+function NonClinicalArticle({ condition, questions }) {
+  const hospital = condition.articleType === "hospital-navigation";
+  return <>
+    <Section title={hospital ? "What this hospital service or step means" : "What this option means"}><List items={condition.quickFacts} /></Section>
+    <Section title={hospital ? "How the hospital pathway works" : "How it works in practice"}><List items={condition.causes} /></Section>
+    <Section title={hospital ? "What to expect" : "Legal and practical considerations"}><List items={condition.diagnosis} /></Section>
+    <Section title={hospital ? "How to prepare" : "Things to consider without pressure"}><List items={condition.selfCare} /></Section>
+    <Section title={hospital ? "What may happen next" : "Support and next steps"}><List items={condition.treatments} /></Section>
+    <Section title={hospital ? "When to contact the hospital or your GP" : "When to seek further support"}><List items={condition.whenToSeeGP} /></Section>
+    <QuestionPanel
+      eyebrow={hospital ? "Navigate your care" : "Make an informed decision"}
+      title={hospital ? "Questions to ask the hospital team" : "Questions to ask an options counsellor, social worker or adviser"}
+      description={hospital ? "Use the questions that fit this stage of care and note the name or number of the team responsible for follow-up." : "These questions are designed to clarify the process and available support without steering you toward a particular decision."}
+      questions={questions}
+    />
+    <section className="my-8 rounded-2xl border border-amber-200 bg-amber-50 p-6 md:p-8">
+      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-amber-800">Safety and urgent support</p>
+      <h2 className="mt-2 text-2xl font-bold text-gray-900">Get help sooner if:</h2>
+      <div className="mt-5"><List items={condition.emergencySigns} /></div>
+    </section>
+  </>;
+}
+
+function QuestionPanel({ eyebrow, title, description, questions }) {
+  return <section className="my-8 rounded-3xl border border-[#e4ddf3] bg-[#faf8ff] p-6 md:p-8">
+    <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#7255a6]">{eyebrow}</p>
+    <h2 className="mt-2 text-2xl font-bold text-gray-900">{title}</h2>
+    <p className="mt-3 max-w-3xl text-sm leading-6 text-gray-600">{description}</p>
+    <ol className="mt-6 space-y-3">{questions.map((question, index) => <li key={question} className="flex gap-4 rounded-2xl border border-white bg-white p-4 shadow-sm"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#7255a6] text-xs font-bold text-white">{index + 1}</span><span className="pt-0.5 text-sm font-medium leading-6 text-gray-800">{question}</span></li>)}</ol>
+  </section>;
+}
+
+function getNonClinicalQuestions(articleType) {
+  if (articleType === "hospital-navigation") return [
+    "What is the purpose of this appointment, test or hospital step?",
+    "How should I prepare, and should I change any medicines or food and drink beforehand?",
+    "Who will I see, and can I request a chaperone, interpreter or reasonable adjustment?",
+    "When and how will I receive results or the next appointment?",
+    "Who should I contact if my symptoms worsen or I have not heard back?",
+  ];
+  return [
+    "What does this option mean legally and practically where I live?",
+    "What support is available before, during and after this process?",
+    "What decisions are time-sensitive, and which can I take more time to consider?",
+    "Can I change my mind, and at what points in the process?",
+    "Where can I receive independent, non-directive advice without pressure?",
+  ];
 }
 
 function TrustFact({ label, value }) {
