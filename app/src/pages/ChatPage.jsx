@@ -119,6 +119,7 @@ export default function ChatPage({
         message: cleanMessage,
         attachments: submittedAttachments,
         conversation: conversationWithUserMessage,
+        healthContext: readConsentedHealthContext(),
       });
 
       streamResponse(
@@ -126,12 +127,13 @@ export default function ChatPage({
         cleanMessage || createAttachmentTitle(submittedAttachments),
         response.suggestions,
         response.article,
-        detectJourney(cleanMessage),
+        response.urgency === "urgent" ? null : detectJourney(cleanMessage),
+        response.urgency,
       );
     }, submittedAttachments.length > 0 ? 850 : 450);
   }
 
-  function streamResponse(fullResponse, conversationTitle, suggestions = [], article = null, journeyId = null) {
+  function streamResponse(fullResponse, conversationTitle, suggestions = [], article = null, journeyId = null, urgency = null) {
     setIsThinking(false);
     setStreamingText("");
 
@@ -157,6 +159,7 @@ export default function ChatPage({
           suggestions,
           article,
           journeyId,
+          urgency,
         };
 
         setConversation((current) => {
@@ -322,6 +325,25 @@ function detectJourney(message = "") {
   if (/cycle.*chang|period.*(late|early|miss|irregular)|bleeding between/.test(text)) return "cycle-changed";
   if (/(heavy|painful) period|period.*(heavy|pain|clot|flood)|bleed.*through/.test(text)) return "heavy-periods";
   return null;
+}
+
+function readConsentedHealthContext() {
+  try {
+    const profile = JSON.parse(window.localStorage.getItem("she-health-profile") || "{}");
+    const memoryAllowed = window.localStorage.getItem("she-memory-consent-v1") === "yes";
+    const plans = JSON.parse(window.localStorage.getItem("she-health-plans-v1") || "[]");
+    const profileAllowed = profile.personaliseChat === true;
+    return {
+      enabled: profileAllowed || memoryAllowed,
+      lifeStage: profileAllowed ? profile.lifeStage || "" : "",
+      conditions: profileAllowed ? profile.conditions || [] : [],
+      symptoms: profileAllowed ? profile.symptoms || [] : [],
+      medications: profileAllowed ? profile.medications || [] : [],
+      latestSummary: memoryAllowed && Array.isArray(plans) ? plans[0]?.summary || "" : "",
+    };
+  } catch {
+    return { enabled: false };
+  }
 }
 
 function TrendingCarousel({ items, onOpen }) {
