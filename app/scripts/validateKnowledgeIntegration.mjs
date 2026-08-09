@@ -32,8 +32,8 @@ try {
   const productIds = new Set(productData.products.map((product) => product.id));
   const ids = new Set(guides.map((guide) => guide.id));
 
-  assert(guides.length === 527, `Expected 527 Chat guides, received ${guides.length}`);
-  assert(conditions.length === 527, `Expected 527 Learn conditions, received ${conditions.length}`);
+  assert(guides.length === 535, `Expected 535 Chat guides, received ${guides.length}`);
+  assert(conditions.length === 535, `Expected 535 Learn conditions, received ${conditions.length}`);
   assert(ids.size === guides.length, "Guide IDs must be unique");
   assert(conditions.every((condition) => ids.has(condition.id)), "Learn and Chat IDs must match");
   assert(guides.every((guide) => guide.evidence?.sources?.length > 0), "Every guide needs sources");
@@ -70,7 +70,8 @@ try {
   assert(conditions.every((condition) => condition.sources?.length >= 2), "Every guide needs NHS and HSE references");
   assert(conditions.every((condition) => condition.sources.every(isNhsOrHseSource)), "Every source must be an NHS or HSE website");
   const categoryCounts = conditions.reduce((counts, condition) => {
-    const category = String(condition.category || "Women’s health").trim().replace(/^./, (letter) => letter.toUpperCase());
+    const rawCategory = String(condition.category || "Women’s health").trim().replace(/^./, (letter) => letter.toUpperCase());
+    const category = rawCategory === "Contraception" ? "Contraceptives" : rawCategory;
     counts.set(category, (counts.get(category) || 0) + 1);
     return counts;
   }, new Map());
