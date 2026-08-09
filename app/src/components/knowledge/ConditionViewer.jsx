@@ -1,3 +1,7 @@
+import { Link } from "react-router-dom";
+import { products } from "../../data/products";
+import { getGpQuestions } from "../../utils/gpQuestions";
+
 function Section({ title, children }) {
   if (!children) return null;
 
@@ -44,6 +48,7 @@ const fallbackSources = [
 
 export default function ConditionViewer({ condition, onBack, onSelectRelated }) {
   if (!condition) return null;
+  const gpQuestions = getGpQuestions(condition);
   const relatedProducts = (condition.relatedProductIds || [])
     .map((id) => products.find((product) => product.id === id))
     .filter(Boolean);
@@ -123,6 +128,21 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
         <List items={condition.whenToSeeGP} />
       </Section>
 
+      <section className="my-8 rounded-3xl border border-[#e4ddf3] bg-[#faf8ff] p-6 md:p-8">
+        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#7255a6]">Prepare for an appointment</p>
+        <h2 className="mt-2 text-2xl font-bold text-gray-900">Questions you could ask your GP</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-gray-600">Choose the questions that match your situation and add your own. You do not need to ask all of them in one appointment.</p>
+        <ol className="mt-6 space-y-3">
+          {gpQuestions.map((question, index) => (
+            <li key={question} className="flex gap-4 rounded-2xl border border-white bg-white p-4 shadow-sm">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#7255a6] text-xs font-bold text-white">{index + 1}</span>
+              <span className="pt-0.5 text-sm font-medium leading-6 text-gray-800">{question}</span>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-5 text-xs leading-5 text-gray-500">SHE is showing these because they relate to the assessment, treatment and safety information in this guide. Your GP may recommend a different approach based on your history.</p>
+      </section>
+
       <section className="my-8 rounded-2xl border border-red-200 bg-red-50 p-6 md:p-8">
         <p className="text-sm font-semibold uppercase tracking-[0.14em] text-red-700">When to seek urgent help</p>
         <h2 className="mt-2 text-2xl font-bold text-gray-900">Do not wait for a routine appointment if:</h2>
@@ -180,5 +200,3 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
 function TrustFact({ label, value }) {
   return <div className="rounded-2xl border border-pink-100 bg-white/80 p-4"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-pink-700">{label}</p><p className="mt-2 text-sm font-medium leading-5 text-gray-800">{value}</p></div>;
 }
-import { Link } from "react-router-dom";
-import { products } from "../../data/products";
