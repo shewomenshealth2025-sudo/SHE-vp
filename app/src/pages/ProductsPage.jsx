@@ -1118,7 +1118,13 @@ export default function ProductsPage() {
   const collections = useMemo(() => {
     const used = new Set(savedProducts.map((product) => product.id));
     const take = (candidates, count = 6) => {
-      const result = candidates.filter((product) => !used.has(product.id)).slice(0, count);
+      const brands = new Set();
+      const result = candidates.filter((product) => {
+        const brand = String(product.brand || "").toLowerCase();
+        if (used.has(product.id) || brands.has(brand)) return false;
+        brands.add(brand);
+        return true;
+      }).slice(0, count);
       result.forEach((product) => used.add(product.id));
       return result;
     };
@@ -1127,6 +1133,12 @@ export default function ProductsPage() {
       return (item.views || 0) + (item.saves || 0) * 3 + (item.compares || 0) * 2;
     };
 
+    const editorialNames = ["Monthly Patches", "Reusable Menstrual Cup", "E3 Intense TENS Device", "Absorbent Period Underwear"];
+    const todayFind = editorialNames
+      .map((name) => reviewedProducts.find((product) => product.name === name))
+      .find((product) => product && !used.has(product.id)) || reviewedProducts.find((product) => product.popular && /period|pelvic|fertility|pregnan|menopause/i.test(`${product.name} ${product.description || ""}`));
+    if (todayFind) used.add(todayFind.id);
+
     const recommended = take(
       reviewedProducts
         .map((product) => ({ product, match: recommendationScore(product, healthProfile) }))
@@ -1134,8 +1146,7 @@ export default function ProductsPage() {
         .sort((a, b) => b.match - a.match || b.product.score - a.product.score)
         .map(({ product }) => product),
     );
-    const trendingPool = take([...reviewedProducts].sort((a, b) => activity(b) - activity(a) || Number(b.popular) - Number(a.popular) || b.reviews - a.reviews), 7);
-    const [todayFind, ...trending] = trendingPool;
+    const trending = take([...reviewedProducts].sort((a, b) => activity(b) - activity(a) || Number(b.popular) - Number(a.popular) || b.reviews - a.reviews), 6);
     const bestRated = take([...reviewedProducts].sort((a, b) => b.rating - a.rating || b.reviews - a.reviews));
     const underTwenty = take(reviewedProducts.filter((product) => product.price < 20).sort((a, b) => b.score - a.score || a.price - b.price));
     const newlyAdded = take(reviewedProducts.filter((product) => product.newProduct).sort((a, b) => b.score - a.score));
