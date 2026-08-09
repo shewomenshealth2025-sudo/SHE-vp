@@ -32,8 +32,8 @@ try {
   const productIds = new Set(productData.products.map((product) => product.id));
   const ids = new Set(guides.map((guide) => guide.id));
 
-  assert(guides.length === 665, `Expected 665 Chat guides, received ${guides.length}`);
-  assert(conditions.length === 665, `Expected 665 Learn conditions, received ${conditions.length}`);
+  assert(guides.length === 690, `Expected 690 Chat guides, received ${guides.length}`);
+  assert(conditions.length === 690, `Expected 690 Learn conditions, received ${conditions.length}`);
   assert(ids.size === guides.length, "Guide IDs must be unique");
   assert(conditions.every((condition) => ids.has(condition.id)), "Learn and Chat IDs must match");
   assert(guides.every((guide) => guide.evidence?.sources?.length > 0), "Every guide needs sources");
