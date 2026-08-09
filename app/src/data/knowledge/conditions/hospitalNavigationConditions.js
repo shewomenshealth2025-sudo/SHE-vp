@@ -36,7 +36,7 @@ const specs = [
 
 function createGuide([id, title, summary]) {
   return {
-    id, slug: id, title, category: "Hospitals and healthcare navigation", readTime: 8, summary,
+    id, slug: id, title, category: "Hospitals and healthcare navigation", articleType: "hospital-navigation", readTime: 8, summary,
     quickFacts: [summary, "Names and pathways vary between hospitals, Northern Ireland, Ireland and Great Britain.", "Appointment letters and the hospital’s own instructions take priority for practical details."],
     symptoms: ["hospital referral questions", "appointment uncertainty", "care pathway confusion", "need for practical preparation"],
     causes: ["The route through hospital depends on clinical urgency, specialty, tests required and whether care is emergency, planned or follow-up.", "Local staffing, facilities and referral rules determine which site or team provides each part of care."],
