@@ -13,15 +13,32 @@ import { sheNews, sheNewsUpdated } from "../data/sheNews";
 const PAGE_SIZE = 24;
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
+const primaryTopics = [
+  { id: "periods-cycle", label: "Periods & cycle", pattern: /menstrual|puberty|hormonal health/ },
+  { id: "pelvic-endometriosis", label: "Pelvic pain & endometriosis", pattern: /pelvic|endometriosis|adenomyosis|fibroids/ },
+  { id: "fertility", label: "Fertility & treatment", pattern: /fertility/ },
+  { id: "pregnancy", label: "Pregnancy", pattern: /pregnancy|early pregnancy/ },
+  { id: "birth-postpartum", label: "Birth & postpartum", pattern: /birth|postpartum|postnatal|breastfeeding|infant feeding/ },
+  { id: "menopause", label: "Menopause", pattern: /menopause/ },
+  { id: "sexual-contraception", label: "Sexual health & contraception", pattern: /sexual|contracep|vaginal/ },
+  { id: "gynaecology", label: "Gynaecology", pattern: /gynaecological|ovarian|cervical|abortion/ },
+  { id: "breast", label: "Breast health", pattern: /breast/ },
+  { id: "bladder-vulval", label: "Bladder, urinary & vulval health", pattern: /bladder|urinary|vulval/ },
+  { id: "autoimmune-whole-body", label: "Autoimmune & whole-body health", pattern: /autoimmune|blood|bone|circulation|whole-body|skin/ },
+  { id: "mental-neurological", label: "Mental & neurological health", pattern: /mental|neurological|autonomic/ },
+  { id: "cancer-screening", label: "Cancer awareness & screening", pattern: /cancer|screening/ },
+  { id: "healthcare-navigation", label: "Healthcare navigation", pattern: /hospital|healthcare navigation|emergency|post-surgical/ },
+];
+
 const lifeStages = [
-  { id: "puberty-periods", label: "Puberty & periods", description: "First periods, cycle stages, bleeding and period symptoms", terms: ["puberty", "period", "menstrual", "menarche", "cycle", "ovulation"] },
-  { id: "fertility", label: "Fertility & conception", description: "Ovulation, testing, trying to conceive and fertility care", terms: ["fertility", "conceiv", "ovulation", "egg", "sperm", "ivf", "pregnancy test"] },
-  { id: "pregnancy", label: "Pregnancy", description: "Week-by-week changes, antenatal care and pregnancy symptoms", terms: ["pregnan", "antenatal", "trimester", "miscarriage", "birth"] },
-  { id: "postpartum", label: "Postpartum", description: "Recovery, feeding, pelvic health and postnatal wellbeing", terms: ["postpartum", "postnatal", "breastfeed", "after birth", "newborn"] },
-  { id: "menopause", label: "Perimenopause & menopause", description: "Hormone changes, symptoms, HRT and long-term health", terms: ["menopause", "perimenopause", "hrt", "hot flush", "postmenopausal"] },
-  { id: "sexual-health", label: "Sexual & intimate health", description: "Contraception, infections, vaginal and sexual wellbeing", terms: ["sexual", "contracep", "vaginal", "vulva", "sti", "painful sex"] },
-  { id: "autoimmune", label: "Autoimmune diseases", description: "Lupus, rheumatoid arthritis, Sjögren’s, Hashimoto’s, coeliac disease and symptom overlap", terms: ["autoimmune", "lupus", "rheumatoid", "sjögren", "sjogren", "hashimoto", "coeliac", "immune system"] },
-  { id: "mental-health", label: "Mental health & emotional wellbeing", description: "Anxiety, depression, PMDD, perinatal mental health, trauma and eating disorders", terms: ["mental health", "anxiety", "depression", "depressive", "mood", "pmdd", "trauma", "eating disorder", "postnatal depression", "perinatal mental"] },
+  { id: "puberty-periods", label: "Puberty & periods", description: "First periods, cycle stages, bleeding and period symptoms", pattern: /puberty|menstrual|hormonal health/ },
+  { id: "fertility", label: "Fertility & conception", description: "Ovulation, testing, trying to conceive and fertility care", pattern: /fertility/ },
+  { id: "pregnancy", label: "Pregnancy", description: "Week-by-week changes, antenatal care and pregnancy symptoms", pattern: /pregnancy|early pregnancy/ },
+  { id: "postpartum", label: "Postpartum", description: "Recovery, feeding, pelvic health and postnatal wellbeing", pattern: /postpartum|postnatal|breastfeeding|infant feeding/ },
+  { id: "menopause", label: "Perimenopause & menopause", description: "Hormone changes, symptoms, HRT and long-term health", pattern: /menopause/ },
+  { id: "sexual-health", label: "Sexual & intimate health", description: "Contraception, infections, vaginal and sexual wellbeing", pattern: /sexual|contracep|vaginal|vulval/ },
+  { id: "autoimmune", label: "Autoimmune diseases", description: "Immune conditions, symptoms, treatment and life-stage considerations", pattern: /autoimmune/ },
+  { id: "mental-health", label: "Mental health & emotional wellbeing", description: "Mood, anxiety, perinatal mental health, trauma and support", pattern: /mental health|perinatal mental|postpartum mental/ },
 ];
 
 const popularIds = [
@@ -35,6 +52,14 @@ function conditionText(condition) {
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
+}
+
+function categoryText(condition) {
+  return normaliseCategory(condition.category || "Women’s health").toLowerCase();
+}
+
+function matchesGroup(condition, group) {
+  return group.pattern.test(categoryText(condition));
 }
 
 function normaliseCategory(value = "") {
@@ -61,17 +86,7 @@ export default function LearnPageV2() {
   const conditions = useMemo(() => getAllConditions(), []);
   const results = useMemo(() => query.trim() ? searchKnowledge(query) : [], [query]);
 
-  const categories = useMemo(() => {
-    const grouped = new Map();
-    conditions.forEach((condition) => {
-      const label = normaliseCategory(condition.category || "Women’s health");
-      if (!grouped.has(label)) grouped.set(label, []);
-      grouped.get(label).push(condition);
-    });
-    return [...grouped.entries()]
-      .map(([label, items]) => ({ label, count: items.length }))
-      .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
-  }, [conditions]);
+  const categories = useMemo(() => primaryTopics.map((topic) => ({ ...topic, count: conditions.filter((condition) => matchesGroup(condition, topic)).length })), [conditions]);
 
   const popular = useMemo(() => {
     const rank = new Map(popularIds.map((id, index) => [id, index]));
@@ -86,10 +101,13 @@ export default function LearnPageV2() {
     .slice(0, 6), [conditions]);
 
   const browsedConditions = useMemo(() => {
-    if (selectedCategory) return conditions.filter((condition) => normaliseCategory(condition.category || "Women’s health") === selectedCategory);
+    if (selectedCategory) {
+      const topic = primaryTopics.find((item) => item.id === selectedCategory);
+      return topic ? conditions.filter((condition) => matchesGroup(condition, topic)) : [];
+    }
     if (selectedStage) {
       const stage = lifeStages.find((item) => item.id === selectedStage);
-      return stage ? conditions.filter((condition) => stage.terms.some((term) => conditionText(condition).includes(term))) : [];
+      return stage ? conditions.filter((condition) => matchesGroup(condition, stage)) : [];
     }
     if (mode === "az") return conditions.filter((condition) => condition.title.toUpperCase().startsWith(selectedLetter)).sort((a, b) => a.title.localeCompare(b.title));
     return [...conditions].sort((a, b) => a.title.localeCompare(b.title));
@@ -132,6 +150,7 @@ export default function LearnPageV2() {
   }
 
   const activeStage = lifeStages.find((stage) => stage.id === selectedStage);
+  const activeCategory = primaryTopics.find((topic) => topic.id === selectedCategory);
   const isBrowseView = Boolean(selectedCategory || selectedStage || mode === "az");
 
   return (
@@ -146,23 +165,14 @@ export default function LearnPageV2() {
 
       {query.trim() ? (
         <KnowledgeSection title={`Search results for “${query.trim()}”`}>
-          {results.length ? <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {results.map((result) => (
-              <div key={result.id} className="relative">
-                <ConditionCard condition={result.data} onClick={openCondition} />
-                <div className="pointer-events-none absolute bottom-5 left-6 right-6 flex flex-wrap gap-1.5">
-                  {result.matchedIn.slice(0, 3).map((label) => <span key={label} className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-500">{label}</span>)}
-                </div>
-              </div>
-            ))}
-          </div> : <EmptySearch />}
+          {results.length ? <TieredSearchResults results={results} onOpen={openCondition} /> : <EmptySearch />}
         </KnowledgeSection>
       ) : mode === "news" ? (
         <NewsHub onBack={() => openBrowse({})} />
       ) : isBrowseView ? (
         <BrowseResults
-          title={selectedCategory || activeStage?.label || `A–Z: ${selectedLetter}`}
-          description={selectedCategory ? `${browsedConditions.length} guides in this category.` : activeStage?.description || "Browse every guide alphabetically."}
+          title={activeCategory?.label || activeStage?.label || `A–Z: ${selectedLetter}`}
+          description={selectedCategory ? `${browsedConditions.length} guides across the related specialist subjects.` : activeStage?.description || "Browse every guide alphabetically."}
           conditions={browsedConditions}
           visibleCount={visibleCount}
           selectedLetter={selectedLetter}
@@ -175,7 +185,7 @@ export default function LearnPageV2() {
       ) : (
         <>
           <nav className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Browse SHE Learn">
-            <BrowseButton icon={Layers3} title="Browse categories" detail={`${categories.length} health categories`} onClick={() => document.getElementById("learn-categories")?.scrollIntoView({ behavior: "smooth" })} />
+            <BrowseButton icon={Layers3} title="Browse categories" detail={`${categories.length} clear health themes`} onClick={() => document.getElementById("learn-categories")?.scrollIntoView({ behavior: "smooth" })} />
             <BrowseButton icon={ListFilter} title="A–Z index" detail="Every guide, alphabetically" onClick={() => openBrowse({ view: "az", letter: "A" })} />
             <BrowseButton icon={Sparkles} title="Health collections" detail="Life stages and connected conditions" onClick={() => document.getElementById("life-stages")?.scrollIntoView({ behavior: "smooth" })} />
             <BrowseButton icon={Newspaper} title="SHE News" detail="Women’s-health news and policy" onClick={() => openBrowse({ view: "news" })} />
@@ -200,7 +210,7 @@ export default function LearnPageV2() {
             <h2 className="mt-1 text-3xl font-bold text-gray-950">Life-stage and health collections</h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {lifeStages.map((stage) => {
-                const count = conditions.filter((condition) => stage.terms.some((term) => conditionText(condition).includes(term))).length;
+                const count = conditions.filter((condition) => matchesGroup(condition, stage)).length;
                 return <button key={stage.id} type="button" onClick={() => openBrowse({ stage: stage.id })} className="group rounded-2xl border border-gray-200 bg-white p-5 text-left transition hover:-translate-y-0.5 hover:border-pink-200 hover:shadow-md"><p className="font-semibold text-gray-950">{stage.label}</p><p className="mt-2 text-sm leading-6 text-gray-600">{stage.description}</p><span className="mt-4 flex items-center gap-2 text-sm font-semibold text-pink-700">{count} guides <ArrowRight size={15} /></span></button>;
               })}
             </div>
@@ -210,7 +220,7 @@ export default function LearnPageV2() {
             <p className="text-sm font-semibold text-pink-600">Browse by subject</p>
             <h2 className="mt-1 text-3xl font-bold text-gray-950">Categories</h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {categories.map((category) => <button key={category.label} type="button" onClick={() => openBrowse({ category: category.label })} className="flex items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white p-4 text-left transition hover:border-pink-200 hover:bg-pink-50/40"><span className="font-medium text-gray-900">{category.label}</span><span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-500">{category.count}</span></button>)}
+              {categories.map((category) => <button key={category.id} type="button" onClick={() => openBrowse({ category: category.id })} className="flex items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white p-4 text-left transition hover:border-pink-200 hover:bg-pink-50/40"><span className="font-medium text-gray-900">{category.label}</span><span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-500">{category.count}</span></button>)}
             </div>
           </section>
 
@@ -251,6 +261,24 @@ function BrowseResults({ title, description, conditions, visibleCount, onOpen, o
 
 function CardGrid({ conditions, onOpen }) {
   return <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">{conditions.map((condition) => <ConditionCard key={condition.id} condition={condition} onClick={onOpen} />)}</div>;
+}
+
+function TieredSearchResults({ results, onOpen }) {
+  const groups = [
+    { id: "exact", title: "Exact matches", description: "The closest direct match to what you searched." },
+    { id: "close", title: "Closely related guides", description: "Focused guides that include the same condition, treatment or phrase." },
+    { id: "broader", title: "Broader reading", description: "A small number of useful surrounding topics." },
+  ];
+
+  return <div className="space-y-10">{groups.map((group) => {
+    const items = results.filter((result) => result.tier === group.id);
+    if (!items.length) return null;
+    return <section key={group.id} aria-labelledby={`search-${group.id}`}>
+      <h3 id={`search-${group.id}`} className="text-xl font-bold text-gray-950">{group.title}</h3>
+      <p className="mt-1 mb-5 text-sm text-gray-500">{group.description}</p>
+      <CardGrid conditions={items.map((item) => item.data)} onOpen={onOpen} />
+    </section>;
+  })}</div>;
 }
 
 function NewsHub({ onBack }) {
