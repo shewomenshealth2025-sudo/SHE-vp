@@ -54,6 +54,9 @@ expect("specific heavy-bleeding red flags escalate", heavyBleeding.urgency === "
 const ordinaryHeavyPeriod = generateSHEReply({ message: "My periods are heavier than usual", conversation: [{ role: "user", text: "My periods are heavier than usual" }] });
 expect("non-specific heavy periods are clarified rather than automatically escalated", ordinaryHeavyPeriod.urgency !== "urgent" && /one useful question/i.test(ordinaryHeavyPeriod.text));
 
+const worseningBleeding = generateSHEReply({ message: "My periods have suddenly become much heavier over the last three months. I am soaking through pads, feel dizzy when I stand, and the cramps stop me working.", conversation: [] });
+expect("heavy bleeding with dizziness runs safety triage before pain questions", worseningBleeding.urgency === "urgent" && /how often.*soaking/i.test(worseningBleeding.text) && /pregnan/i.test(worseningBleeding.text) && !/where exactly are the cramps/i.test(worseningBleeding.text));
+
 const crampsUser = { role: "user", text: "I'm feeling really weird, very painful cramps and bloating" };
 const cramps = generateSHEReply({ message: crampsUser.text, conversation: [crampsUser] });
 expect("painful cramps and bloating trigger clarification", /where exactly|one useful question/i.test(cramps.text));
