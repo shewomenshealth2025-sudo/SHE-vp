@@ -26,6 +26,7 @@ try {
   const chat = await server.ssrLoadModule("/src/utils/chatEngine.js");
   const learnQueries = await server.ssrLoadModule("/src/data/knowledge/queries.js");
   const gpQuestionSupport = await server.ssrLoadModule("/src/utils/gpQuestions.js");
+  const taxonomy = await server.ssrLoadModule("/src/utils/learnTaxonomy.js");
 
   const guides = knowledge.knowledgeGuides;
   const conditions = database.conditions;
@@ -69,6 +70,12 @@ try {
   );
   assert(conditions.every((condition) => condition.sources?.length >= 2), "Every guide needs NHS and HSE references");
   assert(conditions.every((condition) => condition.sources.every(isNhsOrHseSource)), "Every source must be an NHS or HSE website");
+  const categoryCounts = conditions.reduce((counts, condition) => {
+    const category = taxonomy.getLearnCategory(condition);
+    counts.set(category, (counts.get(category) || 0) + 1);
+    return counts;
+  }, new Map());
+  assert([...categoryCounts.values()].every((count) => count >= 5), "Every public Learn category must contain at least five guides");
   const linkedProductIds = new Set(conditions.flatMap((condition) => condition.relatedProductIds || []));
   assert(linkedProductIds.size > 0, "Relevant guides should link to products");
   assert([...linkedProductIds].every((id) => productIds.has(id)), "Every related product link must resolve");
