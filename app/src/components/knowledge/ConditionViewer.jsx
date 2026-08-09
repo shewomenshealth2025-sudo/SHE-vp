@@ -48,8 +48,9 @@ const fallbackSources = [
 
 export default function ConditionViewer({ condition, onBack, onSelectRelated }) {
   if (!condition) return null;
-  const nonClinical = ["hospital-navigation", "decision-support", "health-explainer"].includes(condition.articleType);
-  const gpQuestions = nonClinical ? getNonClinicalQuestions(condition.articleType) : getGpQuestions(condition);
+  const articleType = condition.articleType || "condition";
+  const clinical = ["condition", "symptom"].includes(articleType);
+  const gpQuestions = clinical ? getGpQuestions(condition) : getNonClinicalQuestions(articleType);
   const relatedProducts = (condition.relatedProductIds || [])
     .map((id) => products.find((product) => product.id === id))
     .filter(Boolean);
@@ -88,12 +89,12 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
         </div>
       </header>
 
-      {nonClinical ? <NonClinicalArticle condition={condition} questions={gpQuestions} /> : <>
+      {!clinical ? <NonClinicalArticle condition={condition} questions={gpQuestions} /> : <>
         <Section title="At a glance">
           <List items={condition.quickFacts} />
         </Section>
 
-        <Section title="Common symptoms">
+        <Section title={articleType === "symptom" ? "What this symptom can feel like" : "Common symptoms"}>
           <div className="flex flex-wrap gap-3">
             {condition.symptoms?.map((symptom) => (
               <span key={symptom} className="rounded-full border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-medium text-gray-800">{formatId(symptom)}</span>
@@ -101,14 +102,14 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
           </div>
         </Section>
 
-        <Section title="Possible causes"><List items={condition.causes} /></Section>
-        <Section title="Risk factors"><List items={condition.riskFactors} /></Section>
-        <Section title="How it is diagnosed"><List items={condition.diagnosis} /></Section>
-        <Section title="Treatment and management"><List items={condition.treatments} /></Section>
+        <Section title={articleType === "symptom" ? "Possible explanations" : "Possible causes"}><List items={condition.causes} /></Section>
+        <Section title={articleType === "symptom" ? "Details that can change what it means" : "Risk factors"}><List items={condition.riskFactors} /></Section>
+        <Section title={articleType === "symptom" ? "How it may be assessed" : "How it is diagnosed"}><List items={condition.diagnosis} /></Section>
+        <Section title={articleType === "symptom" ? "What may help depends on the cause" : "Treatment and management"}><List items={condition.treatments} /></Section>
         <Section title="Things that may help"><List items={condition.selfCare} /></Section>
         <Section title="When to speak to a healthcare professional"><List items={condition.whenToSeeGP} /></Section>
 
-        <QuestionPanel title="Questions you could ask your GP" eyebrow="Prepare for an appointment" questions={gpQuestions} description="Choose the questions that match your situation and add your own. You do not need to ask all of them in one appointment." />
+        <QuestionPanel title={articleType === "symptom" ? "Questions to help a clinician assess this symptom" : "Questions you could ask your GP"} eyebrow="Prepare for an appointment" questions={gpQuestions} description="Choose the questions that match your situation and add your own. You do not need to ask all of them in one appointment." />
 
         <section className="my-8 rounded-2xl border border-red-200 bg-red-50 p-6 md:p-8">
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-red-700">When to seek urgent help</p>
@@ -139,7 +140,7 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
         </Section>
       )}
 
-      {!nonClinical && relatedProducts.length > 0 && (
+      {clinical && relatedProducts.length > 0 && (
         <section className="mt-8 rounded-3xl border border-pink-100 bg-pink-50/50 p-6 md:p-8">
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-pink-700">Related products</p>
           <h2 className="mt-2 text-2xl font-bold text-gray-900">Products that may support comfort or tracking</h2>
@@ -166,8 +167,32 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
 }
 
 function NonClinicalArticle({ condition, questions }) {
-  const hospital = condition.articleType === "hospital-navigation";
-  const explainer = condition.articleType === "health-explainer";
+  const hospital = condition.articleType === "healthcare-navigation";
+  const explainer = condition.articleType === "life-stage-explainer";
+  const procedure = condition.articleType === "procedure";
+  const medicine = condition.articleType === "medicine";
+  if (procedure) return <>
+    <Section title="What this procedure or treatment involves"><List items={condition.quickFacts} /></Section>
+    <Section title="How it works"><List items={condition.causes} /></Section>
+    <Section title="What you may experience"><div className="flex flex-wrap gap-3">{condition.symptoms?.map((item) => <span key={item} className="rounded-full border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-medium text-gray-800">{formatId(item)}</span>)}</div></Section>
+    <Section title="Assessment and preparation"><List items={condition.diagnosis} /></Section>
+    <Section title="What happens during treatment"><List items={condition.treatments} /></Section>
+    <Section title="Recovery and practical guidance"><List items={condition.selfCare} /></Section>
+    <Section title="When to contact the treatment team"><List items={condition.whenToSeeGP} /></Section>
+    <QuestionPanel eyebrow="Prepare for treatment" title="Questions to ask the specialist team" description="Use the questions that fit your stage of care, priorities and treatment plan." questions={questions} />
+    <SafetyPanel items={condition.emergencySigns} />
+  </>;
+  if (medicine) return <>
+    <Section title="What this medicine is used for"><List items={condition.quickFacts} /></Section>
+    <Section title="How it works"><List items={condition.causes} /></Section>
+    <Section title="Possible effects and side effects"><div className="flex flex-wrap gap-3">{condition.symptoms?.map((item) => <span key={item} className="rounded-full border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-medium text-gray-800">{formatId(item)}</span>)}</div></Section>
+    <Section title="Who may need extra care"><List items={condition.riskFactors} /></Section>
+    <Section title="How it is prescribed and monitored"><List items={condition.diagnosis} /></Section>
+    <Section title="Using it safely"><List items={[...(condition.treatments || []), ...(condition.selfCare || [])]} /></Section>
+    <Section title="When to contact a clinician or pharmacist"><List items={condition.whenToSeeGP} /></Section>
+    <QuestionPanel eyebrow="Understand your medicine" title="Questions to ask a prescriber or pharmacist" description="Do not start, stop or change prescribed treatment solely from general information." questions={questions} />
+    <SafetyPanel items={condition.emergencySigns} />
+  </>;
   if (explainer) return <>
     <Section title="The key idea"><List items={condition.quickFacts} /></Section>
     <Section title="How it works"><List items={condition.causes} /></Section>
@@ -201,6 +226,10 @@ function NonClinicalArticle({ condition, questions }) {
   </>;
 }
 
+function SafetyPanel({ items }) {
+  return <section className="my-8 rounded-2xl border border-amber-200 bg-amber-50 p-6 md:p-8"><p className="text-sm font-semibold uppercase tracking-[0.14em] text-amber-800">Safety and urgent support</p><h2 className="mt-2 text-2xl font-bold text-gray-900">Get help sooner if:</h2><div className="mt-5"><List items={items} /></div></section>;
+}
+
 function QuestionPanel({ eyebrow, title, description, questions }) {
   return <section className="my-8 rounded-3xl border border-[#e4ddf3] bg-[#faf8ff] p-6 md:p-8">
     <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#7255a6]">{eyebrow}</p>
@@ -211,19 +240,33 @@ function QuestionPanel({ eyebrow, title, description, questions }) {
 }
 
 function getNonClinicalQuestions(articleType) {
-  if (articleType === "hospital-navigation") return [
+  if (articleType === "healthcare-navigation") return [
     "What is the purpose of this appointment, test or hospital step?",
     "How should I prepare, and should I change any medicines or food and drink beforehand?",
     "Who will I see, and can I request a chaperone, interpreter or reasonable adjustment?",
     "When and how will I receive results or the next appointment?",
     "Who should I contact if my symptoms worsen or I have not heard back?",
   ];
-  if (articleType === "health-explainer") return [
+  if (articleType === "life-stage-explainer") return [
     "What is the most important thing to understand about this topic?",
     "What variation is usually expected, and what would be unusual?",
     "How does this relate to periods, pregnancy, hormones or life stage?",
     "What information is useful to track or prepare?",
     "When should I ask a healthcare professional for individual advice?",
+  ];
+  if (articleType === "procedure") return [
+    "Why is this procedure or treatment being offered in my situation?",
+    "How should I prepare, and which medicines or instructions are time-sensitive?",
+    "What are the realistic benefits, limitations, risks and alternatives for me?",
+    "What should I expect during recovery, and who do I contact with concerns?",
+    "Which symptoms mean I should seek urgent help rather than wait for follow-up?",
+  ];
+  if (articleType === "medicine") return [
+    "What is this medicine intended to improve, and how long may that take?",
+    "How and when should I take or use it, and what should I do after a missed dose?",
+    "Which side effects, interactions or health conditions are important for me?",
+    "Could it affect pregnancy, breastfeeding, fertility or contraception?",
+    "When should it be reviewed, changed or stopped by my prescriber?",
   ];
   return [
     "What does this option mean legally and practically where I live?",
