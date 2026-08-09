@@ -32,8 +32,8 @@ export default function GuidedJourney({ journeyId, onClose, onSaved, navigate })
     return (
       <section className="rounded-[28px] border border-[#f1d3de] bg-white p-5 shadow-xl shadow-pink-950/5 sm:p-7" aria-live="polite">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e93368] text-white"><Check size={23} /></div>
-        <p className="mt-5 text-sm font-semibold text-[#e93368]">Your SHE Plan is ready</p>
-        <h2 className="mt-1 text-3xl font-semibold tracking-tight">A clear route forward</h2>
+        <p className="mt-5 text-sm font-semibold text-[#e93368]">Your next steps</p>
+        <h2 className="mt-1 text-3xl font-semibold tracking-tight">A clearer route forward</h2>
 
         {plan.urgent && <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium leading-6 text-red-800">Your answers include warning signs that may need urgent assessment. Do not wait for this plan if you feel very unwell—use urgent maternity care, 111/out-of-hours care, or 999/112 for an emergency.</div>}
 
@@ -57,7 +57,7 @@ export default function GuidedJourney({ journeyId, onClose, onSaved, navigate })
         </label>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          <button type="button" onClick={save} className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#e93368] px-5 py-3 text-sm font-semibold text-white"><Sparkles size={17} /> Save to My SHE Plan</button>
+          <button type="button" onClick={save} className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#e93368] px-5 py-3 text-sm font-semibold text-white"><Sparkles size={17} /> Save this summary</button>
           <button type="button" onClick={() => exportAppointmentSummary(plan)} className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#241f20] px-5 py-3 text-sm font-semibold text-white"><Download size={17} /> Export appointment summary</button>
         </div>
 
@@ -73,7 +73,7 @@ export default function GuidedJourney({ journeyId, onClose, onSaved, navigate })
   return (
     <section className="rounded-[28px] border border-[#f1d3de] bg-white p-5 shadow-xl shadow-pink-950/5 sm:p-7">
       <div className="flex items-start justify-between gap-4">
-        <div><p className="text-sm font-semibold text-[#e93368]">Guided SHE journey</p><h2 className="mt-1 text-2xl font-semibold">{journey.label}</h2></div>
+        <div><p className="text-sm font-semibold text-[#e93368]">A few useful questions</p><h2 className="mt-1 text-2xl font-semibold">{journey.label}</h2></div>
         <button type="button" onClick={onClose} className="text-sm font-medium text-stone-500">Close</button>
       </div>
       <div className="mt-5 flex gap-1.5" aria-label={`Step ${step + 1} of ${journey.questions.length}`}>{journey.questions.map((item, index) => <span key={item.id} className={`h-1.5 flex-1 rounded-full ${index <= step ? "bg-[#e93368]" : "bg-stone-100"}`} />)}</div>
