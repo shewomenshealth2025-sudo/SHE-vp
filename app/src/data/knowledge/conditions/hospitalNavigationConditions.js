@@ -30,6 +30,8 @@ const specs = [
   ["missed-cancelled-appointments", "Cancelled or Missed Hospital Appointments", "Patients should contact the hospital promptly if they cannot attend or if an appointment is cancelled, because local rules determine rebooking and whether a new referral is required."],
   ["second-opinion-hospital", "Asking for a Second Opinion", "A second opinion is another clinician’s assessment of a diagnosis or treatment plan; access is not always automatic, but concerns can be discussed with the current consultant or referring clinician."],
   ["hospital-advocacy-complaints", "Patient Advocacy, Feedback and Hospital Complaints", "Patient liaison or advocacy services can help with communication, accessibility, concerns and complaints without replacing urgent clinical escalation when someone is becoming more unwell."],
+  ["preparing-specialist-appointment", "Preparing for a Hospital Specialist Appointment", "A concise symptom timeline, medicine list, relevant records and prioritised questions help a specialist understand what has changed and what outcome matters most to the patient."],
+  ["hospital-accessibility-support", "Accessibility, Interpreters and Support People in Hospital", "Patients can tell the hospital about mobility, sensory, communication, learning, language, trauma-informed or support-person needs so reasonable arrangements can be planned in advance."],
 ];
 
 function createGuide([id, title, summary]) {
@@ -49,4 +51,3 @@ function createGuide([id, title, summary]) {
 }
 
 export const hospitalNavigationConditions = specs.map(createGuide);
-
