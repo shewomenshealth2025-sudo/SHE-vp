@@ -83,6 +83,13 @@ const HEALTH_TERMS = [
   "pain",
   "pelvic",
   "bloating",
+  "bloated",
+  "stomach",
+  "tummy",
+  "ache",
+  "aches",
+  "sore",
+  "fullness",
   "swelling",
   "fatigue",
   "tired",
@@ -432,10 +439,11 @@ function detectIntent(text) {
 
   const hasHealthTerm = containsAny(text, HEALTH_TERMS);
   const looksLikeQuestion = isQuestion(text);
+  const firstPersonHealthDescription = /\b(i|im|i'm|ive|i've|me|my)\b/.test(text);
   const looksLikeSymptomStatement =
-    hasHealthTerm && isSymptomStatement(text);
+    hasHealthTerm && (isSymptomStatement(text) || firstPersonHealthDescription);
 
-  if (looksLikeSymptomStatement && !looksLikeQuestion) {
+  if (looksLikeSymptomStatement && !/^(what is|what are|define|explain|tell me about)\b/.test(text)) {
     return "symptom_statement";
   }
 
