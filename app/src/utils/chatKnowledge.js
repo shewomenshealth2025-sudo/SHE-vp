@@ -33,6 +33,18 @@ function looksPersonal(query) {
   return /\b(i have|i get|i feel|i keep|ive had|i've had|my |when i|for the past|happens to me)\b/.test(normalise(query));
 }
 
+function directSymptomOverlap(query, guide) {
+  const ignored = new Set(["really", "very", "feeling", "feel", "having", "have", "been", "with", "that", "this", "weird", "usual", "than"]);
+  const queryTokens = normalise(query).split(/[^a-z0-9]+/).filter((token) => token.length > 3 && !ignored.has(token));
+  const guideText = normalise([
+    guide.title,
+    guide.summary,
+    ...(guide.symptoms || []),
+    ...(guide.keyPoints || []),
+  ].join(" "));
+  return [...new Set(queryTokens.filter((token) => guideText.includes(token)))];
+}
+
 function readableSymptoms(guide) {
   return unique((guide.symptoms || []).map((item) => String(item).replaceAll("-", " "))).slice(0, 7);
 }
@@ -120,6 +132,10 @@ export function buildGroundedResponse(query) {
 
   const primary = matches[0].guide;
   const personal = looksPersonal(query) || focus === "description";
+  const directEvidence = directSymptomOverlap(query, primary);
+  if (personal && directEvidence.length < 2) {
+    return lowConfidenceResponse(urgentWarning);
+  }
   const sections = [];
   let title;
   let introduction;
