@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import ChatComposer from "../components/ChatComposer";
 import ChatMessage from "../components/ChatMessage";
 import GuidedJourney from "../components/GuidedJourney";
-import { generateSHEReply } from "../utils/chatEngine";
 import { ChevronLeft, ChevronRight, Lightbulb, Newspaper, Search, Sparkles, TrendingUp, ArrowRight } from "lucide-react";
+
+const loadChatEngine = () => import("../utils/chatEngine");
 
 const trendingProducts = [
   { brand: "BeYou", name: "Monthly Patches", image: "https://img.ananinja.com/media/bra-public-files/services-admin/files/dc51349f-8725-4d8d-8351-c0ea6005feb1" },
@@ -114,7 +115,8 @@ export default function ChatPage({
     setAttachments([]);
     setIsThinking(true);
 
-    responseTimeoutRef.current = window.setTimeout(() => {
+    responseTimeoutRef.current = window.setTimeout(async () => {
+      const { generateSHEReply } = await loadChatEngine();
       const response = generateSHEReply({
         message: cleanMessage,
         attachments: submittedAttachments,
