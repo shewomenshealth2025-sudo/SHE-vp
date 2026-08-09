@@ -76,9 +76,15 @@ try {
     return counts;
   }, new Map());
   assert([...categoryCounts.values()].every((count) => count >= 5), "Every public Learn category must contain at least five guides");
-  assert(conditions.filter((condition) => condition.category === "Hospitals and healthcare navigation").every((condition) => condition.articleType === "hospital-navigation"), "Hospital guides must use the navigation article format");
+  const recognisedTypes = new Set(["condition", "symptom", "medicine", "procedure", "decision-support", "life-stage-explainer", "healthcare-navigation", "news"]);
+  assert(conditions.every((condition) => recognisedTypes.has(condition.articleType)), "Every guide must use a deliberate recognised article format");
+  assert(conditions.filter((condition) => condition.category === "Hospitals and healthcare navigation").every((condition) => condition.articleType === "healthcare-navigation"), "Hospital guides must use the navigation article format");
   assert(conditions.filter((condition) => condition.category === "Pregnancy options and support").every((condition) => condition.articleType === "decision-support"), "Pregnancy-options guides must use the decision-support article format");
-  assert(conditions.filter((condition) => condition.category === "Pregnancy week by week").every((condition) => condition.articleType === "health-explainer"), "Pregnancy-week guides must use the educational article format");
+  assert(conditions.filter((condition) => condition.category === "Pregnancy week by week").every((condition) => condition.articleType === "life-stage-explainer"), "Pregnancy-week guides must use the educational article format");
+  const eggFreezing = conditions.find((condition) => condition.id === "egg-freezing");
+  assert(eggFreezing?.articleType === "procedure", "Egg freezing must use the procedure format");
+  assert(!eggFreezing?.symptoms?.includes("fertility-planning"), "Egg freezing must not present fertility planning as a symptom");
+  assert(eggFreezing?.sources?.every((source) => !/\/conditions\/?$|womens-health-a-z\/?$/.test(source.url)), "Egg freezing must use topic-specific sources rather than generic A–Z pages");
   const linkedProductIds = new Set(conditions.flatMap((condition) => condition.relatedProductIds || []));
   assert(linkedProductIds.size > 0, "Relevant guides should link to products");
   assert([...linkedProductIds].every((id) => productIds.has(id)), "Every related product link must resolve");
@@ -136,6 +142,10 @@ try {
   const cycleSearch = learnQueries.searchKnowledge("cycle stage");
   assert(cycleSearch.some((result) => result.id === "follicular-phase"), "Learn search must search across article content");
   assert(cycleSearch.some((result) => result.id === "luteal-phase"), "Learn search must return all relevant cycle-stage articles");
+  const eggSearch = learnQueries.searchKnowledge("egg freezing");
+  assert(eggSearch[0]?.id === "egg-freezing" && eggSearch[0]?.tier === "exact", "Learn search must place the exact egg-freezing guide first");
+  assert(eggSearch.length <= 21, "Learn search must cap broad result sets");
+  assert(eggSearch.some((result) => result.tier === "close"), "Learn search must distinguish closely related guides");
 
   console.log(`Knowledge integration valid: ${guides.length} unified guides, ${guides.reduce((sum, guide) => sum + guide.relatedGuideIds.length, 0)} relationships.`);
 } finally {
