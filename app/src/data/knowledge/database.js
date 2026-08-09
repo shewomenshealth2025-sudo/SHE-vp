@@ -26,6 +26,7 @@ import { additionalConditions } from "./conditions/additionalConditions";
 import { applyCauseRiskProfiles } from "./causeRiskProfiles";
 import { nicheConditions } from "./conditions/nicheConditions";
 import { categoryExpansionConditions } from "./conditions/categoryExpansionConditions";
+import { abortionCareConditions } from "./conditions/abortionCareConditions";
 import { relatedProductsFor } from "./productLinks";
 
 const baseConditions = applyCauseRiskProfiles([
@@ -52,6 +53,7 @@ const baseConditions = applyCauseRiskProfiles([
   ...additionalConditions,
   ...nicheConditions,
   ...categoryExpansionConditions,
+  ...abortionCareConditions,
 ]);
 
 function relationshipScore(left, right) {
