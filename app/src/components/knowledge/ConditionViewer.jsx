@@ -48,7 +48,7 @@ const fallbackSources = [
 
 export default function ConditionViewer({ condition, onBack, onSelectRelated }) {
   if (!condition) return null;
-  const nonClinical = condition.articleType === "hospital-navigation" || condition.articleType === "decision-support";
+  const nonClinical = ["hospital-navigation", "decision-support", "health-explainer"].includes(condition.articleType);
   const gpQuestions = nonClinical ? getNonClinicalQuestions(condition.articleType) : getGpQuestions(condition);
   const relatedProducts = (condition.relatedProductIds || [])
     .map((id) => products.find((product) => product.id === id))
@@ -167,6 +167,19 @@ export default function ConditionViewer({ condition, onBack, onSelectRelated }) 
 
 function NonClinicalArticle({ condition, questions }) {
   const hospital = condition.articleType === "hospital-navigation";
+  const explainer = condition.articleType === "health-explainer";
+  if (explainer) return <>
+    <Section title="The key idea"><List items={condition.quickFacts} /></Section>
+    <Section title="How it works"><List items={condition.causes} /></Section>
+    <Section title="What you may notice or experience">
+      <div className="flex flex-wrap gap-3">{condition.symptoms?.map((item) => <span key={item} className="rounded-full border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-medium text-gray-800">{formatId(item)}</span>)}</div>
+    </Section>
+    <Section title="What healthcare may involve"><List items={condition.diagnosis} /></Section>
+    <Section title="Practical guidance"><List items={[...(condition.treatments || []), ...(condition.selfCare || [])]} /></Section>
+    <Section title="When to ask for medical advice"><List items={condition.whenToSeeGP} /></Section>
+    <QuestionPanel eyebrow="Understand the topic" title="Useful questions you may want answered" description="Use these prompts to explore the topic further in SHE Chat or with a healthcare professional." questions={questions} />
+    <section className="my-8 rounded-2xl border border-amber-200 bg-amber-50 p-6 md:p-8"><p className="text-sm font-semibold uppercase tracking-[0.14em] text-amber-800">When not to rely on general information</p><h2 className="mt-2 text-2xl font-bold text-gray-900">Get individual advice if:</h2><div className="mt-5"><List items={condition.emergencySigns} /></div></section>
+  </>;
   return <>
     <Section title={hospital ? "What this hospital service or step means" : "What this option means"}><List items={condition.quickFacts} /></Section>
     <Section title={hospital ? "How the hospital pathway works" : "How it works in practice"}><List items={condition.causes} /></Section>
@@ -204,6 +217,13 @@ function getNonClinicalQuestions(articleType) {
     "Who will I see, and can I request a chaperone, interpreter or reasonable adjustment?",
     "When and how will I receive results or the next appointment?",
     "Who should I contact if my symptoms worsen or I have not heard back?",
+  ];
+  if (articleType === "health-explainer") return [
+    "What is the most important thing to understand about this topic?",
+    "What variation is usually expected, and what would be unusual?",
+    "How does this relate to periods, pregnancy, hormones or life stage?",
+    "What information is useful to track or prepare?",
+    "When should I ask a healthcare professional for individual advice?",
   ];
   return [
     "What does this option mean legally and practically where I live?",
