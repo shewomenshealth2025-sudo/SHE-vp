@@ -136,6 +136,8 @@ function phraseMatchScore(query, fields) {
 
   if (!normalisedQuery) return score;
 
+  if (normalisedQuery === fields.title) score += 40;
+  else if (normalisedQuery.startsWith(`${fields.title} `)) score += 28;
   if (fields.title.includes(normalisedQuery)) score += 24;
   if (fields.tags.includes(normalisedQuery)) score += 16;
   if (fields.summary.includes(normalisedQuery)) score += 10;
