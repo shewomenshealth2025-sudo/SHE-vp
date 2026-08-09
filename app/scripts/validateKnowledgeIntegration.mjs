@@ -25,6 +25,7 @@ try {
   const productData = await server.ssrLoadModule("/src/data/products.js");
   const chat = await server.ssrLoadModule("/src/utils/chatEngine.js");
   const learnQueries = await server.ssrLoadModule("/src/data/knowledge/queries.js");
+  const gpQuestionSupport = await server.ssrLoadModule("/src/utils/gpQuestions.js");
 
   const guides = knowledge.knowledgeGuides;
   const conditions = database.conditions;
@@ -59,6 +60,13 @@ try {
     "Generic risk-factor copy is not allowed",
   );
   assert(conditions.every((condition) => condition.whenToSeeGP?.length >= 2), "Every guide needs clinical safety-netting");
+  assert(
+    conditions.every((condition) => {
+      const questions = gpQuestionSupport.getGpQuestions(condition);
+      return questions.length >= 5 && questions.every((question) => question.endsWith("?"));
+    }),
+    "Every guide needs at least five relevant GP questions",
+  );
   assert(conditions.every((condition) => condition.sources?.length >= 2), "Every guide needs NHS and HSE references");
   assert(conditions.every((condition) => condition.sources.every(isNhsOrHseSource)), "Every source must be an NHS or HSE website");
   const linkedProductIds = new Set(conditions.flatMap((condition) => condition.relatedProductIds || []));
