@@ -58,10 +58,11 @@ export function getConditionsForSymptom(symptomId) {
 export function searchKnowledge(query) {
   if (!query?.trim()) return [];
   const phrase = normaliseSearch(query);
-  const tokens = tokeniseSearch(query);
+  const tokens = [...new Set([...tokeniseSearch(query), ...expandedSearchTerms(phrase)])];
   const direct = conditions
     .map((condition) => scoreCondition(condition, phrase, tokens))
-    .filter((result) => result.score > 0);
+    .filter((result) => result.score > 0)
+    .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 
   const resultsById = new Map(direct.map((result) => [result.id, result]));
 
@@ -83,12 +84,34 @@ export function searchKnowledge(query) {
     });
   });
 
-  return [...resultsById.values()].sort((a, b) =>
-    b.score - a.score || a.title.localeCompare(b.title)
-  );
+  const ranked = [...resultsById.values()].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  const exact = [];
+  const close = [];
+  const broader = [];
+  const closeThreshold = (ranked[0]?.score || 0) * 0.55;
+
+  ranked.forEach((result) => {
+    const title = normaliseSearch(result.title);
+    const allTermsInTitle = tokens.length > 0 && tokens.every((token) => title.includes(token));
+    if (!result.relationOnly && title === phrase) exact.push({ ...result, tier: "exact" });
+    else if (!result.relationOnly && (title.includes(phrase) || allTermsInTitle || result.score >= closeThreshold)) close.push({ ...result, tier: "close" });
+    else broader.push({ ...result, tier: "broader" });
+  });
+
+  return [
+    ...exact.slice(0, 3),
+    ...close.slice(0, 12),
+    ...broader.slice(0, 6),
+  ];
 }
 
 const SEARCH_STOP_WORDS = new Set(["a", "an", "and", "are", "for", "how", "i", "in", "is", "it", "of", "on", "the", "to", "what", "with"]);
+
+function expandedSearchTerms(phrase) {
+  if (phrase.includes("cycle stage")) return ["follicular", "ovulation", "luteal"];
+  if (phrase.includes("egg freezing")) return ["vitrification", "oocyte"];
+  return [];
+}
 
 function normaliseSearch(value = "") {
   return value.toLowerCase().replace(/[’']/g, "").replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
