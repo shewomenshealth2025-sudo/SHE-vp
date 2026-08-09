@@ -60,6 +60,7 @@ function pregnancyWeek(week, milestone) {
     slug: `pregnancy-week-${week}`,
     title: `${week} Weeks Pregnant`,
     category: "Pregnancy week by week",
+    articleType: "health-explainer",
     readTime: 7,
     summary: `At ${week} weeks, ${milestone}. This guide explains development, common body changes, routine care and warning signs for this point in the ${trimester} trimester.`,
     quickFacts: [
@@ -376,11 +377,20 @@ const nicheSpecs = [
   ["choosing-between-pill-formulations", "How Clinicians Choose Between Pill Formulations", "Contraception", "Pill choice considers age, smoking, blood pressure, migraine, clot history, medicines, breastfeeding, bleeding priorities, acne and previous side effects.", "medical eligibility|blood pressure|migraine|personal priorities", "cycle"],
 ];
 
+const explainerIds = new Set([
+  "breast-development-puberty", "menarche", "menstrual-cycle-overview", "menstrual-phase",
+  "follicular-phase", "ovulatory-phase", "luteal-phase", "cervical-mucus",
+  "basal-body-temperature", "contraceptive-types-overview", "hormonal-vs-nonhormonal-contraception",
+  "choosing-contraception", "switching-contraception", "contraceptive-pill-ingredients",
+  "combined-pill-types", "monophasic-vs-phasic-pill", "everyday-vs-21-day-pill",
+  "combined-pill-vs-mini-pill", "comparing-pill-side-effects", "choosing-between-pill-formulations",
+]);
+
 function createNiche([id, title, category, summary, symptomText, profileKey]) {
   const profile = profiles[profileKey];
   const symptoms = symptomText.split("|");
   return {
-    id, slug: id, title, category, readTime: 8, summary,
+    id, slug: id, title, category, articleType: explainerIds.has(id) ? "health-explainer" : undefined, readTime: 8, summary,
     quickFacts: [summary, profile.causes[0], profile.diagnosis[0]],
     symptoms,
     causes: profile.causes,
