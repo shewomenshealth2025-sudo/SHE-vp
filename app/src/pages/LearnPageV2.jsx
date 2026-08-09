@@ -38,7 +38,8 @@ function conditionText(condition) {
 }
 
 function normaliseCategory(value = "") {
-  return value.trim().replace(/^./, (letter) => letter.toUpperCase());
+  const label = value.trim().replace(/^./, (letter) => letter.toUpperCase());
+  return label === "Contraception" ? "Contraceptives" : label;
 }
 
 function parseReviewDate(condition) {
