@@ -9,6 +9,7 @@ import KnowledgeSection from "../components/knowledge/KnowledgeSection";
 import ConditionCard from "../components/knowledge/ConditionCard";
 import ConditionViewer from "../components/knowledge/ConditionViewer";
 import { sheNews, sheNewsUpdated } from "../data/sheNews";
+import { getLearnCategory } from "../utils/learnTaxonomy";
 
 const PAGE_SIZE = 24;
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -29,10 +30,6 @@ const popularIds = [
   "iron-deficiency-anaemia", "adenomyosis", "fertility-tests", "pregnancy-week-1",
   "pmdd", "pelvic-floor-dysfunction",
 ];
-
-function normaliseCategory(value = "") {
-  return value.trim().replace(/^./, (letter) => letter.toUpperCase());
-}
 
 function conditionText(condition) {
   return [condition.title, condition.category, condition.summary, ...(condition.quickFacts || []), ...(condition.symptoms || [])]
@@ -63,7 +60,7 @@ export default function LearnPageV2() {
   const categories = useMemo(() => {
     const grouped = new Map();
     conditions.forEach((condition) => {
-      const label = normaliseCategory(condition.category || "Women’s health");
+      const label = getLearnCategory(condition);
       if (!grouped.has(label)) grouped.set(label, []);
       grouped.get(label).push(condition);
     });
@@ -85,7 +82,7 @@ export default function LearnPageV2() {
     .slice(0, 6), [conditions]);
 
   const browsedConditions = useMemo(() => {
-    if (selectedCategory) return conditions.filter((condition) => normaliseCategory(condition.category || "Women’s health") === selectedCategory);
+    if (selectedCategory) return conditions.filter((condition) => getLearnCategory(condition) === selectedCategory);
     if (selectedStage) {
       const stage = lifeStages.find((item) => item.id === selectedStage);
       return stage ? conditions.filter((condition) => stage.terms.some((term) => conditionText(condition).includes(term))) : [];
