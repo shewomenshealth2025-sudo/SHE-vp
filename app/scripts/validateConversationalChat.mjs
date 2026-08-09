@@ -54,6 +54,11 @@ expect("specific heavy-bleeding red flags escalate", heavyBleeding.urgency === "
 const ordinaryHeavyPeriod = generateSHEReply({ message: "My periods are heavier than usual", conversation: [{ role: "user", text: "My periods are heavier than usual" }] });
 expect("non-specific heavy periods are clarified rather than automatically escalated", ordinaryHeavyPeriod.urgency !== "urgent" && /one useful question/i.test(ordinaryHeavyPeriod.text));
 
+const crampsUser = { role: "user", text: "I'm feeling really weird, very painful cramps and bloating" };
+const cramps = generateSHEReply({ message: crampsUser.text, conversation: [crampsUser] });
+expect("painful cramps and bloating trigger clarification", /where exactly|one useful question/i.test(cramps.text));
+expect("chat does not invent bleeding", !/bleeding between periods/i.test(cramps.text));
+
 const contextual = generateSHEReply({
   message: "I have had pelvic pain for six months, it is severe, worse around my period and comes with nausea",
   conversation: [{ role: "user", text: "I have had pelvic pain for six months, it is severe, worse around my period and comes with nausea" }],
