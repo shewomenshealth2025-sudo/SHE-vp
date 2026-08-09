@@ -21,7 +21,7 @@ const specs = [
 
 function createGuide([id, title, summary]) {
   return {
-    id, slug: id, title, category: "Pregnancy options and support", readTime: 8, summary,
+    id, slug: id, title, category: "Pregnancy options and support", articleType: "decision-support", readTime: 8, summary,
     quickFacts: [summary, "No option should be presented as the expected or morally preferred choice.", "Legal processes and available services vary by location, so current local advice is essential."],
     symptoms: ["unexpected positive pregnancy test", "uncertainty about pregnancy options", "practical or emotional pressure", "need for confidential information"],
     causes: ["People consider pregnancy options for many personal, medical, financial, family, safety and life-course reasons.", "Good support explores the person’s priorities and circumstances without assuming why the pregnancy is difficult or unexpected."],
@@ -36,4 +36,3 @@ function createGuide([id, title, summary]) {
 }
 
 export const pregnancyOptionsConditions = specs.map(createGuide);
-
