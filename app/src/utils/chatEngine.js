@@ -178,6 +178,9 @@ export function generateSHEReply({
     return reply(createEmergencyResponse(normalised), ["What should I tell urgent care?", "Show me urgent-care options"], { urgency: "urgent" });
   }
 
+  const bleedingTriage = createBleedingSafetyTriage(normalised);
+  if (bleedingTriage) return bleedingTriage;
+
   if (attachments.length > 0) {
     return reply(createAttachmentResponse({
       message: originalMessage,
@@ -344,6 +347,19 @@ function createConversationalHealthReply(message, groundedQuery, conversation, h
   const contextNote = healthContextSummary(healthContext);
   const acknowledgement = [compassionateAcknowledgement(message), contextNote].filter(Boolean).join(" ");
   return replyWithGroundedAnswer(augmentWithHealthContext(groundedQuery, healthContext), acknowledgement, healthContext);
+}
+
+function createBleedingSafetyTriage(text) {
+  const describesBleeding = /\b(bleed|bleeding|period|periods|flow)\b/.test(text);
+  const describesHeavyChange = /\b(heav\w*|soak\w*|flood\w*|gush\w*|large clot|sudden\w*|worse than usual)\b/.test(text);
+  const circulationSymptom = /\b(dizz\w*|faint\w*|lightheaded|weak\w*|breathless\w*|short of breath|chest pain|heart rac\w*|palpitation\w*)\b/.test(text);
+  if (!(describesBleeding && describesHeavyChange && circulationSymptom)) return null;
+
+  return reply([
+    "Heavy or suddenly worsening bleeding together with dizziness, faintness, weakness, breathlessness, chest symptoms or a racing heart can need urgent assessment. I want to check safety before focusing on the cramps or possible causes.",
+    "Please tell me: how often are you completely soaking a pad or tampon; have you fainted or nearly fainted; are you breathless, having chest pain or a racing heart; and is there any chance you could be pregnant?",
+    "If you are soaking through a pad or tampon about every hour, feel close to collapsing, have significant breathlessness or chest pain, severe one-sided pain, or may be pregnant with heavy bleeding, do not wait for Chat—seek urgent medical advice now. Call 999 for a life-threatening emergency; otherwise use NHS 111 or your local urgent service.",
+  ].join("\n\n"), ["I’m soaking one every hour", "I nearly fainted", "Pregnancy is possible"], { urgency: "urgent", conversationStage: "safety-triage" });
 }
 
 function replyWithGroundedAnswer(query, acknowledgement = "") {
