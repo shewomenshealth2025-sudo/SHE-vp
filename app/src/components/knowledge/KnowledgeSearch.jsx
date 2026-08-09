@@ -23,7 +23,7 @@ export default function KnowledgeSearch({ query, onQueryChange, resultCount }) {
         />
         {query && <button type="button" onClick={() => onQueryChange("")} aria-label="Clear search" className="absolute right-4 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-gray-400 hover:bg-pink-50 hover:text-pink-700"><X size={19} /></button>}
       </div>
-      {query.trim() && <p className="mt-3 text-sm text-gray-500" aria-live="polite">{resultCount} related {resultCount === 1 ? "article" : "articles"} found</p>}
+      {query.trim() && <p className="mt-3 text-sm text-gray-500" aria-live="polite">Showing {resultCount} prioritised {resultCount === 1 ? "guide" : "guides"}: exact matches first, then closely related reading.</p>}
     </section>
   );
 }
