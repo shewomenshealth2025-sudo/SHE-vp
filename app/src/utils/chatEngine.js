@@ -497,6 +497,8 @@ function isSymptomStatement(text) {
     "im having",
     "i'm having",
     "i feel",
+    "im feeling",
+    "i'm feeling",
     "i keep",
     "i get",
     "i notice",
@@ -563,11 +565,13 @@ function collectRecentUserContext(conversation = []) {
 function missingSymptomContext(value) {
   const text = normaliseText(value);
   const questions = [];
+  const hasLocation = /\b(lower abdomen|lower stomach|abdomen|stomach|pelvis|pelvic|left side|right side|back|chest|breast|head|leg|vulva|vaginal)\b/.test(text);
   const hasDuration = /\b(today|yesterday|days?|weeks?|months?|years?|since|started|recently|always)\b/.test(text);
-  const hasSeverity = /\b(mild|moderate|severe|bad|awful|unbearable|\d+\/10|stops me|affects|worse|better)\b/.test(text);
+  const hasSeverity = /\b(mild|moderate|severe|painful|very painful|bad|awful|unbearable|\d+\/10|stops me|affects|worse|better)\b/.test(text);
   const hasPattern = /\b(constant|comes and goes|sometimes|daily|night|morning|after|before|during|around|period|cycle|standing|eating|exercise|sex)\b/.test(text);
   const hasAssociated = /\b(and|also|with|without|bleeding|fever|faint|dizzy|discharge|nausea|bowel|bladder|breathless|pregnan)\b/.test(text);
 
+  if (!hasLocation && /\b(pain|painful|cramp|cramps|ache)\b/.test(text)) questions.push("Where exactly are the cramps or pain — for example the lower abdomen, one side, pelvis or back?");
   if (!hasDuration) questions.push("When did it start, and has it changed over time?");
   if (!hasSeverity) questions.push("How intense is it, and does it interrupt sleep, work or normal activities?");
   if (!hasPattern) questions.push("Is it constant or does it follow a pattern — for example around periods, meals, standing, sex or activity?");
@@ -596,6 +600,7 @@ function shortSuggestionForQuestion(question) {
 }
 
 function suggestionsForMissingDetail(question) {
+  if (question.startsWith("Where exactly")) return ["Lower abdomen or pelvis", "Mostly on one side", "It spreads to my back"];
   if (question.startsWith("When")) return ["It started recently", "It has been happening for months", "It has been happening for years"];
   if (question.startsWith("How intense")) return ["I notice it but can continue", "It affects daily life", "It stops normal activities"];
   if (question.startsWith("Is it constant")) return ["It is constant", "It comes and goes", "It follows my cycle"];
