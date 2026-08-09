@@ -33,6 +33,7 @@ import { autoimmuneConditions } from "./conditions/autoimmuneConditions";
 import { ivfConditions } from "./conditions/ivfConditions";
 import { fertilityPreservationConditions } from "./conditions/fertilityPreservationConditions";
 import { missingTopicsConditions } from "./conditions/missingTopicsConditions";
+import { applyArticleEditorial } from "./articleEditorial";
 import { relatedProductsFor } from "./productLinks";
 
 const baseConditions = applyCauseRiskProfiles([
@@ -66,7 +67,7 @@ const baseConditions = applyCauseRiskProfiles([
   ...ivfConditions,
   ...fertilityPreservationConditions,
   ...missingTopicsConditions,
-]);
+]).map(applyArticleEditorial);
 
 function relationshipScore(left, right) {
   if (left.id === right.id) return -1;
