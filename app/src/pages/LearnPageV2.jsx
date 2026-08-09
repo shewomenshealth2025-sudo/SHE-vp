@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, BookOpen, CalendarCheck, Layers3, ListFilter, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarCheck, ExternalLink, Layers3, ListFilter, Newspaper, Sparkles } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
 import { getAllConditions, getCondition, searchKnowledge } from "../data/knowledge";
@@ -8,6 +8,7 @@ import KnowledgeSearch from "../components/knowledge/KnowledgeSearch";
 import KnowledgeSection from "../components/knowledge/KnowledgeSection";
 import ConditionCard from "../components/knowledge/ConditionCard";
 import ConditionViewer from "../components/knowledge/ConditionViewer";
+import { sheNews, sheNewsUpdated } from "../data/sheNews";
 
 const PAGE_SIZE = 24;
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -137,7 +138,7 @@ export default function LearnPageV2() {
       <header className="mb-10">
         <p className="flex items-center gap-2 text-sm font-semibold text-pink-600"><BookOpen size={18} /> SHE Learn</p>
         <h1 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight text-gray-950 md:text-6xl">Understand your health, one clear guide at a time.</h1>
-        <p className="mt-4 max-w-2xl text-base leading-7 text-gray-600">Browse 300 evidence-linked guides by topic, life stage or A–Z. Every guide shows its sources, review date and urgent-help information.</p>
+        <p className="mt-4 max-w-2xl text-base leading-7 text-gray-600">Browse {conditions.length} evidence-linked guides by topic, life stage or A–Z, plus current women’s-health news from trusted public sources.</p>
       </header>
 
       <KnowledgeSearch query={query} onQueryChange={updateQuery} resultCount={results.length} />
@@ -155,6 +156,8 @@ export default function LearnPageV2() {
             ))}
           </div> : <EmptySearch />}
         </KnowledgeSection>
+      ) : mode === "news" ? (
+        <NewsHub onBack={() => openBrowse({})} />
       ) : isBrowseView ? (
         <BrowseResults
           title={selectedCategory || activeStage?.label || `A–Z: ${selectedLetter}`}
@@ -170,11 +173,21 @@ export default function LearnPageV2() {
         />
       ) : (
         <>
-          <nav className="mt-8 grid gap-3 sm:grid-cols-3" aria-label="Browse SHE Learn">
+          <nav className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Browse SHE Learn">
             <BrowseButton icon={Layers3} title="Browse categories" detail={`${categories.length} health categories`} onClick={() => document.getElementById("learn-categories")?.scrollIntoView({ behavior: "smooth" })} />
             <BrowseButton icon={ListFilter} title="A–Z index" detail="Every guide, alphabetically" onClick={() => openBrowse({ view: "az", letter: "A" })} />
             <BrowseButton icon={Sparkles} title="Health collections" detail="Life stages and connected conditions" onClick={() => document.getElementById("life-stages")?.scrollIntoView({ behavior: "smooth" })} />
+            <BrowseButton icon={Newspaper} title="SHE News" detail="Women’s-health news and policy" onClick={() => openBrowse({ view: "news" })} />
           </nav>
+
+          <section className="mt-10 overflow-hidden rounded-3xl bg-gray-950 px-6 py-7 text-white md:flex md:items-center md:justify-between md:px-8">
+            <div>
+              <p className="text-sm font-semibold text-pink-300">SHE News</p>
+              <h2 className="mt-2 text-2xl font-bold">What is changing in women’s health</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-300">Dated, plainly summarised updates from the NHS, HSE and public health bodies—with a direct link to every original source.</p>
+            </div>
+            <button type="button" onClick={() => openBrowse({ view: "news" })} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-gray-950 md:mt-0">Read latest news <ArrowRight size={16} /></button>
+          </section>
 
           <KnowledgeSection title="Popular topics">
             <p className="-mt-2 mb-6 text-sm text-gray-500">Common starting points across menstrual, hormonal and whole-body health.</p>
@@ -237,6 +250,45 @@ function BrowseResults({ title, description, conditions, visibleCount, onOpen, o
 
 function CardGrid({ conditions, onOpen }) {
   return <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">{conditions.map((condition) => <ConditionCard key={condition.id} condition={condition} onClick={onOpen} />)}</div>;
+}
+
+function NewsHub({ onBack }) {
+  const [topic, setTopic] = useState("All");
+  const topics = ["All", ...new Set(sheNews.map((item) => item.topic))];
+  const stories = topic === "All" ? sheNews : sheNews.filter((item) => item.topic === topic);
+
+  return <section className="mt-10 border-t border-gray-200 py-10">
+    <button type="button" onClick={onBack} className="mb-5 text-sm font-semibold text-pink-700">← Back to Learn</button>
+    <div className="max-w-3xl">
+      <p className="flex items-center gap-2 text-sm font-semibold text-pink-600"><Newspaper size={17} /> SHE News</p>
+      <h2 className="mt-2 text-4xl font-bold tracking-tight text-gray-950">Women’s health, without the headline fog.</h2>
+      <p className="mt-4 text-base leading-7 text-gray-600">Current updates selected from the NHS, HSE, government health departments and public screening bodies. SHE summarises what changed; the original source remains the record.</p>
+      <p className="mt-3 text-xs font-medium text-gray-500">Curated coverage · Last checked {sheNewsUpdated} · Newest first</p>
+    </div>
+
+    <div className="mt-7 flex flex-wrap gap-2" aria-label="Filter news by topic">
+      {topics.map((item) => <button key={item} type="button" onClick={() => setTopic(item)} aria-pressed={topic === item} className={`rounded-full px-4 py-2 text-sm font-semibold transition ${topic === item ? "bg-gray-950 text-white" : "bg-gray-100 text-gray-600 hover:bg-pink-50 hover:text-pink-700"}`}>{item}</button>)}
+    </div>
+
+    <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      {stories.map((story) => <article key={story.id} className="flex min-h-72 flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="flex items-start justify-between gap-4">
+          <span className="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">{story.topic}</span>
+          <time dateTime={story.date} className="text-xs font-medium text-gray-500">{new Date(`${story.date}T12:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</time>
+        </div>
+        <h3 className="mt-5 text-xl font-bold leading-7 text-gray-950">{story.title}</h3>
+        <p className="mt-3 flex-1 text-sm leading-6 text-gray-600">{story.summary}</p>
+        <div className="mt-6 border-t border-gray-100 pt-4">
+          <p className="text-xs text-gray-500">{story.source} · {story.region}</p>
+          <a href={story.url} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-pink-700">Read original source <ExternalLink size={15} /></a>
+        </div>
+      </article>)}
+    </div>
+
+    <aside className="mt-8 rounded-2xl bg-amber-50 p-5 text-sm leading-6 text-amber-950">
+      <strong>About coverage:</strong> SHE News is a curated MVP feed, not a complete record of every story published online. Health announcements can change; always use the linked original source for the full details.
+    </aside>
+  </section>;
 }
 
 function EmptySearch() {
