@@ -15,17 +15,28 @@ const ServicesPage = lazy(loadServices);
 const LearnPage = lazy(loadLearn);
 const ProfilePage = lazy(loadProfile);
 
+// New branded URLs are the canonical destinations. Older URLs remain supported
+// so existing bookmarks and shared links continue to work.
 const tabPaths = {
-  chat: "/",
-  products: "/products",
-  services: "/services",
-  education: "/learn",
-  profile: "/profile",
+  chat: "/helps",
+  products: "/finds",
+  services: "/map",
+  education: "/facts",
+  profile: "/my-she",
 };
 
-const pathTabs = Object.fromEntries(
-  Object.entries(tabPaths).map(([tab, path]) => [path, tab]),
-);
+const pathTabs = {
+  "/": "chat",
+  "/helps": "chat",
+  "/products": "products",
+  "/finds": "products",
+  "/services": "services",
+  "/map": "services",
+  "/learn": "education",
+  "/facts": "education",
+  "/profile": "profile",
+  "/my-she": "profile",
+};
 
 export default function App() {
   const location = useLocation();
@@ -40,9 +51,8 @@ export default function App() {
 
   useEffect(() => {
     const preload = () => {
-      // Preload the lightweight, high-frequency sections after first paint.
-      // Services intentionally stays route-only so map and location data are
-      // never downloaded until the user opens SHE Map.
+      // Preload lightweight, high-frequency sections after first paint.
+      // Map and location data stay route-only until the user opens SHE Map.
       void Promise.all([loadProducts(), loadLearn(), loadProfile()]);
     };
 
@@ -56,7 +66,7 @@ export default function App() {
   }, []);
 
   function navigate(tab, options = {}) {
-    const path = tabPaths[tab] || "/";
+    const path = tabPaths[tab] || tabPaths.chat;
     const params = new URLSearchParams();
     if (options.search?.trim()) params.set("q", options.search.trim());
     if (options.view) params.set("view", options.view);
@@ -90,6 +100,15 @@ export default function App() {
     navigate("chat");
   }
 
+  const chatElement = (
+    <ChatPage
+      conversation={conversation}
+      setConversation={setConversation}
+      saveConversation={saveConversation}
+      navigate={navigate}
+    />
+  );
+
   return (
     <div className="min-h-screen bg-[#fffdfc] text-[#241f20]">
       <DesktopSidebar
@@ -107,22 +126,17 @@ export default function App() {
 
         <Suspense fallback={<RouteLoading activeTab={activeTab} />}>
           <Routes>
-            <Route
-              path="/"
-              element={
-                <ChatPage
-                  conversation={conversation}
-                  setConversation={setConversation}
-                  saveConversation={saveConversation}
-                  navigate={navigate}
-                />
-              }
-            />
+            <Route path="/" element={chatElement} />
+            <Route path="/helps" element={chatElement} />
             <Route path="/products" element={<ProductsPage />} />
+            <Route path="/finds" element={<ProductsPage />} />
             <Route path="/services" element={<ServicesPage />} />
+            <Route path="/map" element={<ServicesPage />} />
             <Route path="/learn" element={<LearnPage />} />
+            <Route path="/facts" element={<LearnPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/my-she" element={<ProfilePage />} />
+            <Route path="*" element={<Navigate to="/helps" replace />} />
           </Routes>
         </Suspense>
 
@@ -136,15 +150,15 @@ export default function App() {
 
 function RouteLoading({ activeTab }) {
   const labels = {
-    products: "products",
-    services: "services",
-    education: "health guides",
-    profile: "your profile",
+    products: "SHE Finds",
+    services: "SHE Map",
+    education: "SHE Facts",
+    profile: "My SHE",
   };
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-8 md:px-8 lg:px-12" aria-live="polite">
-      <p className="text-sm font-medium text-[#e93368]">Loading {labels[activeTab] || "SHE"}…</p>
+      <p className="text-sm font-medium text-[#e93368]">Loading {labels[activeTab] || "SHE Helps"}…</p>
       <div className="mt-6 animate-pulse rounded-3xl border border-stone-100 bg-white p-6">
         <div className="h-9 w-2/5 rounded bg-stone-100" />
         <div className="mt-4 h-4 w-3/5 rounded bg-stone-100" />
