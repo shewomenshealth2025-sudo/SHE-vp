@@ -1,10 +1,11 @@
 import {
   BookOpen,
+  Compass,
+  Heart,
   MapPin,
   MessageCircle,
   Plus,
   ShoppingBag,
-  User,
 } from "lucide-react";
 
 export default function DesktopSidebar({
@@ -15,10 +16,11 @@ export default function DesktopSidebar({
   openRecentChat,
 }) {
   const links = [
-    { id: "products", label: "Products", icon: ShoppingBag },
-    { id: "services", label: "Services", icon: MapPin },
-    { id: "education", label: "Learn", icon: BookOpen },
-    { id: "profile", label: "Profile", icon: User },
+    { id: "chat", label: "SHE Helps", icon: Compass },
+    { id: "products", label: "SHE Finds", icon: ShoppingBag },
+    { id: "services", label: "SHE Map", icon: MapPin },
+    { id: "education", label: "SHE Facts & News", icon: BookOpen },
+    { id: "profile", label: "My SHE", icon: Heart },
   ];
 
   return (
@@ -27,7 +29,7 @@ export default function DesktopSidebar({
         type="button"
         onClick={newChat}
         className="flex w-full items-center gap-3 rounded-2xl px-2 py-3 text-left transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f43f72]/30"
-        aria-label="Return to SHE homepage"
+        aria-label="Return to SHE Helps"
       >
         <img
           src="/logo.png"
@@ -47,40 +49,43 @@ export default function DesktopSidebar({
         className="mt-5 flex w-full items-center gap-3 rounded-2xl bg-[#f43f72] px-4 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-[#e93265]"
       >
         <Plus size={19} />
-        New chat
+        New conversation
       </button>
 
-      {recentChats.length > 0 && <div className="mt-7">
-        <p className="px-3 text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
-          Recent
-        </p>
+      {recentChats.length > 0 && (
+        <div className="mt-7">
+          <p className="px-3 text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
+            Recent
+          </p>
 
-        <div className="mt-2 space-y-1">
-          {recentChats.map((chat) => (
-            <button
-              key={chat.id}
-              type="button"
-              onClick={() => openRecentChat(chat)}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm text-stone-600 transition hover:bg-white hover:text-stone-900"
-            >
-              <MessageCircle size={17} className="shrink-0 text-[#f43f72]" />
-              <span className="truncate">{chat.title}</span>
-            </button>
-          ))}
+          <div className="mt-2 space-y-1">
+            {recentChats.map((chat) => (
+              <button
+                key={chat.id}
+                type="button"
+                onClick={() => openRecentChat(chat)}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm text-stone-600 transition hover:bg-white hover:text-stone-900"
+              >
+                <MessageCircle size={17} className="shrink-0 text-[#f43f72]" />
+                <span className="truncate">{chat.title}</span>
+              </button>
+            ))}
+          </div>
         </div>
-      </div>}
+      )}
 
       <div className="mt-7 border-t border-pink-100 pt-5">
         <p className="px-3 text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
-          Explore
+          Explore SHE
         </p>
 
-        <div className="mt-2 space-y-1">
+        <nav className="mt-2 space-y-1" aria-label="Explore SHE">
           {links.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               type="button"
               onClick={() => navigate(id)}
+              aria-current={activeTab === id ? "page" : undefined}
               className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm transition ${
                 activeTab === id
                   ? "bg-white font-medium text-[#f43f72] shadow-sm"
@@ -91,7 +96,7 @@ export default function DesktopSidebar({
               {label}
             </button>
           ))}
-        </div>
+        </nav>
       </div>
     </aside>
   );
